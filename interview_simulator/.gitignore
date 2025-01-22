@@ -33,3 +33,12 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# configuration settings
+/backend/config/firebase_admin_sdk.json
+/backend/config/firebase_config.py
+/backend/config/openai_config.py
+/backend/config/app_config.py
+
+# env files (can opt-in for committing if needed)
+.env*
