@@ -1,5 +1,4 @@
 from flask import Blueprint, request, jsonify
-from firebase_admin import auth
 from utils.token_utils import verify_firebase_token
 
 
