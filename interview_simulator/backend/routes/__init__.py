@@ -8,3 +8,4 @@ def register_routes(app):
     app.register_blueprint(save_conversation)
     app.register_blueprint(token_verification)
     app.register_blueprint(edit_profile)
+    

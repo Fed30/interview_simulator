@@ -2,6 +2,7 @@ from flask import Blueprint, request, jsonify, session
 from utils.question_utils import load_dataset, organize_questions, select_random_questions
 from utils.session_utils import check_existing_session, initialize_session
 from config.openai_config import openai
+from datetime import datetime
 
 chat_routes = Blueprint('chat_routes', __name__)
 
@@ -11,6 +12,7 @@ questions_by_category = organize_questions(dataset)
 
 @chat_routes.route('/chat', methods=['GET'])
 def initiate_chat():
+    # Check if an existing session is valid
     if check_existing_session():
         selected_questions = session['selected_questions']
         current_index = session['current_question_index']
@@ -18,40 +20,45 @@ def initiate_chat():
         total_questions = 2
         progress = 100 if total_questions == 0 else int((current_index / total_questions) * 100)
         next_question = selected_questions[current_index]['prompt']
+        
+        # Calculate remaining time
+        expiry_time = datetime.fromisoformat(session['expiry_time'])
+        remaining_time = (expiry_time - datetime.utcnow()).total_seconds()
+
         return jsonify({
             "message": "Restoring session.",
             "progress": progress,
             "next_question": next_question,
-            "conversation_history": session['conversation_history']
+            "conversation_history": session['conversation_history'],
+            "remaining_time": remaining_time  # Return remaining time in seconds
         })
 
-    # Initialize a new session
+    # Initialize a new session if no valid session exists
     selected_questions = select_random_questions(questions_by_category)
     initialize_session(selected_questions)
 
     initial_question = selected_questions[0]['prompt']
     introduction_message = "Welcome to your personalized Computer Science interview practice session!"
 
-    # Save introduction message and first question to the session history
     session['conversation_history'] = [
         {"role": "assistant", "content": introduction_message},
         {"role": "assistant", "content": initial_question}
     ]
     session.modified = True
 
-    # Dynamically calculate total questions
-    #total_questions = len(selected_questions)
-    total_questions = 2
-    progress = 0  # Start progress at 0 for new session
-    next_question = selected_questions[1]['prompt'] if total_questions > 1 else None
+    # Calculate remaining time for the new session
+    expiry_time = datetime.fromisoformat(session['expiry_time'])
+    remaining_time = (expiry_time - datetime.utcnow()).total_seconds()
 
     return jsonify({
         "introduction": introduction_message,
         "initial_question": initial_question,
-        "progress": progress,
+        "progress": 0,
         "conversation_history": session['conversation_history'],
-        "next_question": next_question
+        "next_question": selected_questions[1]['prompt'] if len(selected_questions) > 1 else None,
+        "remaining_time": remaining_time  # Return remaining time in seconds
     })
+
 
 @chat_routes.route('/chat', methods=['POST'])
 def get_chatbot_response():

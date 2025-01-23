@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import '@fortawesome/fontawesome-free/css/all.min.css';
 import { useRouter } from "next/navigation";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
@@ -10,192 +10,199 @@ export default function Chat() {
   const [messages, setMessages] = useState([]); // Safe default initialization
   const [progress, setProgress] = useState(0); // Ensure progress is always a number
   const [currentQuestion, setCurrentQuestion] = useState('');
+  const [timeLeft, setTimeLeft] = useState(1 * 60); // 40 minutes in seconds
   const router = useRouter();
   const { setLoading } = useLoading();
+  const [hasSessionExpired, setHasSessionExpired] = useState(false);
+  const [isConversationSaved, setIsConversationSaved] = useState(false);
+  const saveFlag = useRef(false);
   
 
-  useEffect(() => {
-    const auth = getAuth();
-  
-    // Listen for authentication state changes
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
-      if (user) {
-        // Fetch initial question and restore data
-        fetchInitialQuestion(user);
-      } else {
-        // Redirect to the login page if not authenticated
-        router.push('/');
-      }
-    });
-  
-    // Cleanup subscription on unmount
-    return () => unsubscribe();
-  }, [router]);
-  
-
+  // Fetch initial question and restore session
   const fetchInitialQuestion = async (user) => {
     try {
-      // Fetch the ID token
+      setIsConversationSaved(false);
       const idToken = await user.getIdToken(true);
-  
-      // Fetch conversation data from the server
       const response = await fetch('http://127.0.0.1:5000/chat', {
         method: 'GET',
         credentials: 'include',
         headers: {
-          Authorization: `Bearer ${idToken}`, // Pass the ID token
+          Authorization: `Bearer ${idToken}`,
         },
       });
-  
+
       const data = await response.json();
-  
       if (data.error) {
         toast.error("Error: " + data.error);
-        console.error("Error fetching data:", data.error);
         return;
       }
-  
-      // Debugging: Log the response
-      console.log("Response data:", data);
-  
-      // Safely handle missing conversation_history
-      const conversationHistory = data.conversation_history || []; // Default to empty array
-      const progressValue = Number(data.progress) || 0; // Default to 0
-      const nextQuestion = data.next_question || "No more questions."; // Default to fallback
-  
+
+      const conversationHistory = data.conversation_history || [];
+      const progressValue = Number(data.progress) || 0;
+      const nextQuestion = data.next_question || "No more questions.";
+
       if (conversationHistory.length > 0) {
-        // Existing session
         setMessages(conversationHistory);
         setProgress(progressValue);
         setCurrentQuestion(nextQuestion);
       } else {
-        // New session or no history available
-        setMessages([
-          { role: 'assistant', content: `${data.message || ""} ${nextQuestion}` },
-        ]);
+        setMessages([{ role: 'assistant', content: `${data.message || ""}, ${nextQuestion}` }]);
         setProgress(progressValue);
         setCurrentQuestion(nextQuestion);
       }
-  
-      console.log("Conversation history and progress restored successfully.");
     } catch (error) {
       toast.error("Failed to load the initial question. Please try again.");
-      console.error("Fetch error:", error);
-    }
+    } 
+  };
+
+  // Handle session expiration logic
+  const handleSessionExpiration = () => {
+    if (hasSessionExpired || saveFlag.current) return; // Guard clause with useRef
+
+    saveFlag.current = true; // Mark as saved
+    setHasSessionExpired(true);
+
+    alert("Your session has expired. Please start a new session.");
+
+    setMessages((prevMessages) => {
+      const updatedMessages = [
+        ...prevMessages,
+        { role: "assistant", content: "Session Expired" },
+      ];
+
+      // Save conversation history only once using saveFlag
+      sendConversationHistory(updatedMessages);
+
+      return updatedMessages;
+    });
   };
   
-  
-  
 
+  // Handle timer countdown
+  useEffect(() => {
+    const auth = getAuth();
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      if (user) {
+        fetchInitialQuestion(user);
+      } else {
+        router.push("/");
+      }
+    });
+
+    const timer = setInterval(() => {
+      
+      setTimeLeft((prev) => {
+        if (prev <= 1) {
+          clearInterval(timer);
+          handleSessionExpiration();
+          return 0;
+        }
+        return prev - 1;
+      });
+    }, 1000);
+
+    return () => {
+      unsubscribe();
+      clearInterval(timer);
+    };
+  }, [router, hasSessionExpired]);
+
+  const formatTime = (timeInSeconds) => {
+    const minutes = Math.floor(timeInSeconds / 60);
+    const seconds = timeInSeconds % 60;
+    return `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+  };
+
+  // Handle sending user message
   const handleSendMessage = async (event) => {
     event.preventDefault();
+    if (hasSessionExpired || isConversationSaved) return;
+
     const messageInput = document.getElementById("text");
     const userMessage = messageInput.value.trim();
-
     if (!userMessage) return;
 
-    // Add user message to the state
-    const newMessages = [
-      ...messages,
-      { role: 'user', content: userMessage },
-    ];
+    const newMessages = [...messages, { role: "user", content: userMessage }];
     setMessages(newMessages);
 
     try {
-      // Send the user message to Flask backend
-      const response = await fetch('http://127.0.0.1:5000/chat', {
-        method: 'POST',
-        credentials: 'include',
+      const response = await fetch("http://127.0.0.1:5000/chat", {
+        method: "POST",
+        credentials: "include",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({ message: userMessage }),
       });
 
       const data = await response.json();
-
       if (data.error) {
         toast.error("Error: " + data.error);
-        console.error("Error:", data.error);
         return;
       }
 
-      // Update progress and assistant's response
-      setProgress(Number(data.progress) || 0); // Ensure progress is a number
+      setProgress(Number(data.progress) || 0);
       const assistantMessages = [
         ...newMessages,
-        { role: 'assistant', content: data.chatbot_response },
+        { role: "assistant", content: data.chatbot_response },
       ];
 
-      if (!data.next_question) {
-        // Add the final message
-        assistantMessages.push({ role: 'assistant', content: data.final_message });
-        setMessages(assistantMessages);
-
-        // Delay to ensure state updates before saving conversation
-        setTimeout(() => {
-          sendConversationHistory(assistantMessages); // Save the conversation
-        }, 1000);
-      } else {
-        // Add the next question
-        assistantMessages.push({ role: 'assistant', content: data.next_question });
+      if (data.next_question) {
+        assistantMessages.push({ role: "assistant", content: data.next_question });
         setMessages(assistantMessages);
         setCurrentQuestion(data.next_question);
+      } else {
+        assistantMessages.push({ role: "assistant", content: data.final_message });
+        setMessages(assistantMessages);
+
+        if (!isConversationSaved) {
+          setTimeout(() => {
+            sendConversationHistory(assistantMessages);
+            setIsConversationSaved(true);
+          }, 1000);
+        }
       }
     } catch (error) {
       toast.error("Error sending message. Please try again.");
-      console.error("Error sending message:", error);
-    }
+    } 
 
-    // Clear input field
-    messageInput.value = '';
+    messageInput.value = "";
   };
 
+  // Send conversation history to the server
   const sendConversationHistory = async (conversation) => {
+    const auth = getAuth();
+    const user = auth.currentUser;
+
+    if (!user || !conversation || conversation.length === 0) {
+      toast.error("No conversation history to save.");
+      return;
+    }
+
     try {
-      setLoading(true);
-      const auth = getAuth();
-      const user = auth.currentUser;
-
-      if (!user) {
-        setLoading(false);
-        console.log("User not authenticated.");
-        toast.error("User not authenticated.");
-        return;
-      }
-
       const idToken = await user.getIdToken(true);
       const response = await fetch('http://127.0.0.1:5000/save_conversation', {
         method: 'POST',
         credentials: 'include',
         headers: {
           'Content-Type': 'application/json',
-          Authorization: `Bearer ${idToken}`, // Send the ID token
+          Authorization: `Bearer ${idToken}`,
         },
-        body: JSON.stringify({
-          conversationHistory: conversation,
-        }),
+        body: JSON.stringify({ conversationHistory: conversation }),
       });
 
       const data = await response.json();
       if (data.success) {
-        console.log("Conversation history saved successfully!");
-        setTimeout(() => {
-          setLoading(false);
-          toast.success("Practice Session Completed!");
-        }, 3000);
-        router.push("/"); // Redirect to home
+        toast.success("Practice Session saved successfully!");
+        router.push("/");
       } else {
-        setLoading(false);
-        console.error("Error saving conversation history:", data.error);
-        toast.error("Error saving conversation history: " + data.error);
+        toast.error("Error saving conversation history.");
       }
     } catch (error) {
-      setLoading(false);
-      console.error("Error sending conversation history:", error);
       toast.error("Error saving conversation history. Please try again.");
-    }
+    } 
   };
+  
 
   return (
     <div className="flex items-center justify-center mt-10 h-screen bg-transparent">
@@ -213,7 +220,7 @@ export default function Chat() {
           </div>
           <div className="ml-auto">
             <div className="bg-gray-700 px-3 py-1 rounded-full text-sm">
-              Timer: <span id="timer">00:00:00</span>
+              Timer: <span id="timer">{formatTime(timeLeft)}</span>
             </div>
           </div>
         </div>

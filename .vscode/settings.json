@@ -1,9 +1,11 @@
 {
     "cSpell.words": [
+        "dotenv",
         "firestore",
         "fontawesome",
         "jsonify",
         "ntplib",
-        "unixtime"
+        "unixtime",
+        "urandom"
     ]
 }
