@@ -12,6 +12,7 @@ export default function Chat() {
   const [currentQuestion, setCurrentQuestion] = useState('');
   const router = useRouter();
   const { setLoading } = useLoading();
+  
 
   useEffect(() => {
     const auth = getAuth();
@@ -172,7 +173,7 @@ export default function Chat() {
           Authorization: `Bearer ${idToken}`, // Send the ID token
         },
         body: JSON.stringify({
-          conversationHistory: conversation, // Pass the final conversation
+          conversationHistory: conversation,
         }),
       });
 
@@ -183,7 +184,7 @@ export default function Chat() {
           setLoading(false);
           toast.success("Practice Session Completed!");
         }, 3000);
-        router.push("/"); // Redirect to home or another page
+        router.push("/"); // Redirect to home
       } else {
         setLoading(false);
         console.error("Error saving conversation history:", data.error);

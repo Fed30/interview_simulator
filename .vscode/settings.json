@@ -1,6 +1,9 @@
 {
     "cSpell.words": [
+        "firestore",
         "fontawesome",
-        "jsonify"
+        "jsonify",
+        "ntplib",
+        "unixtime"
     ]
 }
