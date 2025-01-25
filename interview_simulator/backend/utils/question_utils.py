@@ -31,8 +31,19 @@ def organize_questions(dataset):
 # Select random questions
 def select_random_questions(questions_by_category):
     selected_questions = []
+
+    # Always select the first two questions from the "Ice Breaking" category
+    if "Ice Breaking" in questions_by_category:
+        ice_breaking_questions = questions_by_category["Ice Breaking"]
+        random.shuffle(ice_breaking_questions)
+        selected_questions.extend(ice_breaking_questions[:2])  # Select the first two ice breaking questions
+        
+
+    # Select random questions from other categories (if available)
     for category, questions in questions_by_category.items():
-        random.shuffle(questions)
-        selected_questions.extend(questions[:2])
-    random.shuffle(selected_questions)
+        if category != "Ice Breaking":
+            random.shuffle(questions)
+            selected_questions.extend(questions[:2])  # Select up to 2 random questions from each other category
+
+    print("total questions:", len(selected_questions))
     return selected_questions
