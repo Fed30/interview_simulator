@@ -21,7 +21,6 @@ const Header = () => {
   const dropdownRef = useRef(null); // Reference to the dropdown container
   const router = useRouter();
   const { setLoading } = useLoading();
-  
 
   const handleClickOutside = (event) => {
     if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
@@ -107,7 +106,7 @@ const Header = () => {
   };
 
   return (
-    <header className="flex justify-between items-center p-4 bg-blue-600 text-white">
+    <header className="flex justify-center items-center p-4 text-white">
       <div className="logo">
         <Link href="/">
           <img

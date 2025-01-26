@@ -14,7 +14,7 @@ export const AuthProvider = ({ children }) => {
           loginBtn.classList.add("pulse");
           setTimeout(() => {
             loginBtn.classList.remove("pulse");
-          }, 1000);
+          }, 5000);
         }
       };
 

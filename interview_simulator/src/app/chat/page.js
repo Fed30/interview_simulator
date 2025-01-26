@@ -242,8 +242,15 @@ export default function Chat() {
   };
   
   return (
-    <div className="flex items-center justify-center mt-10 h-screen bg-transparent">
-      <div className="bg-white shadow-lg rounded-lg w-full max-w-4xl h-[80vh] flex flex-col overflow-hidden">
+    <div className="flex items-center justify-center  h-screen"
+    style={{
+      backgroundImage: "url('/secondary_background.webp')",
+      backgroundSize: 'cover', 
+      backgroundPosition: 'center', 
+      backgroundRepeat: 'no-repeat', 
+      backgroundAttachment: 'fixed',
+    }}>
+      <div className=" shadow-lg rounded-lg w-full max-w-4xl h-[80vh] flex flex-col overflow-hidden">
         {/* Chat Header */}
         <div className="chat_container text-white py-4 px-6 flex items-center">
           <img
@@ -252,33 +259,33 @@ export default function Chat() {
             className="w-10 h-10 rounded-full"
           />
           <div className="ml-4">
-            <h1 className="text-lg font-bold">Stitch</h1>
+            <h1 className="text-lg">Stitch</h1>
             <p className="text-sm">Interview Simulator</p>
           </div>
           <div className="ml-auto">
-            <div style={timerStyle} className="bg-gray-700 px-3 py-1 rounded-full text-sm">
+            <div style={timerStyle} className="bg-gray-700 px-3 py-1 rounded text-sm">
               Timer: <span id="timer">{formatTime(timeLeft)}</span>
             </div>
           </div>
         </div>
 
         {/* Progress Bar */}
-        <div className="px-6 py-3 bg-gray-50">
+        <div className="px-3 py-3  bg-transparent">
           <label
             htmlFor="progress-bar"
-            className="block text-sm font-medium text-gray-600 mb-1"
+            className="block text-sm font-medium text-white mb-1"
           >
             Interview Progress
           </label>
-          <div className="relative w-full bg-gray-200 rounded-full h-4">
+          <div className="relative w-full bg-white rounded h-4">
             <div
               id="progress-bar"
-              className="absolute top-0 left-0 progress h-4 rounded-full"
+              className="absolute top-0 left-0 progress h-4 rounded"
               style={{ width: `${progress || 0}%` }} // Default to 0 if NaN
             ></div>
             <span
               id="progress-percentage"
-              className="absolute right-2 text-xs font-medium text-gray-600"
+              className="absolute right-2 text-xs font-medium text-gray-800"
             >
               {progress || 0}% {/* Default to 0 if NaN */}
             </span>
@@ -286,43 +293,60 @@ export default function Chat() {
         </div>
 
         {/* Chat Area */}
-        <div className="flex-grow overflow-x-auto p-4 space-y-4 bg-white">
+        <div className="flex-grow chat-area overflow-y-auto p-4 space-y-4 bg-transparent">
           {messages.map((msg, index) => (
             <div
               key={index}
-              className={`flex ${msg.role === 'assistant' ? 'items-start' : 'items-end'} space-x-3`}
+              className={`flex ${
+                msg.role === 'assistant' ? 'justify-start' : 'justify-end'
+              } space-x-3`}
             >
               {msg.role === 'assistant' ? (
-                <img
-                  src="https://img.favpng.com/16/0/10/chatbot-logo-robotics-png-favpng-9dXq9bg2WxSjeC6BvTCb6kxNC.jpg"
-                  alt="assistant"
-                  className="w-8 h-8 rounded-full"
-                />
+                <>
+                  <img
+                    src="https://img.favpng.com/16/0/10/chatbot-logo-robotics-png-favpng-9dXq9bg2WxSjeC6BvTCb6kxNC.jpg"
+                    alt="assistant"
+                    className="w-8 h-8 rounded-full"
+                  />
+                  {/* Chat Bubble */}
+                  <div
+                    className="max-w-[80%] p-3 text-sm text-gray-800 bg-gray-100 rounded-lg"
+                  >
+                    {msg.content || "No content"}
+                  </div>
+                </>
               ) : (
-                <div className="flex-grow"></div>
+                <>
+                  {/* User Message */}
+                  <div className="flex flex-col items-end">
+                    
+                    <div
+                      className="max-w-[80%] p-3 text-sm text-gray-800 bg-green-100 rounded-lg"
+                    >
+                      {msg.content || "No content"}
+                      </div>
+                      <span className="text-sm text-white mb-1">You</span>
+                  </div>
+                </>
               )}
-
-              {/* Chat Bubble */}
-              <div
-                className={`max-w-[80%] p-3 text-sm text-gray-800 rounded-lg ${
-                  msg.role === 'assistant'
-                    ? 'bg-gray-100'
-                    : 'bg-green-100 text-right'
-                }`}
-              >
-                {msg.content || "No content"}
-              </div>
             </div>
           ))}
         </div>
+
+
 
         {/* Input Field */}
         <form className="flex items-end space-x-2 m-3" onSubmit={handleSendMessage}>
             <textarea
               id="text"
-              placeholder="Type your message here..."
-              className="flex-grow px-3 py-2 form-control text-black border rounded resize-none"
+              placeholder="Type your answer here..."
+              className="flex-grow px-3 py-2 form-control-chat text-white border resize-none chat-area overflow-y-auto"
               rows="1"
+              style={{
+                minHeight: "40px", 
+                maxHeight: "80px",
+                height: "auto", 
+              }}
               onInput={(e) => {
                 e.target.style.height = "auto"; // Reset height to auto to calculate new height
                 e.target.style.height = `${e.target.scrollHeight}px`; // Set new height based on scrollHeight
@@ -331,11 +355,15 @@ export default function Chat() {
             <button
               type="submit"
               id="send"
-              className="sendMsg-btn px-4 py-2 flex-shrink-0"
+            className="sendMsg-btn px-4 py-2 flex-shrink-0"
+            style={{
+              height: "100%", // Make button the same height as textarea
+            }}
             >
               <i className="fas fa-paper-plane"></i>
             </button>
-        </form>
+          </form>
+
       </div>
     </div>
   );

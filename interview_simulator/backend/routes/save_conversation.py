@@ -33,7 +33,7 @@ def save_conversation_route():
         timestamp = f"{formatted_date} {formatted_time}"
 
         # Determine the status based on the conversation content
-        status = "Incomplete" if "Session Expired" in conversation_history else "Complete"
+        status = "Incomplete" if any(entry.get("content") == "Session Expired" for entry in conversation_history) else "Complete"
         
         # Load the dataset
         dataset = load_dataset() 

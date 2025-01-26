@@ -5,14 +5,27 @@
 
 
 body, html {
-	overflow: visible;
-	font-family: "Verdana", "Geneva", sans-serif;
-	height: 100%;
-	width: 100%;
-	margin: 0;
-	background: rgb(44, 47, 59);
-	background: -webkit-linear-gradient(to right, rgb(40, 59, 34), rgb(54, 60, 70), rgb(32, 32, 43));
-	background: linear-gradient(to right, rgb(38, 51, 61), rgb(50, 55, 65), rgb(33, 33, 78));
+    overflow: visible;
+    font-family: "Verdana", "Geneva", sans-serif;
+    height: 100%;
+    width: 100%;
+    margin: 0;
+
+    /* Adding a background image */
+    background: url('/primary_background.jpg') no-repeat center center fixed;
+
+    /* Adding fallback colors/gradients */
+    background-size: cover;
+    background-blend-mode: overlay;
+    background-color: rgb(44, 47, 59); /* Fallback color */
+    background-image: 
+        linear-gradient(
+            to right,
+            rgb(45, 60, 75),
+            rgb(70, 85, 100),
+            rgb(50, 50, 120)
+        ),
+        url('/primary_background.jpg'); /* Actual image path */
 }
 /* Header positioning */
 header {
@@ -21,7 +34,7 @@ header {
 	left: 0;
 	width: 100%; /* Full width */
 	display: flex;
-	background: linear-gradient(to right, rgb(38, 51, 61), rgb(50, 55, 65), rgb(33, 33, 78));
+	background: transparent;
 	justify-content: space-between; /* Space between items */
 	align-items: center; /* Vertically align items */
 	padding: 10px 20px;
@@ -41,39 +54,15 @@ header {
 
 /* Center wrapper to center the content */
 .center-wrapper {
-  display: flex;
-  flex-direction: column; /* Aligns items vertically */
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
-  text-align: center;
-  padding: 20px;
+	display: flex;
+	flex-direction: column; /* Aligns items vertically */
+	justify-content: center;
+	align-items: center;
+	height: 100vh;
+	text-align: center;
+	padding: 20px;
 }
 
-/* Welcome message styling */
-.welcome-message {
-	background-color: transparent;
-	padding: 30px;
-	max-width: auto;
-	width: 100%;
-	margin-bottom: 20px; /* Space between message and button */
-	margin-top: 10px;
-}
-
-.welcome-message h1 {
-	font-size: 2.5rem;
-	font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-	color: white;
-	margin-bottom: 15px;
-  }
-  
-  .welcome-message p {
-	font-size: 1.2rem;
-	font-family: 'Roboto', sans-serif;
-	margin-bottom: 20px;
-	color: white;
-	line-height: 1.5;
-  }
 
 /* Button Styles */
 .start-btn {
@@ -87,19 +76,19 @@ header {
 	transition: all 0.3s ease; /* Smooth transition for all properties */
 	margin-top: 20px; /* Adds space between the message and button */
 	box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Subtle shadow */
-  }
-  
-  .start-btn:hover {
+}
+
+.start-btn:hover {
 	background: linear-gradient(145deg, #fc5c7d, #6a82fb); /* Reverse the gradient */
 	transform: scale(1.05); /* Slightly increase size */
 	box-shadow: 0 8px 12px rgba(0, 0, 0, 0.2); /* More prominent shadow */
-  }
-  
-  .start-btn:active {
+}
+
+.start-btn:active {
 	transform: scale(0.97); /* Slight shrink on click */
 	box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Reduced shadow */
-  }
-  
+}
+
 
 
 /* Login button styling */
@@ -117,44 +106,44 @@ header {
 	cursor: pointer;
 	transition: background-color 0.3s, color 0.3s, transform 0.3s, box-shadow 0.3s;
 	box-shadow: 0 4px 10px rgba(255, 255, 255, 0.1); /* Subtle default glow */
-  }
-  
-  .login-button:hover {
+}
+
+.login-button:hover {
 	background-color: white;
 	color: #0056b3;
 	transform: scale(1.1);
 	box-shadow: 0 4px 20px rgba(0, 123, 255, 0.5); /* Glow on hover */
-  }
-  
-  .login-button:active {
+}
+
+.login-button:active {
 	transform: scale(0.95);
 	background-color: #0056b3;
 	color: white;
 	box-shadow: 0 2px 10px rgba(0, 123, 255, 0.7); /* Slightly subdued glow */
-  }
-  
+}
+
 
 
 /*Login button animation*/
 .pulse {
-	animation: pulse 1.5s ease-in-out infinite;
+	animation: pulse 1.8s ease-in-out infinite;
 }
 
 @keyframes pulse {
 	0% {
-	  transform: scale(1);
-	  opacity: 1;
-	  box-shadow: 0 0 0 0 rgba(0, 123, 255, 0.4); /* Softer initial shadow */
+		transform: scale(1);
+		opacity: 1;
+		box-shadow: 0 0 0 0 rgba(0, 123, 255, 0.4); /* Softer initial shadow */
 	}
 	50% {
-	  transform: scale(1.1);
-	  opacity: 0.8;
-	  box-shadow: 0 0 25px 10px rgba(0, 123, 255, 0.4); /* Brighter shadow */
+		transform: scale(1.1);
+		opacity: 0.8;
+		box-shadow: 0 0 25px 10px rgba(0, 123, 255, 0.4); /* Brighter shadow */
 	}
 	100% {
-	  transform: scale(1);
-	  opacity: 1;
-	  box-shadow: 0 0 0 0 rgba(0, 123, 255, 0.4); /* Reset shadow */
+		transform: scale(1);
+		opacity: 1;
+	  	box-shadow: 0 0 0 0 rgba(0, 123, 255, 0.4); /* Reset shadow */
 	}
 }
 
@@ -172,28 +161,27 @@ header {
 
 @keyframes flicker {
 	0% {
-	  text-shadow: 0 0 8px rgba(255, 85, 85, 0.5), 0 0 15px rgba(255, 85, 85, 0.5);
-	  color: rgb(255, 85, 85);
+		text-shadow: 0 0 8px rgba(255, 85, 85, 0.5), 0 0 15px rgba(255, 85, 85, 0.5);
+		color: rgb(255, 85, 85);
 	}
 	25% {
-	  text-shadow: 0 0 15px rgba(255, 85, 85, 0.8), 0 0 25px rgba(255, 85, 85, 0.8);
-	  color: rgb(255, 70, 70); /* Slightly darker red */
+		text-shadow: 0 0 15px rgba(255, 85, 85, 0.8), 0 0 25px rgba(255, 85, 85, 0.8);
+		color: rgb(255, 70, 70); /* Slightly darker red */
 	}
 	50% {
-	  text-shadow: 0 0 10px rgba(255, 85, 85, 0.6), 0 0 20px rgba(255, 85, 85, 0.6);
-	  color: rgb(255, 85, 85); /* Back to original red */
+		text-shadow: 0 0 10px rgba(255, 85, 85, 0.6), 0 0 20px rgba(255, 85, 85, 0.6);
+		color: rgb(255, 85, 85); /* Back to original red */
 	}
 	75% {
-	  text-shadow: 0 0 12px rgba(255, 85, 85, 0.4), 0 0 18px rgba(255, 85, 85, 0.4);
-	  color: rgb(255, 90, 90); /* Slightly lighter red */
+		text-shadow: 0 0 12px rgba(255, 85, 85, 0.4), 0 0 18px rgba(255, 85, 85, 0.4);
+		color: rgb(255, 90, 90); /* Slightly lighter red */
 	}
 	100% {
-	  text-shadow: 0 0 8px rgba(255, 85, 85, 0.5), 0 0 15px rgba(255, 85, 85, 0.5);
-	  color: rgb(255, 85, 85);
+		text-shadow: 0 0 8px rgba(255, 85, 85, 0.5), 0 0 15px rgba(255, 85, 85, 0.5);
+		color: rgb(255, 85, 85);
 	}
 }
-  
-  
+
 
 /*MODAL*/
 .modal-content {
@@ -214,9 +202,9 @@ header {
 	text-decoration: none;
 	position: relative;
 	transition: color 0.3s ease;
-  }
-  
-  .links::after {
+}
+
+.links::after {
 	content: "";
 	position: absolute;
 	left: 0;
@@ -225,15 +213,15 @@ header {
 	height: 2px;
 	background-color: #58cc71;
 	transition: width 0.3s ease;
-  }
-  
-  .links:hover::after, .links:focus::after {
+}
+
+.links:hover::after, .links:focus::after {
 	width: 100%; /* Expands underline */
-  }
-  .links:hover, .links:focus, .links.active {
+}
+.links:hover, .links:focus, .links.active {
 	color: #45a860; /* Darker green */
 	font-weight: bold; /* Bold active link */
-  }  
+}  
 
 /*MODAL BUTTONS*/
 .loginModal-btn {
@@ -247,20 +235,20 @@ header {
 	transition: all 0.3s ease; /* Smooth transition for all properties */
 	margin-top: 20px; /* Adds space between the message and button */
 	box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Subtle shadow */
-  }
-  
-  .loginModal-btn:hover {
+}
+
+.loginModal-btn:hover {
 	background: linear-gradient(145deg, #fc5c7d, #6a82fb); /* Reverse the gradient */
 	transform: scale(1.05); /* Slightly increase size */
 	box-shadow: 0 8px 12px rgba(0, 0, 0, 0.2); /* More prominent shadow */
-  }
-  
-  .loginModal-btn:active {
+}
+
+.loginModal-btn:active {
 	transform: scale(0.97); /* Slight shrink on click */
 	box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Reduced shadow */
-  }
+}
 
-  .signUpModal-btn {
+.signUpModal-btn {
 	background: linear-gradient(145deg, #6a82fb, #fc5c7d); /* Gradient background */
 	color: white;
 	padding: 10px 20px;
@@ -271,18 +259,18 @@ header {
 	transition: all 0.3s ease; /* Smooth transition for all properties */
 	margin-top: 20px; /* Adds space between the message and button */
 	box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Subtle shadow */
-  }
-  
-  .signUpModal-btn:hover {
+}
+
+.signUpModal-btn:hover {
 	background: linear-gradient(145deg, #fc5c7d, #6a82fb); /* Reverse the gradient */
 	transform: scale(1.05); /* Slightly increase size */
 	box-shadow: 0 8px 12px rgba(0, 0, 0, 0.2); /* More prominent shadow */
-  }
-  
-  .signUpModal-btn:active {
+}
+
+.signUpModal-btn:active {
 	transform: scale(0.97); /* Slight shrink on click */
 	box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Reduced shadow */
-  }
+}
 
 .resetModal-btn {
 	background: linear-gradient(145deg, #6a82fb, #fc5c7d); /* Gradient background */
@@ -295,34 +283,34 @@ header {
 	transition: all 0.3s ease; /* Smooth transition for all properties */
 	margin-top: 20px; /* Adds space between the message and button */
 	box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Subtle shadow */
-  }
-  
-  .resetModal-btn:hover {
+}
+
+.resetModal-btn:hover {
 	background: linear-gradient(145deg, #fc5c7d, #6a82fb); /* Reverse the gradient */
 	transform: scale(1.05); /* Slightly increase size */
 	box-shadow: 0 8px 12px rgba(0, 0, 0, 0.2); /* More prominent shadow */
-  }
-  
-  .resetModal-btn:active {
+}
+
+.resetModal-btn:active {
 	transform: scale(0.97); /* Slight shrink on click */
 	box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Reduced shadow */
-  }
+}
 .close {
-  color: white;
-  font-size: 27px;
-  font-weight: bold;
-  border: none;
-  background-color: transparent; /* No background by default */
-  padding: 5px;
-  border-radius: 50%; /* Circular button */
-  transition: color 0.3s ease, background-color 0.3s ease, transform 0.2s ease;
+	color: white;
+	font-size: 27px;
+	font-weight: bold;
+	border: none;
+	background-color: transparent; /* No background by default */
+	padding: 5px;
+	border-radius: 50%; /* Circular button */
+	transition: color 0.3s ease, background-color 0.3s ease, transform 0.2s ease;
 }
 
 .close:hover {
-  color: #fff;
-  background-color: rgba(170, 170, 170, 0.5); /* Semi-transparent gray */
-  transform: scale(1.1);
-  cursor: pointer;
+	color: #fff;
+	background-color: rgba(170, 170, 170, 0.5); /* Semi-transparent gray */
+	transform: scale(1.1);
+	cursor: pointer;
 }
 
 
@@ -340,28 +328,28 @@ header {
 	background-color: white; /* white background */
 	color: #333; /* Dark text for contrast */
 	transition: all 0.3s ease; /* Smooth transition on hover/focus */
-  }
-  
-  /* Hover Effect for Input Fields */
-  .form-control:hover {
+}
+
+/* Hover Effect for Input Fields */
+.form-control:hover {
 	border: 2px solid rgba(0, 123, 255, 0.7);
 	background-color: white; /* white background on hover */
-  }
-  
-  /* Focus Effect for Input Fields */
-  .form-control:focus {
+}
+
+/* Focus Effect for Input Fields */
+.form-control:focus {
 	border: 2px solid rgba(0, 123, 255, 0.7);
 	background-color: white; 
 	outline: none; /* Remove default browser outline */
 	box-shadow: 0 2px 10px rgba(0, 123, 255, 0.7); /* Slightly subdued glow */
-  }
-  input:disabled {
+}
+input:disabled {
 	background-color: #f0f0f0; /* Change background color */
 	color: #a0a0a0; /* Change text color */
 	cursor: not-allowed; /* Change cursor to indicate disabled state */
-  }
+}
 
-  h4.text-center {
+h4.text-center {
 	font-family: "Verdana", "Geneva", sans-serif;
 	font-size: 2rem; /* Larger font size for emphasis */
 	font-weight: 700; /* Bold weight for stronger presence */
@@ -369,17 +357,13 @@ header {
 	letter-spacing: 1px; /* Add slight spacing between letters */
 	text-transform: uppercase; /* Capitalize text for a more striking effect */
 	padding: 20px; /* Add space around the text */
-  }
+}
 
-  .form-group{
+.form-group{
 	font-family: "Verdana", "Geneva", sans-serif;
-  }
-
-
+}
 
 /* PROFILE PAGE */
-
-
 .profile-wrapper {
 	width:  100%; 
 	display: flex;
@@ -393,95 +377,95 @@ header {
 	max-width: 1200px;
 	margin: 0 auto;
 	padding: 100px;
-  }
-  
-  .profile-info {
+}
+
+.profile-info {
 	background-color: transparent;
 	padding: 20px;
 	margin-bottom: 30px;
 	color: white;
-  }
-  
-  .profile-header {
+}
+
+.profile-header {
 	display: flex;
 	align-items: center;
-  }
-  
-  .profile_icon {
+}
+
+.profile_icon {
 	font-size: 2rem;
 	color: whitesmoke;
-  }
-  
-  .profile-info h3 {
+}
+
+.profile-info h3 {
 	font-size: 1.5rem;
 	font-weight: 500;
 	margin-left: 10px; /* Space between icon and username */
-  }
-  
-  /* Button Styling */
-  .button-wrapper {
+}
+
+/* Button Styling */
+.button-wrapper {
 	margin-top: 20px;
-  }
-  
-  .button-wrapper button {
+}
+
+.button-wrapper button {
 	margin-right: 10px;
 	font-size: 1rem;
 	padding: 10px 20px;
 	border-radius: 5px;
-  }
-  
-  /* Tabs Styling */
-  .tabs {
+}
+
+/* Tabs Styling */
+.tabs {
 	margin-top: 30px;
-  }
-  
-  .nav-tabs {
+}
+
+.nav-tabs {
 	display: flex;
 	justify-content: flex-start;
 	border-bottom: 2px solid #ddd;
 	padding: 10px;
-  }
-  
-  .nav-item {
+}
+
+.nav-item {
 	list-style: none;
-  }
-  
-  .nav-link {
+}
+
+.nav-link {
 	font-size: 1.1rem;
 	color: whitesmoke;
 	padding: 10px 20px;
 	cursor: pointer;
 	transition: background-color 0.3s ease;
-  }
-  
-  .nav-link:hover,
-  .nav-link.active {
+}
+
+.nav-link:hover,
+.nav-link.active {
 	background: linear-gradient(to top, rgb(50, 55, 65), rgb(33, 33, 78));
 	color: white;
 	border-radius: 5px;
-  }
-  
-  /* Tab Content */
-  .tab-content {
+}
+
+/* Tab Content */
+.tab-content {
 	display: none;
-  }
-  
-  .tab-content.active {
+}
+
+.tab-content.active {
 	display: block;
-  }
-  
-  .scrollable-content {
+}
+
+.scrollable-content {
 	background-color: #f1f1f1;
 	padding: 20px;
 	border-radius: 10px;
-  }
-  
-  .scrollable-content p {
+}
+
+.scrollable-content p {
 	font-size: 1.1rem;
 	color: #555;
-  }
+}
 
-  .editProfile-btn {
+.editProfile-btn {
 	background: linear-gradient(145deg, #34e89e, #0f9b8e); /* Gradient from light green to darker green */
 	color: white;
 	padding: 10px 20px;
@@ -492,21 +476,21 @@ header {
 	transition: all 0.3s ease; /* Smooth transition for all properties */
 	margin-top: 20px; /* Adds space between the message and button */
 	box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Subtle shadow */
-  }
-  
-  .editProfile-btn:hover {
+}
+
+.editProfile-btn:hover {
 	background: linear-gradient(145deg, #0f9b8e, #34e89e); /* Reverse the gradient */
 	transform: scale(1.05); /* Slightly increase size */
 	box-shadow: 0 8px 12px rgba(0, 0, 0, 0.2); /* More prominent shadow */
-  }
-  
-  .editProfile-btn:active {
+}
+
+.editProfile-btn:active {
 	transform: scale(0.97); /* Slight shrink on click */
 	box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Reduced shadow */
-  }
-  
+}
 
-  .resetPwd-btn {
+
+.resetPwd-btn {
 	background: linear-gradient(145deg, #ff416c, #ff4b2b); /* Gradient from red to a deeper red */
 	color: white;
 	padding: 10px 20px;
@@ -517,31 +501,68 @@ header {
 	transition: all 0.3s ease; /* Smooth transition for all properties */
 	margin-top: 20px; /* Adds space between the message and button */
 	box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Subtle shadow */
-  }
-  
-  .resetPwd-btn:hover {
+}
+
+.resetPwd-btn:hover {
 	background: linear-gradient(145deg, #ff4b2b, #ff416c); /* Reverse the gradient */
 	transform: scale(1.05); /* Slightly increase size */
 	box-shadow: 0 8px 12px rgba(0, 0, 0, 0.2); /* More prominent shadow */
-  }
-  
-  .resetPwd-btn:active {
+}
+
+.resetPwd-btn:active {
 	transform: scale(0.97); /* Slight shrink on click */
 	box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Reduced shadow */
-  }
-  
+}
 
-  /*CHAT PAGE*/
 
-  .chat_container{
-	background: linear-gradient(145deg, #6a82fb, #fc5c7d);
-  }
-  .profile_chat_icon {
+/*CHAT PAGE*/
+
+.chat_container {
+	background: linear-gradient(145deg, #6a82fb, #fc5c7d); /* Keep the original gradient */
+	box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15); /* Slightly stronger shadow for depth */
+	border-radius: 5px; /* Rounded corners */
+	display: flex;
+	align-items: center;
+	padding: 15px;
+	margin-bottom: 10px; /* Add some spacing for a clean look */
+	transition: box-shadow 0.3s ease; /* Smooth transition for shadow change */
+}
+
+/* Chat Header Image */
+.chat_container img {
+	border-radius: 50%;
+	box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15); /* Shadow for the image */
+}
+
+/* Header Title and Subtext */
+.chat_container h1 {
+	color: white; /* Keep the white color for the header */
+	font-size: 1.5rem; /* Increase font size for emphasis */
+	font-weight: bold; /* Make it bold for prominence */
+	margin-left: 15px; /* Add some space after the image */
+}
+
+.chat_container p {
+	color: #d1d1d1; /* Light gray color for subheading */
+	font-size: 1rem; /* Keep it legible and slightly larger */
+	margin-top: 2px; /* Give some space from the title */
+}
+
+.chat-area {
+    overflow-y: scroll;
+    -ms-overflow-style: none; /* Hide scrollbar for Internet Explorer and Edge */
+    scrollbar-width: none; /* Hide scrollbar for Firefox */
+}
+
+.chat-area::-webkit-scrollbar {
+    display: none; /* Hide scrollbar for Chrome, Safari, and Edge */
+}
+.profile_chat_icon {
 	font-size: 2rem;
 	color: black;
-  }
+}
 
-  .sendMsg-btn {
+.sendMsg-btn {
 	background: linear-gradient(145deg, #6a82fb, #fc5c7d); /* Gradient from light green to darker green */
 	color: white;
 	font-size: 1rem;
@@ -550,26 +571,46 @@ header {
 	cursor: pointer;
 	transition: all 0.3s ease; /* Smooth transition for all properties */
 	box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Subtle shadow */
-  }
-  
-  .sendMsg-btn:hover {
+}
+
+.sendMsg-btn:hover {
 	background: linear-gradient(145deg, #fc5c7d, #6a82fb); /* Reverse the gradient */
 	transform: scale(1.05); /* Slightly increase size */
 	box-shadow: 0 8px 12px rgba(0, 0, 0, 0.2); /* More prominent shadow */
-  }
-  
-  .sendMsg-btn:active {
+}
+
+.sendMsg-btn:active {
 	transform: scale(0.97); /* Slight shrink on click */
 	box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Reduced shadow */
-  }
+}
 
-  .progress{
+.progress{
 	background: linear-gradient(145deg, #0f9b8e, #34e89e);
 	transition: width 0.5s; /* Smooth progress bar animation */
-  }
+}
 
-  /*SPINNER*/
-  .spinner-container {
+.form-control-chat {
+	background-color: transparent; /* white background */
+	border-radius: 5px;
+	transition: all 0.3s ease; /* Smooth transition on hover/focus */
+}
+
+/* Hover Effect for Input Fields */
+.form-control-chat:hover {
+	border: 2px solid rgba(0, 123, 255, 0.7);
+	background-color: transparent; /* white background on hover */
+}
+
+/* Focus Effect for Input Fields */
+.form-control-chat:focus {
+	border: 2px solid rgba(0, 123, 255, 0.7);
+	background-color: transparent; 
+	outline: none; /* Remove default browser outline */
+	box-shadow: 0 2px 10px rgba(0, 123, 255, 0.7); /* Slightly subdued glow */
+}
+
+/*SPINNER*/
+.spinner-container {
 	position: fixed; /* Fixed position to cover the entire screen */
 	top: 0;
 	left: 0;
@@ -581,34 +622,33 @@ header {
 	display: flex;
 	justify-content: center;
 	align-items: center;
-  }
-  
-  /* SPINNER */
-  .spinner {
+}
+
+.spinner {
 	border: 8px solid #1a2b4c; /* Dark Blue */
 	border-top: 8px solid #3498db; /* Blue */
 	border-radius: 50%;
 	width: 50px;
 	height: 50px;
 	animation: spin 1s linear infinite;
-  }
-  
-  /* Spin Animation */
-  @keyframes spin {
+}
+
+/* Spin Animation */
+@keyframes spin {
 	0% { transform: rotate(0deg); }
 	100% { transform: rotate(360deg); }
-  }
-  
-  /* Global class for blur effect on body */
-  .body-blur {
+}
+
+/* Global class for blur effect on body */
+.body-blur {
 	filter: blur(5px);  /* Apply blur to the whole page */
-  }
-  
-  .header-blur {
+}
+
+.header-blur {
 	filter: blur(5px);  /* Apply blur to the header */
-  }
-  
-  /* Optional: If you want to blur other elements (like sidebar, etc.) */
-  .sidebar-blur {
+}
+
+/* Optional: If you want to blur other elements (like sidebar, etc.) */
+.sidebar-blur {
 	filter: blur(5px);
-  }
+}
