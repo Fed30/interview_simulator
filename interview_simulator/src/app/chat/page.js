@@ -10,7 +10,7 @@ export default function Chat() {
   const [messages, setMessages] = useState([]); // Safe default initialization
   const [progress, setProgress] = useState(0); // Ensure progress is always a number
   const [currentQuestion, setCurrentQuestion] = useState('');
-  const [timeLeft, setTimeLeft] = useState(1 * 60); // 40 minutes in seconds
+  const [timeLeft, setTimeLeft] = useState(5 * 60); // 40 minutes in seconds
   const router = useRouter();
   const { setLoading } = useLoading();
   const [hasSessionExpired, setHasSessionExpired] = useState(false);
@@ -86,12 +86,12 @@ export default function Chat() {
     const auth = getAuth();
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       if (user) {
-        fetchInitialQuestion(user);  // Fetch initial question as soon as user is authenticated
+        fetchInitialQuestion(user); // Fetch initial question as soon as user is authenticated
       } else {
         router.push("/");
       }
     });
-
+  
     const timer = setInterval(() => {
       setTimeLeft((prev) => {
         if (prev <= 1) {
@@ -99,29 +99,22 @@ export default function Chat() {
           handleSessionExpiration(); // Handle session expiration when time runs out
           return 0;
         }
+  
+        // Check if the time left is less than or equal to 2 minutes (120 seconds)
+        if (prev <= 120 && timeLeft > 0) {
+          setTimerStyle("gradient-text");
+        }
+  
         return prev - 1;
       });
     }, 1000);
-
-    // Check if the time left is 5 minutes (300 seconds)
-    if (timeLeft <= 60 && timeLeft > 0) {
-      setTimerStyle({
-        color: "rgb(255, 85, 85)", // Slight red for attention
-        fontSize: "1.25rem", // Slightly larger font size
-        fontWeight: "600", // Bold text to enhance visibility
-        textShadow: "0 0 8px rgba(255, 85, 85, 0.6), 0 0 15px rgba(255, 85, 85, 0.6)", // Soft glowing effect
-        transform: "scale(1.1)", // Slight scaling effect to grab attention
-        animation: "pulse_timer 3s ease-in-out infinite, flicker 3s ease-in-out infinite", // Apply the pulse and flicker animation for 3 seconds, repeat every minute (60s)
-        transition: "all 0.5s ease-out", // Smooth transition for color, scale, and shadow
-      });
-    } 
-
+  
     return () => {
-      //isMounted.current = false;
       unsubscribe();
       clearInterval(timer);
     };
-  }, [router, hasSessionExpired]);
+  }, [router, hasSessionExpired, timerStyle]);
+  
 
   // Manage session expiration and loading state
   useEffect(() => {
@@ -242,128 +235,126 @@ export default function Chat() {
   };
   
   return (
-    <div className="flex items-center justify-center  h-screen"
-    style={{
-      backgroundImage: "url('/secondary_background.webp')",
-      backgroundSize: 'cover', 
-      backgroundPosition: 'center', 
-      backgroundRepeat: 'no-repeat', 
-      backgroundAttachment: 'fixed',
-    }}>
-      <div className=" shadow-lg rounded-lg w-full max-w-4xl h-[80vh] flex flex-col overflow-hidden">
-        {/* Chat Header */}
-        <div className="chat_container text-white py-4 px-6 flex items-center">
-          <img
-            src="https://img.favpng.com/16/0/10/chatbot-logo-robotics-png-favpng-9dXq9bg2WxSjeC6BvTCb6kxNC.jpg"
-            alt="Chatbot"
-            className="w-10 h-10 rounded-full"
-          />
-          <div className="ml-4">
-            <h1 className="text-lg">Stitch</h1>
-            <p className="text-sm">Interview Simulator</p>
-          </div>
-          <div className="ml-auto">
-            <div style={timerStyle} className="bg-gray-700 px-3 py-1 rounded text-sm">
-              Timer: <span id="timer">{formatTime(timeLeft)}</span>
+    <div className="flex items-center justify-center mt-10 h-screen px-4 sm:px-6 md:px-8">
+      <div className="flex flex-col sm:flex-row w-full max-w-6xl h-[80vh] shadow-lg rounded-lg overflow-hidden">
+        {/* Booklet Section */}
+        <div className="w-full sm:w-1/3 booklet_background text-white p-6 flex flex-col justify-between mb-6 sm:mb-0">
+          <h2 className="text-2xl font-bold mb-4">STAR Method</h2>
+          <p className="text-sm leading-6 mb-4">
+            <strong>S - Situation:</strong> Describe the context or background of the task.<br />
+            <strong>T - Task:</strong> Explain the challenge or responsibility you faced.<br />
+            <strong>A - Action:</strong> Detail the specific steps you took.<br />
+            <strong>R - Result:</strong> Share the outcome of your actions.
+          </p>
+          <p className="text-sm">
+            Use this structured approach to provide clear, concise, and impactful answers during the interview.
+          </p>
+        </div>
+    
+        {/* Chat Section */}
+        <div className="w-full sm:w-2/3 flex flex-col bg-white">
+          {/* Chat Header */}
+          <div className="chat_container text-white py-4 px-6 flex items-center">
+            <img
+              src='/logo.png'
+              alt="Chatbot"
+              className="w-10 h-10 rounded-full"
+            />
+            <div className="ml-4">
+              <p className="text-md font-medium">Interview Simulator</p>
+            </div>
+            <div className="ml-auto">
+              <div className={`chat_timer px-3 py-1 ${timeLeft <= 120 && timeLeft > 0 ? "gradient-text" : ""}`}>
+                Timer: <span id="timer">{formatTime(timeLeft)}</span>
+              </div>
             </div>
           </div>
-        </div>
-
-        {/* Progress Bar */}
-        <div className="px-3 py-3  bg-transparent">
-          <label
-            htmlFor="progress-bar"
-            className="block text-sm font-medium text-white mb-1"
-          >
-            Interview Progress
-          </label>
-          <div className="relative w-full bg-white rounded h-4">
-            <div
-              id="progress-bar"
-              className="absolute top-0 left-0 progress h-4 rounded"
-              style={{ width: `${progress || 0}%` }} // Default to 0 if NaN
-            ></div>
-            <span
-              id="progress-percentage"
-              className="absolute right-2 text-xs font-medium text-gray-800"
+    
+          {/* Progress Bar */}
+          <div className="px-3 py-3">
+            <label
+              htmlFor="progress-bar"
+              className="block text-sm progress_header mb-2"
             >
-              {progress || 0}% {/* Default to 0 if NaN */}
-            </span>
+              Session Progress
+            </label>
+            <div className="relative w-full progress-bar shadow-md overflow-hidden">
+              <div
+                id="progress-bar"
+                className="absolute top-0 left-0 h-full rounded-full progress"
+                style={{
+                  width: `${progress || 0}%`, 
+                }}
+              >
+                <span className="text-xs font-bold ml-2 text-white">
+                  {progress || 0}%
+                </span>
+              </div>
+            </div>
           </div>
-        </div>
-
-        {/* Chat Area */}
-        <div className="flex-grow chat-area overflow-y-auto p-4 space-y-4 bg-transparent">
-          {messages.map((msg, index) => (
-            <div
-              key={index}
-              className={`flex ${
-                msg.role === 'assistant' ? 'justify-start' : 'justify-end'
-              } space-x-3`}
-            >
-              {msg.role === 'assistant' ? (
-                <>
-                  <img
-                    src="https://img.favpng.com/16/0/10/chatbot-logo-robotics-png-favpng-9dXq9bg2WxSjeC6BvTCb6kxNC.jpg"
-                    alt="assistant"
-                    className="w-8 h-8 rounded-full"
-                  />
-                  {/* Chat Bubble */}
-                  <div
-                    className="max-w-[80%] p-3 text-sm text-gray-800 bg-gray-100 rounded-lg"
-                  >
-                    {msg.content || "No content"}
-                  </div>
-                </>
-              ) : (
-                <>
-                  {/* User Message */}
-                  <div className="flex flex-col items-end">
-                    
-                    <div
-                      className="max-w-[80%] p-3 text-sm text-gray-800 bg-green-100 rounded-lg"
-                    >
+    
+          {/* Chat Area */}
+          <div className="flex-grow chat-area overflow-y-auto p-4 space-y-4">
+            {messages.map((msg, index) => (
+              <div
+                key={index}
+                className={`flex ${msg.role === 'assistant' ? 'justify-start' : 'justify-end'} space-x-3`}
+              >
+                {msg.role === 'assistant' ? (
+                  <>
+                    <img
+                      src='/logo.png'
+                      alt="assistant"
+                      className="w-8 h-8 rounded-full"
+                    />
+                    <div className="max-w-[80%] p-3 text-sm message chat-bubble-assistant">
                       {msg.content || "No content"}
-                      </div>
-                      <span className="text-sm text-white mb-1">You</span>
+                    </div>
+                  </>
+                ) : (
+                  <div className="flex flex-col items-end">
+                    <div className="max-w-[80%] p-3 text-sm message chat-bubble-user">
+                      {msg.content || "No content"}
+                    </div>
+                    <span className="text-sm text-gray-500 mt-1">You</span>
                   </div>
-                </>
-              )}
-            </div>
-          ))}
-        </div>
-
-
-
-        {/* Input Field */}
-        <form className="flex items-end space-x-2 m-3" onSubmit={handleSendMessage}>
+                )}
+              </div>
+            ))}
+          </div>
+    
+          {/* Input Field */}
+          <form
+            className="flex items-end space-x-2 m-3"
+            onSubmit={handleSendMessage}
+          >
             <textarea
               id="text"
               placeholder="Type your answer here..."
-              className="flex-grow px-3 py-2 form-control-chat text-white border resize-none chat-area overflow-y-auto"
+              className="flex-grow px-3 py-2 form-control-chat border resize-none chat-area overflow-y-auto"
               rows="1"
               style={{
-                minHeight: "40px", 
+                minHeight: "40px",
                 maxHeight: "80px",
-                height: "auto", 
+                height: "auto",
               }}
               onInput={(e) => {
-                e.target.style.height = "auto"; // Reset height to auto to calculate new height
-                e.target.style.height = `${e.target.scrollHeight}px`; // Set new height based on scrollHeight
+                e.target.style.height = "auto";
+                e.target.style.height = `${e.target.scrollHeight}px`;
               }}
             />
             <button
               type="submit"
               id="send"
-            className="sendMsg-btn px-4 py-2 flex-shrink-0"
-            style={{
-              height: "100%", // Make button the same height as textarea
-            }}
+              className="sendMsg-btn px-4 py-2 flex-shrink-0"
+              style={{
+                height: "100%",
+              }}
             >
               <i className="fas fa-paper-plane"></i>
             </button>
           </form>
-
+        </div>
       </div>
     </div>
   );

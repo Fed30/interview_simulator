@@ -9,7 +9,13 @@ const Spinner = () => {
 
   return (
     <div className="spinner-container">
-      <div className="spinner"></div>
+      <div className="spinner">
+        <img
+          src='/logo.png'
+          alt="Chatbot"
+          className="logo w-8 h-8 rounded-full"
+        />
+      </div>
     </div>
   );
 };

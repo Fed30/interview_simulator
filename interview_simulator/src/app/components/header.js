@@ -110,7 +110,7 @@ const Header = () => {
       <div className="logo">
         <Link href="/">
           <img
-            src="https://img.favpng.com/16/0/10/chatbot-logo-robotics-png-favpng-9dXq9bg2WxSjeC6BvTCb6kxNC.jpg"
+            src='/logo.png'
             className="rounded-full w-16 h-16"
             alt="Logo"
           />

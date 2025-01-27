@@ -38,14 +38,27 @@ const Home = () => {
 
 
   return (
-    <div className="font-mono">
+    <div>
       {/* Section 1: Main Section */}
-      <section 
-        className="relative py-24 bg-cover bg-center text-white h-screen flex items-center justify-center">
-        <div className="max-w-4xl mx-auto text-center">
-          <h1 className="text-4xl font-extrabold leading-tight">WELCOME TO THE INTERVIEW SIMULATOR</h1>
-          <p className="text-lg mt-4 opacity-80">
-            Start practicing for your interview with our AI-powered simulator. Get ready to ace your technical and behavioral interviews with personalized feedback.
+      <section
+        className="relative py-24 text-white h-screen flex items-center justify-center"
+        style={{
+          backgroundImage: "url('/challenges.png')",
+          backgroundRepeat: "no-repeat",
+          backgroundPosition: "center center",
+          backgroundAttachment: 'fixed',
+        }}
+      >
+        {/* Overlay */}
+        <div className="absolute inset-0 bg-black bg-opacity-50"></div>
+
+        {/* Content */}
+        <div className="max-w-4xl mx-auto text-center relative z-10 px-4">
+          <h1 className="text-4xl sm:text-3xl font-extrabold leading-tight text-shadow-lg text-animated">
+            WELCOME TO THE INTERVIEW SIMULATOR
+          </h1>
+          <p className="text-lg mt-4 opacity-90 text-shadow-md text-animated">
+            Start practicing for your interview with our AI-powered simulator. Get ready to ace your behavioral interviews with personalized feedback.
           </p>
           <button
             className="btn start-btn mt-8 bg-blue-700 text-white px-8 py-4 rounded-lg hover:bg-blue-800 transition ease-in-out duration-300"
@@ -58,92 +71,158 @@ const Home = () => {
       </section>
 
       {/* Section 2: Practice Industry Questions */}
-      <section 
-        className="py-20 bg-cover bg-center text-white h-screen flex items-center justify-center"
-        style={{
-          backgroundImage: "url('/secondary_background.webp')",
-          backgroundSize: 'cover', 
-          backgroundPosition: 'center', 
-          backgroundRepeat: 'no-repeat', 
-          backgroundAttachment: 'fixed',
-        }}
-      >
-        <div className="max-w-4xl mx-auto text-center">
-          <h2 className="text-3xl font-semibold">Practice 500+ Industry-Standard Questions</h2>
-          <p className="mt-4 text-lg opacity-80">
-            Our curated collection of computer science interview questions will help you prepare for top tech companies. Enhance your skills with real-world problems.
-          </p>
+      <section className="relative py-20 text-white h-auto flex items-center justify-center">
+        <div className="absolute inset-0 bg-black opacity-40"></div>
+
+        <div className="max-w-6xl mx-auto flex flex-col sm:flex-row items-center justify-between relative z-10 px-4">
+          {/* Left Side: Image */}
+          <img
+            src="/practice_questions.png"
+            alt="Practice questions"
+            className="w-full sm:w-1/2 h-full object-cover image-hover mb-8 sm:mb-0"
+          />
+
+          {/* Right Side: Text */}
+          <div className="w-full sm:w-1/2 text-center pr-8">
+            <h2 className="text-3xl sm:text-2xl font-semibold text-animated">
+              Practice 500+ Industry-Standard Questions
+            </h2>
+            <p className="mt-4 text-lg opacity-80 text-animated">
+              Our curated collection of computer science interview questions will help you prepare for top tech companies. Enhance your skills with real-world problems.
+            </p>
+
+            {/* Skills Section */}
+            <div className="mt-8 space-y-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-4">
+                <div className="border-2 border-blue-600 p-4 rounded-lg shadow-md hover:shadow-lg transition duration-300 ease-in-out">
+                  <h4 className="text-xl font-medium">Communication & Networking</h4>
+                  <p className="mt-2 text-sm opacity-80">
+                    Effective communication and networking are essential in every tech role to work collaboratively and build professional relationships.
+                  </p>
+                </div>
+
+                <div className="border-2 border-blue-600 p-4 rounded-lg shadow-md hover:shadow-lg transition duration-300 ease-in-out">
+                  <h4 className="text-xl font-medium">Teamwork & Collaboration</h4>
+                  <p className="mt-2 text-sm opacity-80">
+                    Being able to work in a team and collaborate efficiently is crucial in solving complex problems and achieving common goals.
+                  </p>
+                </div>
+
+                <div className="border-2 border-blue-600 p-4 rounded-lg shadow-md hover:shadow-lg transition duration-300 ease-in-out">
+                  <h4 className="text-xl font-medium">Analytical and Problem Solving</h4>
+                  <p className="mt-2 text-sm opacity-80">
+                    Analytical skills help you break down complex problems into manageable tasks and find efficient solutions.
+                  </p>
+                </div>
+
+                <div className="border-2 border-blue-600 p-4 rounded-lg shadow-md hover:shadow-lg transition duration-300 ease-in-out">
+                  <h4 className="text-xl font-medium">Creativity and Critical Thinking</h4>
+                  <p className="mt-2 text-sm opacity-80">
+                    Creativity helps generate unique solutions, while critical thinking ensures logical evaluation and informed decision-making.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </section>
 
       {/* Section 3: Tailored Feedback */}
-      <section 
-        className="relative py-20 bg-cover bg-center text-white h-screen flex items-center justify-center"
-        style={{ backgroundImage: "url('/feedback_background')" }}
-      >
-        <div className="absolute inset-0 bg-black opacity-40"></div> {/* Dark overlay */}
-        
-        <div className="max-w-6xl mx-auto flex items-center justify-between relative z-10">
+      <section
+        className="relative py-20 bg-cover bg-center text-white h-auto flex items-center justify-center">
+        <div className="max-w-6xl mx-auto flex flex-col sm:flex-row items-center justify-between relative z-10 px-4">
           {/* Left Side: Text */}
-          <div className="w-1/2 text-center pr-8">
-            <h2 className="text-3xl font-semibold">Get Tailored Feedback</h2>
+          <div className="w-full sm:w-1/2 text-center pr-8">
+            <h2 className="text-3xl sm:text-2xl font-semibold">Get Tailored Feedback</h2>
             <p className="mt-4 text-lg opacity-80">
               Receive customized insights and recommendations on your interview responses to help you improve. Focus on your weak points and get actionable advice.
             </p>
+            <button
+              className="btn start-btn mt-8 bg-blue-700 text-white px-8 py-4 rounded-lg hover:bg-blue-800 transition ease-in-out duration-300"
+              id="startBtn"
+              onClick={handleStartClick}
+            >
+              Start Practicing
+            </button>
           </div>
+
           {/* Right Side: Image */}
-          <img 
-            src="https://hbr.org/resources/images/products/5678O_500.png" 
-            alt="STAR Method" 
-            className="w-1/2 h-full object-cover"
+          <img
+            src="/feedback.png"
+            alt="Feedback"
+            className="w-full sm:w-1/2 h-full object-cover image-hover"
           />
         </div>
       </section>
 
       {/* Section 4: Analytics */}
-      <section 
-        className="py-20 bg-cover bg-center text-white h-screen flex items-center justify-center"
-        style={{ 
-          backgroundImage: "url('/analytics_background.jpg')",
+      <section
+        className="py-20 bg-cover bg-center text-white h-screen flex items-center justify-center relative"
+        style={{
+          backgroundImage: "url('/collaboration.png')",
           backgroundSize: 'cover',
-          backgroundPosition: 'center',
+          backgroundPosition: 'center left',
           backgroundRepeat: 'no-repeat',
           backgroundAttachment: 'fixed',
         }}
       >
-        <div className="max-w-4xl mx-auto text-center">
-          <h2 className="text-3xl font-semibold">Access Tailored Analytics</h2>
-          <p className="mt-4 text-lg opacity-80">
+        {/* Overlay */}
+        <div className="absolute inset-0 bg-black bg-opacity-50"></div>
+
+        {/* Content */}
+        <div className="max-w-4xl mx-auto text-center relative z-10 px-4">
+          <h2 className="text-3xl sm:text-2xl font-semibold text-shadow-lg">
+            Access Tailored Analytics
+          </h2>
+          <p className="mt-4 text-lg opacity-90 text-shadow-md">
             Track your progress and performance with detailed analytics to identify strengths and areas for improvement. Visualize your growth as you practice more.
           </p>
+          <button
+            className="btn start-btn mt-8 bg-blue-700 text-white px-8 py-4 rounded-lg hover:bg-blue-800 transition ease-in-out duration-300"
+            id="startBtn"
+            onClick={handleStartClick}
+          >
+            Start Practicing
+          </button>
         </div>
       </section>
 
       {/* Section 5: STAR Method */}
-      <section 
-        className="relative py-20 bg-cover bg-center text-white h-screen flex items-center justify-center"
-        style={{ backgroundImage: "url('/secondary_background.webp')" }}
-      >
-        <div className="absolute inset-0 bg-black opacity-40"></div> {/* Dark overlay */}
-        
-        <div className="max-w-6xl mx-auto flex items-center justify-between relative z-10">
+      <section className="relative py-20 text-white h-auto flex items-center justify-center">
+        <div className="absolute inset-0 bg-black opacity-40"></div>
+
+        <div className="max-w-6xl mx-auto flex flex-col sm:flex-row items-center justify-between relative z-10 px-4">
           {/* Left Side: Image */}
-          <img 
-            src="/star_method_img.png" 
-            alt="STAR Method" 
-            className="w-1/2 h-full object-cover"
+          <img
+            src="/star_method.png"
+            alt="STAR Method"
+            className="w-full sm:w-1/2 h-full object-cover image-hover mb-8 sm:mb-0"
           />
-          
-          {/* Right Side: Text */}
-          <div className="w-1/2 text-center pl-8">
-            <h2 className="text-3xl font-semibold">Practice the STAR Method</h2>
+
+          {/* Right Side: Text & Interactive Content */}
+          <div className="w-full sm:w-1/2 text-center pl-8">
+            <h2 className="text-3xl sm:text-2xl font-semibold">Practice the STAR Method</h2>
             <p className="mt-4 text-lg opacity-80">
               Learn and practice the STAR method to confidently answer behavioral interview questions. Build your storytelling skills with structured examples.
             </p>
+
+            {/* Real-Life Example */}
+            <div className="mt-4">
+              <h3 className="text-2xl font-semibold">Real-Life Example</h3>
+              <div className="mt-6 border-2 border-blue-600 p-6 rounded-lg shadow-lg">
+                <p className="text-lg opacity-80">
+                  <strong>Situation:</strong> Describe a challenging situation you faced at work. <br />
+                  <strong>Task:</strong> Explain the task you were given. <br />
+                  <strong>Action:</strong> Describe the actions you took to overcome the challenge. <br />
+                  <strong>Result:</strong> Share the positive results of your actions.
+                </p>
+              </div>
+            </div>
           </div>
         </div>
       </section>
     </div>
+
   );
 };
 

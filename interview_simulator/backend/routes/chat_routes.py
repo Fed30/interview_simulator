@@ -16,8 +16,8 @@ def initiate_chat():
     if check_existing_session():
         selected_questions = session['selected_questions']
         current_index = session['current_question_index']
-        #total_questions = len(selected_questions)  # Dynamically set total questions based on the session
-        total_questions = 2
+        total_questions = len(selected_questions)  # Dynamically set total questions based on the session
+        #total_questions = 2
         progress = 100 if total_questions == 0 else int((current_index / total_questions) * 100)
         next_question = selected_questions[current_index]['prompt']
         
@@ -74,8 +74,8 @@ def get_chatbot_response():
         session['conversation_history'] = []
 
     current_question_index = session['current_question_index']
-    #total_questions = len(session['selected_questions'])
-    total_questions = 2
+    total_questions = len(session['selected_questions'])
+    #total_questions = 2
 
     if total_questions == 0:
         return jsonify({"error": "No questions available."}), 400

@@ -1,32 +1,54 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
 
-
-
+/*GLOBAL STYLE*/
 body, html {
     overflow: visible;
-    font-family: "Verdana", "Geneva", sans-serif;
+	overflow-y: auto;
+    font-family: 'Inter', sans-serif;
     height: 100%;
     width: 100%;
     margin: 0;
-
-    /* Adding a background image */
-    background: url('/primary_background.jpg') no-repeat center center fixed;
-
-    /* Adding fallback colors/gradients */
+    background: rgb(39,18,160);
+	background: radial-gradient(circle, rgba(39,18,160,1) 6%, rgba(53,102,184,1) 78%);
     background-size: cover;
-    background-blend-mode: overlay;
-    background-color: rgb(44, 47, 59); /* Fallback color */
-    background-image: 
-        linear-gradient(
-            to right,
-            rgb(45, 60, 75),
-            rgb(70, 85, 100),
-            rgb(50, 50, 120)
-        ),
-        url('/primary_background.jpg'); /* Actual image path */
 }
+
+h1, h2, h3 {
+    font-weight: 700;
+    letter-spacing: 1px;
+    margin-bottom: 1rem;
+}
+
+p, span, button {
+    font-weight: 400;
+    line-height: 1.6;
+}
+
+
+/*HOMEPAGE*/
+@keyframes fadeInUp {
+	0% {
+		opacity: 0;
+		transform: translateY(10px);
+	}
+	100% {
+		opacity: 1;
+		transform: translateY(0);
+	}
+}
+
+.text-animated {
+	animation: fadeInUp 1s ease-out;
+}
+
+.image-hover:hover {
+	transform: scale(1.05);
+	transition: transform 0.3s ease;
+}
+
 /* Header positioning */
 header {
 	position: fixed; /* Makes the header stick to the top */
@@ -51,7 +73,6 @@ header {
 	border:1.5px solid #f5f6fa;
 }
 
-
 /* Center wrapper to center the content */
 .center-wrapper {
 	display: flex;
@@ -61,6 +82,14 @@ header {
 	height: 100vh;
 	text-align: center;
 	padding: 20px;
+}
+
+.text-shadow-lg {
+	text-shadow: 2px 4px 6px rgba(0, 0, 0, 0.7); /* Strong shadow for titles */
+}
+
+.text-shadow-md {
+	text-shadow: 1px 3px 4px rgba(0, 0, 0, 0.5); /* Softer shadow for body text */
 }
 
 
@@ -122,8 +151,6 @@ header {
 	box-shadow: 0 2px 10px rgba(0, 123, 255, 0.7); /* Slightly subdued glow */
 }
 
-
-
 /*Login button animation*/
 .pulse {
 	animation: pulse 1.8s ease-in-out infinite;
@@ -147,47 +174,12 @@ header {
 	}
 }
 
-@keyframes pulse_timer {
-	0% {
-	  transform: scale(1); /* Normal size */
-	}
-	50% {
-	  transform: scale(1.1); /* Slightly enlarged */
-	}
-	100% {
-	  transform: scale(1); /* Back to normal size */
-	}
-}
-
-@keyframes flicker {
-	0% {
-		text-shadow: 0 0 8px rgba(255, 85, 85, 0.5), 0 0 15px rgba(255, 85, 85, 0.5);
-		color: rgb(255, 85, 85);
-	}
-	25% {
-		text-shadow: 0 0 15px rgba(255, 85, 85, 0.8), 0 0 25px rgba(255, 85, 85, 0.8);
-		color: rgb(255, 70, 70); /* Slightly darker red */
-	}
-	50% {
-		text-shadow: 0 0 10px rgba(255, 85, 85, 0.6), 0 0 20px rgba(255, 85, 85, 0.6);
-		color: rgb(255, 85, 85); /* Back to original red */
-	}
-	75% {
-		text-shadow: 0 0 12px rgba(255, 85, 85, 0.4), 0 0 18px rgba(255, 85, 85, 0.4);
-		color: rgb(255, 90, 90); /* Slightly lighter red */
-	}
-	100% {
-		text-shadow: 0 0 8px rgba(255, 85, 85, 0.5), 0 0 15px rgba(255, 85, 85, 0.5);
-		color: rgb(255, 85, 85);
-	}
-}
-
-
 /*MODAL*/
 .modal-content {
 	margin: 5% auto;
 	padding: 20px;
-	background: linear-gradient(to right, rgb(38, 51, 61), rgb(50, 55, 65), rgb(33, 33, 78));
+	background: linear-gradient(145deg, rgba(44, 28, 145, 0.95), rgba(28, 36, 95, 0.9), rgba(62, 78, 148, 0.95));
+	box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
 	border: none;
 	position: relative;
 	/* Minimum width for larger screens */
@@ -316,11 +308,29 @@ header {
 
  /* HEADER DROPDOWN */
 .dropdown-menu {
-    background: linear-gradient(to bottom, rgb(50, 55, 65), rgb(33, 33, 78));
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.3);
+    background: linear-gradient(145deg, rgba(44, 28, 145, 0.95), rgba(28, 36, 95, 0.9), rgba(62, 78, 148, 0.95));
+	box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
     transition: opacity 0.3s ease, transform 0.3s ease;
     transform: translateY(-10px);
+}
+
+/* Button styles inside dropdown */
+.dropdown-menu button {
+    background: none;
+    border: none;
+    color: #fff; /* Ensure text is readable */
+    font-size: 1rem;
+    text-align: left;
+    padding: 12px;
+    width: 100%;
+    cursor: pointer;
+}
+
+/* Hover effect */
+.dropdown-menu button:hover {
+    transform: scale(1.01); /* Slight scaling effect */
+    box-shadow: 0 4px 15px rgba(255, 255, 255, 0.1); /* Soft glowing shadow */
+    color: #f1f1f1; /* Slightly lighter text color */
 }
 
 /* INPUT FIELDS STYLES */
@@ -517,15 +527,32 @@ h4.text-center {
 
 /*CHAT PAGE*/
 
-.chat_container {
-	background: linear-gradient(145deg, #6a82fb, #fc5c7d); /* Keep the original gradient */
-	box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15); /* Slightly stronger shadow for depth */
-	border-radius: 5px; /* Rounded corners */
+.booklet_background {
+	background: linear-gradient(145deg, #6a82fb, #fc5c7d); /* Gradient */
+	color: white;
 	display: flex;
-	align-items: center;
-	padding: 15px;
-	margin-bottom: 10px; /* Add some spacing for a clean look */
-	transition: box-shadow 0.3s ease; /* Smooth transition for shadow change */
+	flex-direction: column;
+	justify-content: space-between;
+}
+
+.chat-container {
+    background: rgba(255, 255, 255, 0.2); /* Transparent white */
+    backdrop-filter: blur(10px); /* Frosted glass effect */
+    border: 1px solid rgba(255, 255, 255, 0.3); /* Soft border */
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.25); /* Subtle shadow */
+    border-radius: 20px; /* Rounded corners */
+    overflow: hidden;
+}
+
+
+.chat_timer{
+	border: 2px solid rgba(0, 123, 255, 0.7);
+	background-color: transparent; 
+	border-radius: 5px;
+	font-size: 1.2rem;
+	color: rgba(0, 123, 255, 0.7);
+	font-weight: bold;
+	box-shadow: 0 2px 10px rgba(0, 123, 255, 0.7); 
 }
 
 /* Chat Header Image */
@@ -535,21 +562,50 @@ h4.text-center {
 }
 
 /* Header Title and Subtext */
-.chat_container h1 {
-	color: white; /* Keep the white color for the header */
-	font-size: 1.5rem; /* Increase font size for emphasis */
-	font-weight: bold; /* Make it bold for prominence */
-	margin-left: 15px; /* Add some space after the image */
-}
 
 .chat_container p {
-	color: #d1d1d1; /* Light gray color for subheading */
-	font-size: 1rem; /* Keep it legible and slightly larger */
-	margin-top: 2px; /* Give some space from the title */
+	color: #2c3e50; 
+	font-size: 1rem;
+	margin-top: 2px;
+}
+
+.progress_header {
+	color: #2c3e50;
+	font-size: 1rem;
+	margin-top: 2px;
+}
+.message {
+    animation: fadeIn 0.5s ease-in-out;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.chat-bubble-assistant {
+    /*background: linear-gradient(145deg, #6a82fb, #fc5c7d); */
+	background-color:#F25E86;
+    color: white;
+    padding: 12px 16px;
+    border-radius: 5px;
+    max-width: 70%;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+}
+
+.chat-bubble-user {
+    /*background: linear-gradient(145deg, #43cea2, #185a9d); */
+	background-color: #6D81F2;
+    color: white;
+    padding: 12px 16px;
+    border-radius: 5px;
+    max-width: 70%;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
 }
 
 .chat-area {
-    overflow-y: scroll;
+    overflow-y: auto;
+	flex-grow: 1;
     -ms-overflow-style: none; /* Hide scrollbar for Internet Explorer and Edge */
     scrollbar-width: none; /* Hide scrollbar for Firefox */
 }
@@ -561,6 +617,53 @@ h4.text-center {
 	font-size: 2rem;
 	color: black;
 }
+
+.gradient-text {
+	background: linear-gradient(145deg, rgba(106, 130, 251, 1), rgba(252, 92, 125, 1)); /* Gradient colors */
+	-webkit-background-clip: text; /* Clips the gradient to the text */
+	-webkit-text-fill-color: transparent; /* Makes the text transparent to show the gradient */
+	animation: pulse_timer 3s ease-in-out infinite, flicker 3s ease-in-out infinite; /* Pulse and flicker effect */
+	font-size: 1.25rem; /* Slightly larger font size */
+	font-weight: 600; /* Bold text */
+	transform: scale(1.1); /* Slight scaling effect */
+	transition: all 0.5s ease-out; /* Smooth transitions */
+}
+
+@keyframes pulse_timer {
+	0% {
+	  transform: scale(1); /* Normal size */
+	}
+	50% {
+	  transform: scale(1.1); /* Slightly enlarged */
+	}
+	100% {
+	  transform: scale(1); /* Back to normal size */
+	}
+}
+
+@keyframes flicker {
+	0% {
+		text-shadow: 0 0 8px rgba(255, 85, 85, 0.5), 0 0 15px rgba(255, 85, 85, 0.5);
+		color: rgb(255, 85, 85);
+	}
+	25% {
+		text-shadow: 0 0 15px rgba(255, 85, 85, 0.8), 0 0 25px rgba(255, 85, 85, 0.8);
+		color: rgb(255, 70, 70); /* Slightly darker red */
+	}
+	50% {
+		text-shadow: 0 0 10px rgba(255, 85, 85, 0.6), 0 0 20px rgba(255, 85, 85, 0.6);
+		color: rgb(255, 85, 85); /* Back to original red */
+	}
+	75% {
+		text-shadow: 0 0 12px rgba(255, 85, 85, 0.4), 0 0 18px rgba(255, 85, 85, 0.4);
+		color: rgb(255, 90, 90); /* Slightly lighter red */
+	}
+	100% {
+		text-shadow: 0 0 8px rgba(255, 85, 85, 0.5), 0 0 15px rgba(255, 85, 85, 0.5);
+		color: rgb(255, 85, 85);
+	}
+}
+
 
 .sendMsg-btn {
 	background: linear-gradient(145deg, #6a82fb, #fc5c7d); /* Gradient from light green to darker green */
@@ -584,21 +687,70 @@ h4.text-center {
 	box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Reduced shadow */
 }
 
-.progress{
-	background: linear-gradient(145deg, #0f9b8e, #34e89e);
-	transition: width 0.5s; /* Smooth progress bar animation */
+/* Parent container for the progress bar */
+.progress-bar {
+	background: linear-gradient(to right, #43cea2, #185a9d); /* Background gradient for the track */
+	height: 1rem;
+	border-radius: 10px;
+	position: relative;
+	overflow: hidden;
+	box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.2); /* Light inner shadow for depth */
+}
+
+/* Inner progress indicator */
+.progress {
+	background: linear-gradient(145deg, #0f9b8e, #34e89e); /* Inner progress gradient */
+	transition: width 0.3s ease-in-out; /* Smooth transition for progress updates */
+	box-shadow: 0 0 10px rgba(52, 232, 158, 0.6), 
+				0 0 20px rgba(52, 232, 158, 0.3); /* Glow effect */
+	display: flex;
+	align-items: center;
+	justify-content: center; /* Center the percentage text */
+	color: white;
+	font-weight: bold;
+	text-shadow: 0 0 3px rgba(0, 0, 0, 0.7); /* Adding text shadow for better contrast */
+	padding-left: 10px;
+	padding-right: 10px; /* Add some space around the text */
+}
+
+/* Shimmer effect for the progress bar background */
+.progress-bar::before {
+	content: '';
+	position: absolute;
+	top: 0;
+	left: 0;
+	height: 100%;
+	width: 100%;
+	background: linear-gradient(
+		to right,
+		rgba(255, 255, 255, 0.3),
+		rgba(255, 255, 255, 0)
+	);
+	animation: shimmer 2s infinite;
+	pointer-events: none; /* Prevent the shimmer from interfering with the progress */
+}
+
+/* Shimmer animation keyframes */
+@keyframes shimmer {
+	0% {
+		transform: translateX(-100%);
+	}
+	100% {
+		transform: translateX(100%);
+	}
 }
 
 .form-control-chat {
 	background-color: transparent; /* white background */
 	border-radius: 5px;
+	border: 1px solid rgba(0, 123, 255, 0.7);
 	transition: all 0.3s ease; /* Smooth transition on hover/focus */
 }
 
 /* Hover Effect for Input Fields */
 .form-control-chat:hover {
 	border: 2px solid rgba(0, 123, 255, 0.7);
-	background-color: transparent; /* white background on hover */
+	background-color: transparent; 
 }
 
 /* Focus Effect for Input Fields */
@@ -609,6 +761,48 @@ h4.text-center {
 	box-shadow: 0 2px 10px rgba(0, 123, 255, 0.7); /* Slightly subdued glow */
 }
 
+/* chat page mobile responsive */
+@media (max-width: 768px) {
+    .form-control-chat {
+        width: 100%; /* Ensure the text area takes the full width on mobile */
+        min-height: 50px; /* Ensure the input field isn't too small */
+    }
+    
+    .chat-container {
+        padding: 10px; /* Add padding for smaller screens */
+    }
+
+    .chat_container img {
+        width: 40px; /* Adjust image size for mobile */
+        height: 40px;
+    }
+
+    /* Ensure chat bubbles are not too large */
+    .chat-bubble-assistant, .chat-bubble-user {
+        max-width: 90%; /* Allow bubbles to take more space on small screens */
+        padding: 10px;
+    }
+
+    .sendMsg-btn {
+        padding: 10px; /* Increase button size for easier tapping on mobile */
+        font-size: 1.1rem;
+    }
+
+    .progress-bar {
+        height: 0.8rem; /* Make the progress bar smaller on mobile */
+    }
+}
+
+/* Additional styling to make sure the page is scrollable */
+@media (max-width: 600px) {
+    .chat-container {
+        width: 100%; /* Full width for chat container on small screens */
+    }
+
+    .booklet_background {
+        display: none; /* Hide the booklet section on mobile to maximize screen space */
+    }
+}
 /*SPINNER*/
 .spinner-container {
 	position: fixed; /* Fixed position to cover the entire screen */
@@ -624,21 +818,31 @@ h4.text-center {
 	align-items: center;
 }
 
+  /* Spinner with rotating border */
 .spinner {
+	position: relative;
 	border: 8px solid #1a2b4c; /* Dark Blue */
 	border-top: 8px solid #3498db; /* Blue */
 	border-radius: 50%;
 	width: 50px;
 	height: 50px;
-	animation: spin 1s linear infinite;
+	animation: spin 1s linear infinite; /* Apply spin animation to the ring */
+}
+
+/* Logo inside the spinner (fixed in center) */
+.spinner .logo {
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%); /* Center the logo */
+	z-index: 2; /* Make sure the logo stays above the spinner */
 }
 
 /* Spin Animation */
 @keyframes spin {
 	0% { transform: rotate(0deg); }
 	100% { transform: rotate(360deg); }
-}
-
+}  
 /* Global class for blur effect on body */
 .body-blur {
 	filter: blur(5px);  /* Apply blur to the whole page */
