@@ -50,14 +50,14 @@ const Home = () => {
         }}
       >
         {/* Overlay */}
-        <div className="absolute inset-0 bg-black bg-opacity-50"></div>
+        <div className="absolute inset-0 bg-black bg-opacity-30"></div>
 
         {/* Content */}
         <div className="max-w-4xl mx-auto text-center relative z-10 px-4">
           <h1 className="text-4xl sm:text-3xl font-extrabold leading-tight text-shadow-lg text-animated">
             WELCOME TO THE INTERVIEW SIMULATOR
           </h1>
-          <p className="text-lg mt-4 opacity-90 text-shadow-md text-animated">
+          <p className="text-lg mt-4 opacity-90 text-shadow-md text-animated animate__animated animate__fadeIn animate__delay-1s">
             Start practicing for your interview with our AI-powered simulator. Get ready to ace your behavioral interviews with personalized feedback.
           </p>
           <button
@@ -84,10 +84,11 @@ const Home = () => {
 
           {/* Right Side: Text */}
           <div className="w-full sm:w-1/2 text-center pr-8">
-            <h2 className="text-3xl sm:text-2xl font-semibold text-animated">
-              Practice 500+ Industry-Standard Questions
-            </h2>
-            <p className="mt-4 text-lg opacity-80 text-animated">
+          <h2 className="lg:text-4xl text-2xl font-semibold text-transparent bg-clip-text bg-gradient-to-r from-blue-500 to-teal-500 relative pb-2">
+            Practice 500+ Industry-Standard Questions
+          </h2>
+
+            <p className="text-lg mt-4 opacity-90 text-shadow-md text-animated animate__animated animate__fadeIn animate__delay-1s">
               Our curated collection of computer science interview questions will help you prepare for top tech companies. Enhance your skills with real-world problems.
             </p>
 
@@ -133,8 +134,10 @@ const Home = () => {
         <div className="max-w-6xl mx-auto flex flex-col sm:flex-row items-center justify-between relative z-10 px-4">
           {/* Left Side: Text */}
           <div className="w-full sm:w-1/2 text-center pr-8">
-            <h2 className="text-3xl sm:text-2xl font-semibold">Get Tailored Feedback</h2>
-            <p className="mt-4 text-lg opacity-80">
+          <h2 className="lg:text-4xl text-2xl font-semibold text-transparent bg-clip-text bg-gradient-to-r from-teal-500 to-blue-500 relative pb-2">
+            Get Tailored Feedback
+          </h2>
+            <p className="text-lg mt-4 opacity-90 text-shadow-md text-animated animate__animated animate__fadeIn animate__delay-1s">
               Receive customized insights and recommendations on your interview responses to help you improve. Focus on your weak points and get actionable advice.
             </p>
             <button
@@ -171,10 +174,10 @@ const Home = () => {
 
         {/* Content */}
         <div className="max-w-4xl mx-auto text-center relative z-10 px-4">
-          <h2 className="text-3xl sm:text-2xl font-semibold text-shadow-lg">
+          <h2 className="lg:text-4xl text-2xl font-semibold text-shadow-lg">
             Access Tailored Analytics
           </h2>
-          <p className="mt-4 text-lg opacity-90 text-shadow-md">
+          <p className="text-lg mt-4 opacity-90 text-shadow-md text-animated animate__animated animate__fadeIn animate__delay-1s">
             Track your progress and performance with detailed analytics to identify strengths and areas for improvement. Visualize your growth as you practice more.
           </p>
           <button
@@ -201,8 +204,10 @@ const Home = () => {
 
           {/* Right Side: Text & Interactive Content */}
           <div className="w-full sm:w-1/2 text-center pl-8">
-            <h2 className="text-3xl sm:text-2xl font-semibold">Practice the STAR Method</h2>
-            <p className="mt-4 text-lg opacity-80">
+            <h2 className="lg:text-4xl text-2xl font-semibold text-transparent bg-clip-text bg-gradient-to-r from-teal-500 to-blue-500 relative pb-2">
+              Practice the STAR method
+            </h2>
+            <p className="text-lg mt-4 opacity-90 text-shadow-md text-animated animate__animated animate__fadeIn animate__delay-1s">
               Learn and practice the STAR method to confidently answer behavioral interview questions. Build your storytelling skills with structured examples.
             </p>
 

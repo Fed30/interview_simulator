@@ -1,16 +1,15 @@
 "use client";
-import React, { useState, useEffect, useRef} from "react";
+import React, { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import LoginModal from "./LoginModal";
 import SignUpModal from "./SignUpModal";
 import ForgotPwd from "./ForgotPasswordModal";
 import { useAuth } from "../context/AuthContext"; // Import useAuth
 import { auth, firebaseSignOut } from "../firebase";
-import { toast } from 'react-toastify';
+import { toast } from "react-toastify";
 import { useRouter } from "next/navigation";
-import '@fortawesome/fontawesome-free/css/all.min.css'; 
-import { useLoading } from '../context/LoadingContext';
-
+import "@fortawesome/fontawesome-free/css/all.min.css";
+import { useLoading } from "../context/LoadingContext";
 
 const Header = () => {
   const { isLoggedIn, setIsLoggedIn } = useAuth(); // Get the logged-in state from context
@@ -76,7 +75,7 @@ const Header = () => {
   };
 
   const handleToggleDropdown = () => {
-    setIsDropdownOpen(prevState => !prevState); // Toggle dropdown visibility
+    setIsDropdownOpen((prevState) => !prevState); // Toggle dropdown visibility
   };
 
   const handleLogout = async (e) => {
@@ -84,14 +83,12 @@ const Header = () => {
     setLoading(true);
     await firebaseSignOut(auth);
     setTimeout(() => {
-        toast.success("Logout Successful!");
-        setIsLoggedIn(false); // Update login state in context
-        router.push("/"); // Redirect to home
-        setIsDropdownOpen(false); // Close the dropdown
-        setLoading(false);
+      toast.success("Logout Successful!");
+      setIsLoggedIn(false); // Update login state in context
+      router.push("/"); // Redirect to home
+      setIsDropdownOpen(false); // Close the dropdown
+      setLoading(false);
     }, 1000);
-    
-    
   };
 
   const handleProfileNav = async (e) => {
@@ -101,8 +98,7 @@ const Header = () => {
       router.push("/profile");
       setIsDropdownOpen(false); // Close the dropdown
       setLoading(false);
-  }, 1000);
-    
+    }, 1000);
   };
 
   return (
@@ -110,8 +106,8 @@ const Header = () => {
       <div className="logo">
         <Link href="/">
           <img
-            src='/logo.png'
-            className="rounded-full w-16 h-16"
+            src="/logo.png"
+            className="rounded-full w-16 h-16 transition duration-300 hover:scale-110"
             alt="Logo"
           />
         </Link>
@@ -120,11 +116,11 @@ const Header = () => {
       {/* Conditional Rendering */}
       {isLoggedIn ? (
         <div className="flex space-x-4">
-          <button className="btn notification-icon">
-            <i className="fas fa-bell text-white text-xl mr-3"></i>
+          <button className="transition duration-300 hover:scale-110">
+            <i className="fas fa-bell text-white text-xl mr-3 "></i>
           </button>
           <button
-            className="btn profile-icon"
+            className="transition duration-300 hover:scale-110"
             onClick={handleToggleDropdown} // Toggle dropdown visibility
           >
             <i className="fas fa-user-circle text-white text-4xl mr-3"></i>
@@ -132,7 +128,10 @@ const Header = () => {
 
           {/* Profile Dropdown Menu */}
           {isDropdownOpen && (
-            <div ref={dropdownRef} className="absolute right-7 mt-12 dropdown-menu rounded w-48">
+            <div
+              ref={dropdownRef}
+              className="absolute right-7 mt-12 dropdown-menu rounded w-48"
+            >
               <ul>
                 <li>
                   <button

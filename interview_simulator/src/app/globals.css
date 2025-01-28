@@ -16,6 +16,8 @@ body, html {
     background-size: cover;
 }
 
+
+
 h1, h2, h3 {
     font-weight: 700;
     letter-spacing: 1px;
@@ -96,7 +98,7 @@ header {
 /* Button Styles */
 .start-btn {
 	background: linear-gradient(145deg, #6a82fb, #fc5c7d); /* Gradient background */
-	color: white;
+	color: linear-gradient(145deg, #6a82fb, #fc5c7d);
 	padding: 10px 20px;
 	font-size: 2rem;
 	border: none;
@@ -204,7 +206,7 @@ header {
 	width: 0;
 	height: 2px;
 	background-color: #58cc71;
-	transition: width 0.3s ease;
+	transition: width 0.5s ease;
 }
 
 .links:hover::after, .links:focus::after {
@@ -212,7 +214,6 @@ header {
 }
 .links:hover, .links:focus, .links.active {
 	color: #45a860; /* Darker green */
-	font-weight: bold; /* Bold active link */
 }  
 
 /*MODAL BUTTONS*/
@@ -318,7 +319,7 @@ header {
 .dropdown-menu button {
     background: none;
     border: none;
-    color: #fff; /* Ensure text is readable */
+    color: #fff; 
     font-size: 1rem;
     text-align: left;
     padding: 12px;
@@ -329,6 +330,7 @@ header {
 /* Hover effect */
 .dropdown-menu button:hover {
     transform: scale(1.01); /* Slight scaling effect */
+	border-radius: 5px;
     box-shadow: 0 4px 15px rgba(255, 255, 255, 0.1); /* Soft glowing shadow */
     color: #f1f1f1; /* Slightly lighter text color */
 }
@@ -336,7 +338,7 @@ header {
 /* INPUT FIELDS STYLES */
 .form-control {
 	background-color: white; /* white background */
-	color: #333; /* Dark text for contrast */
+	color: #2c3e50; /* Dark text for contrast */
 	transition: all 0.3s ease; /* Smooth transition on hover/focus */
 }
 
@@ -405,6 +407,7 @@ h4.text-center {
 	font-size: 2rem;
 	color: whitesmoke;
 }
+
 
 .profile-info h3 {
 	font-size: 1.5rem;
@@ -743,6 +746,7 @@ h4.text-center {
 .form-control-chat {
 	background-color: transparent; /* white background */
 	border-radius: 5px;
+	color: #2c3e50;
 	border: 1px solid rgba(0, 123, 255, 0.7);
 	transition: all 0.3s ease; /* Smooth transition on hover/focus */
 }
@@ -760,6 +764,41 @@ h4.text-center {
 	outline: none; /* Remove default browser outline */
 	box-shadow: 0 2px 10px rgba(0, 123, 255, 0.7); /* Slightly subdued glow */
 }
+
+/*Typing indicator*/
+.typing-dots {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	gap: 4px;
+}
+
+.typing-dots span {
+	display: block;
+	width: 6px;
+	height: 6px;
+	background-color: #ccc;
+	border-radius: 50%;
+	animation: blink 1.5s infinite;
+}
+
+.typing-dots span:nth-child(2) {
+	animation-delay: 0.2s;
+}
+
+.typing-dots span:nth-child(3) {
+	animation-delay: 0.4s;
+}
+
+@keyframes blink {
+	0%, 80%, 100% {
+		opacity: 0;
+	}
+	40% {
+		opacity: 1;
+	}
+}
+
 
 /* chat page mobile responsive */
 @media (max-width: 768px) {
