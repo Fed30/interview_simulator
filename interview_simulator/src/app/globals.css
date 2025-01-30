@@ -376,25 +376,66 @@ h4.text-center {
 }
 
 /* PROFILE PAGE */
-.profile-wrapper {
-	width:  100%; 
+
+/* Parent container for layout */
+.dashboard-container {
 	display: flex;
-	flex-direction: column;
-	background-color: transparent;
-	padding-top: 100px; /* Adjust for the fixed header */
-	margin: 10px;
+	justify-content: space-between;
+	width: 100%;
+	margin-top: 70px;
+	padding: 20px;
+	gap: 20px;
 }
 
+  /* Left Profile Section */
 .profile-wrapper {
-	max-width: 1200px;
-	margin: 0 auto;
-	padding: 100px;
+	width: 80%;
+	background-color: #1e1e2f;
+	padding: 20px;
+	border-radius: 5px;
+	color: white;
 }
+
+  /* Right Insight Panel */
+.insight-panel {
+	width: 20%;
+	background: #1e1e2f;
+	padding: 20px;
+	border-radius: 5px;
+	box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.insight-panel h3 {
+	color: white;
+	text-align: center;
+}
+
+/* Styling for Charts */
+.chart-container {
+	display: flex;
+	flex-direction: column;
+	gap: 20px;
+	align-items: center;
+}
+
+.chart-card {
+	width: 90%;
+	height: 150px;
+	background: linear-gradient(135deg, #3498db, #8e44ad);
+	border-radius: 5px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	color: white;
+	font-size: 1.2rem;
+	font-weight: bold;
+}
+
 
 .profile-info {
 	background-color: transparent;
-	padding: 20px;
-	margin-bottom: 30px;
+	padding: auto;
+	margin-bottom: 5px;
 	color: white;
 }
 
@@ -404,7 +445,7 @@ h4.text-center {
 }
 
 .profile_icon {
-	font-size: 2rem;
+	font-size: 1rem;
 	color: whitesmoke;
 }
 
@@ -415,21 +456,17 @@ h4.text-center {
 	margin-left: 10px; /* Space between icon and username */
 }
 
-/* Button Styling */
-.button-wrapper {
-	margin-top: 20px;
-}
 
 .button-wrapper button {
 	margin-right: 10px;
 	font-size: 1rem;
-	padding: 10px 20px;
+	padding: 5px 10px;
 	border-radius: 5px;
 }
 
 /* Tabs Styling */
 .tabs {
-	margin-top: 30px;
+	margin-top: 10px;
 }
 
 .nav-tabs {
