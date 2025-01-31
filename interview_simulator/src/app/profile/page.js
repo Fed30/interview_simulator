@@ -16,6 +16,7 @@ const Profile = () => {
   const [userName, setUserName] = useState("");
   const [loading, setLoading] = useState(true); // State to track loading
   const router = useRouter(); // Initialize the router
+  const [user, setUser] = useState(null);
 
   const handleTabClick = (tab) => {
     setActiveTab(tab);
@@ -65,14 +66,23 @@ const Profile = () => {
   };
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
-      if (user) {
-        fetchUserData(user);
-        setLoading(false); // Set loading to false once the user is fetched
+    const unsubscribe = onAuthStateChanged(auth, async (authUser) => {
+      if (authUser) {
+        try {
+          // Refresh token before making authenticated requests
+          const idToken = await authUser.getIdToken(true);
+          console.log("Refreshed Token:", idToken);
+          setTimeout(() => {
+            setUser(authUser); // Store user
+            fetchUserData(authUser);
+          }, 1000);
+        } catch (error) {
+          console.error("Error refreshing token:", error);
+          router.push("/"); // Redirect if token refresh fails
+        }
       } else {
         console.log("User is not authenticated");
-        setLoading(false); // Set loading to false
-        router.push("/"); // Redirect to home page if not authenticated
+        router.push("/");
       }
     });
 
@@ -92,10 +102,6 @@ const Profile = () => {
 
     setUserName(formattedName);
   };
-
-  if (loading) {
-    return <p>Loading...</p>; // Show loading message while checking authentication
-  }
 
   return (
     <div className="dashboard-container">
@@ -182,9 +188,8 @@ const Profile = () => {
           {activeTab === "badgesContent" && <p>Badges content goes here...</p>}
         </div>
       </div>
-
       {/* Insight Panel on the Right */}
-      <InsightPanel />
+      <InsightPanel user={user} />
     </div>
   );
 };

@@ -1,7 +1,7 @@
 from flask import session
 from datetime import datetime, timedelta
 
-SESSION_DURATION_MINUTES = 5  # Set session duration to 40 minutes
+SESSION_DURATION_MINUTES = 1  # Set session duration to 40 minutes
 
 def check_existing_session():
     """Check if a session already exists and is valid."""

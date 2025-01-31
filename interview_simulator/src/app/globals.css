@@ -381,28 +381,25 @@ h4.text-center {
 .dashboard-container {
 	display: flex;
 	justify-content: space-between;
-	width: 100%;
-	margin-top: 70px;
-	padding: 20px;
-	gap: 20px;
+	width: 90%; 
+	margin: 100px auto 0; 
+	padding: 10px;
+	background-color: #1e1e2f;
+	border-radius: 5px;
+	box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
   /* Left Profile Section */
 .profile-wrapper {
 	width: 80%;
-	background-color: #1e1e2f;
 	padding: 20px;
-	border-radius: 5px;
 	color: white;
 }
 
   /* Right Insight Panel */
 .insight-panel {
 	width: 20%;
-	background: #1e1e2f;
 	padding: 20px;
-	border-radius: 5px;
-	box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
 .insight-panel h3 {
@@ -420,15 +417,43 @@ h4.text-center {
 
 .chart-card {
 	width: 90%;
-	height: 150px;
+	height: 150px; 
 	background: linear-gradient(135deg, #3498db, #8e44ad);
 	border-radius: 5px;
 	display: flex;
+	flex-direction: column; 
 	align-items: center;
 	justify-content: center;
-	color: white;
 	font-size: 1.2rem;
+	padding: 10px;
 	font-weight: bold;
+}
+.chart-wrapper {
+	position: relative; 
+	width: 100px; 
+	height: 100px; 
+}
+.loading-spinner {
+	position: absolute; /* Position the spinner absolutely within the wrapper */
+	top: 50%; /* Vertically center */
+	left: 50%; /* Horizontally center */
+	transform: translate(-50%, -50%); /* Adjust for exact centering */
+	font-weight: bold;
+	border: 8px solid #1a2b4c; /* Dark Blue */
+	border-top: 8px solid #3498db; /* Blue */
+	border-radius: 50%;
+	width: 50px;
+	height: 50px;
+	animation: spin 1s linear infinite; /* Apply spin animation to the ring */
+}
+
+
+.chart-card h4 {
+	text-align: center;
+	font-size: 16px;
+	font-weight: bold;
+	margin-bottom: 10px;
+	color: #ffffff; 
 }
 
 
@@ -445,13 +470,13 @@ h4.text-center {
 }
 
 .profile_icon {
-	font-size: 1rem;
+	font-size: 0.7rem;
 	color: whitesmoke;
 }
 
 
 .profile-info h3 {
-	font-size: 1.5rem;
+	font-size: 1.3rem;
 	font-weight: 500;
 	margin-left: 10px; /* Space between icon and username */
 }
@@ -459,7 +484,7 @@ h4.text-center {
 
 .button-wrapper button {
 	margin-right: 10px;
-	font-size: 1rem;
+	font-size: 0.8rem;
 	padding: 5px 10px;
 	border-radius: 5px;
 }
@@ -481,7 +506,7 @@ h4.text-center {
 }
 
 .nav-link {
-	font-size: 1.1rem;
+	font-size: 0.8rem;
 	color: whitesmoke;
 	padding: 10px 20px;
 	cursor: pointer;

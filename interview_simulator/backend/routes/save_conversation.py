@@ -5,6 +5,8 @@ from datetime import datetime
 from utils.openai_get_feedback import get_feedback_summary_from_openai
 from utils.openai_get_grade import get_grade_from_openai
 from utils.question_utils import load_dataset
+import os
+from dotenv import load_dotenv
 
 save_conversation = Blueprint('save_conversation', __name__)
 
@@ -64,25 +66,45 @@ def save_conversation_route():
             graded_conversation.append(msg)
 
         # Save to Firestore
-        doc_ref = firestore_db.collection('Sessions').add({
-            'history': graded_conversation,  # Save graded conversation history
-            'timestamp': timestamp,  # Use formatted timestamp
-            'status': status  # Add status field
-        })
+        try:
+            doc_ref = firestore_db.collection('Sessions').document()
+            doc_ref.set({
+                'history': graded_conversation,
+                'timestamp': timestamp,
+                'status': status
+            })
 
-        doc_id = doc_ref[1].id
+            print("Firestore save successful, doc ID:", doc_ref)
+        except Exception as e:
+            print("Error saving to Firestore:", e)
+            return jsonify({"error": "Failed to save conversation to Firestore: " + str(e)}), 500
 
-        # Save to Realtime Database
-        firebase_db.child(f'Users/{user_id}/Sessions').push({
-            'session_link': f'https://firestore.googleapis.com/v1/projects/project_id/databases/(default)/documents/Sessions/{doc_id}',
-            'timestamp': timestamp,  # Use formatted timestamp
-            'status': status,  # Add status field
-        })
+        load_dotenv() 
+        doc_id = doc_ref.id
+        project_id = os.getenv('FIREBASE_PROJECT_ID', 'default_project_id')
+        print("doc id: ",doc_id)
+        print("project id: ", project_id)
 
+        session_data = {
+            'session_link': f'https://firestore.googleapis.com/v1/projects/{project_id}/databases/(default)/documents/Sessions/{doc_id}',
+            'timestamp': timestamp,
+            'status': status
+        }
+        print("Session data being pushed to Firebase:", session_data)
+
+        try:
+            response = firebase_db.child(f'Users/{user_id}/Sessions').push(session_data)
+            print(f"Realtime DB push successful, response: {response}")
+        except Exception as e:
+            print("Error saving to Firebase Realtime Database:", e)
+            return jsonify({"error": "Failed to save session to Firebase Realtime Database: " + str(e)}), 500
+
+        
         session.clear()
         return jsonify({"success": True, "conversationId": doc_id}), 200
 
     except ValueError as e:
+        print("Unexpected Error:", e)
         return jsonify({"error": str(e)}), 401
     except Exception as e:
         return jsonify({"error": "Server error: " + str(e)}), 500

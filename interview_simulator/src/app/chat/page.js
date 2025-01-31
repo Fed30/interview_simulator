@@ -10,7 +10,7 @@ export default function Chat() {
   const [messages, setMessages] = useState([]); // Safe default initialization
   const [progress, setProgress] = useState(0); // Ensure progress is always a number
   const [currentQuestion, setCurrentQuestion] = useState("");
-  const [timeLeft, setTimeLeft] = useState(5 * 60); // 40 minutes in seconds
+  const [timeLeft, setTimeLeft] = useState(1 * 60); // 40 minutes in seconds
   const router = useRouter();
   const { setLoading } = useLoading();
   const [hasSessionExpired, setHasSessionExpired] = useState(false);
@@ -132,13 +132,14 @@ export default function Chat() {
   // Handle sending the conversation history (with loading state handling)
   useEffect(() => {
     if (hasSessionExpired && !isConversationSaved) {
-      // Only trigger this after session has expired and once conversation hasn't been saved yet
       const auth = getAuth();
       const user = auth.currentUser;
 
       if (user && messages.length > 0) {
-        sendConversationHistory(messages);
-        setIsConversationSaved(true); // Flag that conversation has been saved
+        setTimeout(() => {
+          sendConversationHistory(messages);
+          setIsConversationSaved(true); // Flag that conversation has been saved
+        }, 1500); // Introduce a 1.5-second delay before calling save function
       }
     }
   }, [hasSessionExpired, messages, isConversationSaved]);
