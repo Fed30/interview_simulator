@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from "react";
 import "@fortawesome/fontawesome-free/css/all.min.css";
 import EditProfileModal from "../components/editProfileModal";
+import AnalyticsPanel from "../components/analytics_panel";
 import ResetPasswordModal from "../components/resetPassword";
 import { getDatabase, ref, get } from "firebase/database";
 import { auth } from "../firebase";
@@ -179,9 +180,7 @@ const Profile = () => {
 
         {/* Tab Content */}
         <div className="scrollable-content mt-4">
-          {activeTab === "analyticsContent" && (
-            <p>Analytics content goes here...</p>
-          )}
+          {activeTab === "analyticsContent" && <AnalyticsPanel user={user} />}
           {activeTab === "feedbackContent" && (
             <p>Feedback content goes here...</p>
           )}

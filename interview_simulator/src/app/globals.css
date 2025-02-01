@@ -377,18 +377,6 @@ h4.text-center {
 
 /* PROFILE PAGE */
 
-/* Parent container for layout */
-.dashboard-container {
-	display: flex;
-	justify-content: space-between;
-	width: 90%; 
-	margin: 100px auto 0; 
-	padding: 10px;
-	background-color: #1e1e2f;
-	border-radius: 5px;
-	box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-}
-
   /* Left Profile Section */
 .profile-wrapper {
 	width: 80%;
@@ -407,56 +395,6 @@ h4.text-center {
 	text-align: center;
 }
 
-/* Styling for Charts */
-.chart-container {
-	display: flex;
-	flex-direction: column;
-	gap: 20px;
-	align-items: center;
-}
-
-.chart-card {
-	width: 90%;
-	height: 150px; 
-	background: linear-gradient(135deg, #3498db, #8e44ad);
-	border-radius: 5px;
-	display: flex;
-	flex-direction: column; 
-	align-items: center;
-	justify-content: center;
-	font-size: 1.2rem;
-	padding: 10px;
-	font-weight: bold;
-}
-.chart-wrapper {
-	position: relative; 
-	width: 100px; 
-	height: 100px; 
-}
-.loading-spinner {
-	position: absolute; /* Position the spinner absolutely within the wrapper */
-	top: 50%; /* Vertically center */
-	left: 50%; /* Horizontally center */
-	transform: translate(-50%, -50%); /* Adjust for exact centering */
-	font-weight: bold;
-	border: 8px solid #1a2b4c; /* Dark Blue */
-	border-top: 8px solid #3498db; /* Blue */
-	border-radius: 50%;
-	width: 50px;
-	height: 50px;
-	animation: spin 1s linear infinite; /* Apply spin animation to the ring */
-}
-
-
-.chart-card h4 {
-	text-align: center;
-	font-size: 16px;
-	font-weight: bold;
-	margin-bottom: 10px;
-	color: #ffffff; 
-}
-
-
 .profile-info {
 	background-color: transparent;
 	padding: auto;
@@ -470,13 +408,13 @@ h4.text-center {
 }
 
 .profile_icon {
-	font-size: 0.7rem;
+	font-size: 0.5rem;
 	color: whitesmoke;
 }
 
 
 .profile-info h3 {
-	font-size: 1.3rem;
+	font-size: 1.1rem;
 	font-weight: 500;
 	margin-left: 10px; /* Space between icon and username */
 }
@@ -491,7 +429,7 @@ h4.text-center {
 
 /* Tabs Styling */
 .tabs {
-	margin-top: 10px;
+	margin-top: 5px;
 }
 
 .nav-tabs {
@@ -531,13 +469,10 @@ h4.text-center {
 
 .scrollable-content {
 	background-color: #f1f1f1;
-	padding: 20px;
-	border-radius: 10px;
-}
-
-.scrollable-content p {
-	font-size: 1.1rem;
-	color: #555;
+	padding: 10px;
+	border-radius: 5px;
+	flex: 1; /* Ensure this section grows and fills the available space */
+	overflow-y: auto; 
 }
 
 .editProfile-btn {
@@ -957,3 +892,120 @@ h4.text-center {
 .sidebar-blur {
 	filter: blur(5px);
 }
+
+/* Styling for Insight panel Charts */
+.dashboard-container {
+	display: flex;
+	align-items: stretch;
+	width: 90%;
+	margin: 100px auto 0;
+	height: 100vh;
+	padding: 10px;
+	background-color: #1e1e2f;
+	border-radius: 5px;
+	box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.chart-container {
+	display: flex;
+	flex-direction: column;
+	gap: 20px;
+	padding: 10px;
+	border-radius: 5px;
+	margin-top: 20px;
+	flex: 1; 
+	min-height: 0;
+}
+
+.chart-card {
+	width: 90%;
+	height: 170px; 
+	background: linear-gradient(135deg, #3498db, #8e44ad);
+	border-radius: 5px;
+	display: flex;
+	flex-direction: column; 
+	align-items: center;
+	justify-content: center;
+	font-size: 1.1rem;
+	padding: 10px;
+	font-weight: bold;
+}
+.chart-wrapper {
+	position: relative; 
+	width: 140px; 
+	height: 140px; 
+	padding: 10px;
+}
+.loading-spinner {
+	position: absolute; 
+	top: 50%; 
+	left: 50%; 
+	transform: translate(-50%, -50%); 
+	font-weight: bold;
+	border: 8px solid #1a2b4c; 
+	border-top: 8px solid #3498db; 
+	border-radius: 50%;
+	width: 50px;
+	height: 50px;
+	animation: spin 1s linear infinite;
+}
+
+
+.chart-card h4 {
+	text-align: center;
+	font-size: 10px;
+	font-weight: bold;
+	margin-bottom: 10px;
+	margin-top: 10px;
+	color: #ffffff; 
+}
+
+/*Analytics Tab styling*/
+.analytics-container {
+	display: flex;
+	flex-direction: column;
+	gap: 10px;
+	padding: 10px;
+	border-radius: 5px;
+	background: white;
+	flex: 1; /* Makes both elements take up equal space */
+	min-height: 0;
+}
+
+.analytics-title {
+	text-align: center;
+	font-size: 20px;
+	margin-bottom: 5px;
+}
+
+.charts-grid {
+	display: grid;
+	grid-template-columns: repeat(2, 1fr); /* Two columns per row */
+	gap: 10px;
+}
+
+.chart-box {
+	background: #f9f9f9;
+	padding: 15px;
+	border-radius: 5px;
+	box-shadow: 0 1px 5px rgba(0, 0, 0, 0.1);
+	text-align: center;
+	height: 200px; 
+	width: 100%;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+}
+
+.chart-box h4 {
+	margin-bottom: 10px;
+	color: black;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+	.charts-grid {
+	  grid-template-columns: 1fr; /* Show one chart per row on smaller screens */
+	}
+}
+

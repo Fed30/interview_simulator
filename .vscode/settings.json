@@ -6,6 +6,7 @@
         "fontawesome",
         "jsonify",
         "ntplib",
+        "registerables",
         "unixtime",
         "urandom"
     ]

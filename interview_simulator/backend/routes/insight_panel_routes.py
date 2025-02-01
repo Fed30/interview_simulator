@@ -1,6 +1,7 @@
 from flask import Blueprint, jsonify, request
 from config.firebase_config import firebase_db, firestore_db  # Ensure Firestore is properly initialized
 from utils.token_utils import verify_firebase_token
+import re
 
 insight_panel_data = Blueprint('insight_panel_data', __name__)
 
@@ -54,32 +55,37 @@ def get_insight_panel_data():
         status = session_info.get("status")
         session_link = session_info.get("session_link")  # Firestore path
 
-        if status == "Incomplete":#change complete after testing
+        if status == "Complete":
             completed_sessions += 1
             
             # Fetch session document from Firestore
             if session_link:
-                try:
-                    session_doc = firestore_db.document(session_link).get()
-                    if session_doc.exists:
-                        session_data = session_doc.to_dict()
-                        history = session_data.get("history", [])
+                # Extract the relative Firestore path
+                match = re.search(r'documents/(.*)', session_link)
+                if match:
+                    relative_path = match.group(1)
+                    try:
+                        session_doc = firestore_db.document(relative_path).get()
+                        if session_doc.exists:
+                            session_data = session_doc.to_dict()
+                            history = session_data.get("history", [])
 
-                        # Extract grades from history
-                        for entry in history:
-                            if "grade" in entry:
-                                try:
-                                    grade_value = float(entry["grade"])
-                                    total_grades.append(grade_value)
-                                except ValueError:
-                                    print(f"Invalid grade format: {entry['grade']}")  # Log any issues
-                except Exception as e:
-                    print(f"Error fetching session document: {e}")
+                            # Extract grades from history
+                            for entry in history:
+                                if "grade" in entry:
+                                    try:
+                                        grade_value = float(entry["grade"])
+                                        total_grades.append(grade_value)
+                                    except ValueError:
+                                        print(f"Invalid grade format: {entry['grade']}")
+                    except Exception as e:
+                        print(f"Error fetching session document: {e}")
         elif status == "Incomplete":
             incomplete_sessions += 1
-
+    print(total_grades)
     # Compute overall average score
     overall_score = round(sum(total_grades) / len(total_grades), 2) if total_grades else 0
+    print(overall_score)
 
     return jsonify({
         "completed_sessions": completed_sessions,
