@@ -105,7 +105,7 @@ const Profile = () => {
   };
 
   return (
-    <div className="dashboard-container">
+    <div className="dashboard-container bg-cover">
       {/* Profile Section on the Left */}
       <div className="profile-wrapper">
         <div className="profile-info">

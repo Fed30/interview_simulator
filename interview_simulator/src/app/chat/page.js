@@ -10,7 +10,7 @@ export default function Chat() {
   const [messages, setMessages] = useState([]); // Safe default initialization
   const [progress, setProgress] = useState(0); // Ensure progress is always a number
   const [currentQuestion, setCurrentQuestion] = useState("");
-  const [timeLeft, setTimeLeft] = useState(1 * 60); // 40 minutes in seconds
+  const [timeLeft, setTimeLeft] = useState(40 * 60); // 40 minutes in seconds
   const router = useRouter();
   const { setLoading } = useLoading();
   const [hasSessionExpired, setHasSessionExpired] = useState(false);
@@ -411,11 +411,15 @@ export default function Chat() {
               onKeyDown={handleKeyDown}
             />
             <button
-              type="submit"
+              type="button"
               id="send"
               className="sendMsg-btn px-4 py-2 flex-shrink-0"
               style={{
                 height: "100%",
+              }}
+              onClick={(e) => {
+                e.preventDefault(); // Ensure no page refresh on button click
+                handleSendMessage(e);
               }}
             >
               <i className="fas fa-paper-plane"></i>

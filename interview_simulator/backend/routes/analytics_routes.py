@@ -14,13 +14,11 @@ def clean_text(text):
 
 def parse_timestamp(timestamp):
     try:
-        if timestamp.isdigit():
-            return datetime.fromtimestamp(int(timestamp))
-        else:
-            return datetime.strptime(timestamp, "%d-%m-%Y %H:%M:%S")
+        return datetime.strptime(timestamp, "%d-%m-%Y %H:%M:%S")
     except Exception as e:
         print(f"Invalid timestamp: {timestamp} - Error: {e}")
         return None
+
 
 def match_and_extract_grade(content, dataset, history_entry, history):
     # Clean and standardize the content of the assistant's entry
@@ -87,7 +85,8 @@ def get_analytics_panel_data():
     total_completed_sessions = 0
     total_incomplete_sessions = 0
     session_grades = []
-    session_months = []
+    session_full_dates = []
+    session_date_counts = defaultdict(int)
     category_grades = defaultdict(list)
     categories_set = set()
     dataset_categories = set(organized_questions.keys())
@@ -103,6 +102,9 @@ def get_analytics_panel_data():
             "totalInCompleteSession": total_incomplete_sessions
         })
 
+    session_grades = []  # List of session-specific averages
+    session_full_dates = []  # Keep track of session dates
+
     for session_id, session_info in sessions.items():
         status = session_info.get("status")
         if status == "Complete":
@@ -113,7 +115,10 @@ def get_analytics_panel_data():
             if timestamp:
                 session_date = parse_timestamp(timestamp)
                 if session_date:
-                    session_months.append(session_date.strftime('%B'))
+                    session_full_dates.append(session_date.strftime('%d-%m-%y'))
+                    # Count occurrences of each date
+                    for date in session_full_dates:
+                        session_date_counts[date] += 1
 
             if session_link:
                 match = re.search(r'documents/(.*)', session_link)
@@ -126,41 +131,47 @@ def get_analytics_panel_data():
                         if session_doc.exists:
                             session_data = session_doc.to_dict()
                             history = session_data.get("history", [])
-                            
+
+                            session_individual_grades = []  # Track grades for this session
+
                             for entry in history:
                                 role = entry.get("role")
                                 content = entry.get("content")
                                 if role == "assistant" and content:
                                     matched_category, grade_value = match_and_extract_grade(content, dataset, entry, history)
                                     if matched_category and grade_value is not None:
-                                        session_grades.append(grade_value)
+                                        session_individual_grades.append(grade_value)
                                         category_grades[matched_category].append(grade_value)
                                         categories_set.add(matched_category)
-                                    else:
-                                        print(f"No matching category found for content: {content}")
-                        else:
-                            print(f"Document does not exist: {relative_path}")
+
+                            # Compute average grade for this session
+                            if session_individual_grades:
+                                avg_session_grade = round(sum(session_individual_grades) / len(session_individual_grades), 2)
+                                session_grades.append(avg_session_grade)  # Append to session-specific grades list
+
                     except Exception as e:
                         print(f"Error fetching session document: {e}")
         elif status == "Incomplete":
             total_incomplete_sessions += 1
 
-    session_grade = round(sum(session_grades) / len(session_grades), 2) if session_grades else 0
+    # Compute category averages
     category_avg_grades = {category: round(sum(grades) / len(grades), 2) for category, grades in category_grades.items()}
 
     if not categories_set:
         categories_set = dataset_categories
-        
-    print("Session Grade:", session_grade)
-    print("Session Month:", session_months)
+
+    print("Session Grades:", session_grades)  # This should be a list of per-session averages
+    print("Session Dates:", session_full_dates)
+    print("Session Dates Count:", session_date_counts)
     print("Category Grade:", category_avg_grades)
     print("Categories:", list(categories_set))
     print("Complete Sessions:", total_completed_sessions)
     print("Incomplete Sessions:", total_incomplete_sessions)
-    
+
     return jsonify({
-        "sessionGrade": session_grade,
-        "sessionMonth": session_months,
+        "sessionGrade": session_grades,  # List of per-session average grades
+        "sessionDates": session_full_dates,
+        "sessionDateCounts": session_date_counts,
         "categoryGrade": category_avg_grades,
         "categories": list(categories_set),
         "totalCompletedSession": total_completed_sessions,

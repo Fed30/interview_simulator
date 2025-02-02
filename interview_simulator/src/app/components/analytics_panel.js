@@ -6,7 +6,8 @@ Chart.register(...registerables);
 
 export default function AnalyticsPanel({ user }) {
   const [sessionGrade, setSessionGrade] = useState([]);
-  const [sessionMonth, setSessionMonth] = useState([]);
+  const [sessionDates, setSessionDates] = useState([]);
+  const [sessionDatesCount, setSessionDatesCount] = useState([]);
   const [categoryGrade, setCategoryGrade] = useState([]);
   const [categories, setCategories] = useState([]);
   const [totalCompletedSession, setTotalCompletedSession] = useState(0);
@@ -23,24 +24,22 @@ export default function AnalyticsPanel({ user }) {
           "http://127.0.0.1:5000/get_analytics_panel_data",
           {
             method: "GET",
-            headers: {
-              Authorization: `Bearer ${idToken}`,
-            },
+            headers: { Authorization: `Bearer ${idToken}` },
           }
         );
         const data = await response.json();
         console.log("Fetched insights:", data);
 
         setSessionGrade(
-          Array.isArray(data.sessionGrade)
-            ? data.sessionGrade
-            : [data.sessionGrade]
+          Array.isArray(data.sessionGrade) ? [...data.sessionGrade] : []
         );
-        setSessionMonth(data.sessionMonth ?? []);
+        setSessionDates(data.sessionDates ?? []);
         setCategoryGrade(Object.values(data.categoryGrade ?? {}));
+        setSessionDatesCount(Object.values(data.sessionDateCounts ?? {}));
         setCategories(data.categories ?? []);
         setTotalCompletedSession(data.totalCompletedSession ?? 0);
         setTotalInCompleteSession(data.totalInCompleteSession ?? 0);
+        console.log("Fetched Data:", data);
       } catch (error) {
         console.error("Error fetching insights:", error);
       } finally {
@@ -51,14 +50,17 @@ export default function AnalyticsPanel({ user }) {
     fetchData();
   }, [user]);
 
+  // Conditional Check for No Data
+  const isEmptyData = (data) => data.length === 0 || data === 0;
+
   const user_growth_data = {
-    labels: sessionMonth,
+    labels: sessionDates,
     datasets: [
       {
         label: "Grades",
         data: sessionGrade,
-        borderColor: "rgb(75, 192, 192)",
-        backgroundColor: "rgba(75, 192, 192, 0.2)",
+        borderColor: "rgb(242, 94, 134)",
+        backgroundColor: "rgb(109, 129, 242)",
         tension: 0.4,
       },
     ],
@@ -70,21 +72,23 @@ export default function AnalyticsPanel({ user }) {
       {
         label: "Category Grade",
         data: categoryGrade,
-        borderColor: "rgb(75, 192, 192)",
-        backgroundColor: "rgba(75, 192, 192, 0.2)",
+        borderColor: "rgb(242, 94, 134)",
+        backgroundColor: categoryGrade.map((_, index) =>
+          index % 2 === 0 ? "rgb(109, 129, 242)" : "rgb(242, 94, 134)"
+        ),
         tension: 0.4,
       },
     ],
   };
 
   const performance_data = {
-    labels: sessionMonth,
+    labels: sessionDates,
     datasets: [
       {
-        label: "Users",
-        data: [totalCompletedSession],
-        borderColor: "rgb(75, 192, 192)",
-        backgroundColor: "rgba(75, 192, 192, 0.2)",
+        label: "Completed Sessions",
+        data: sessionDatesCount,
+        borderColor: "rgb(242, 94, 134)",
+        backgroundColor: "rgb(109, 129, 242)",
         tension: 0.4,
       },
     ],
@@ -96,8 +100,8 @@ export default function AnalyticsPanel({ user }) {
       {
         label: "Sessions",
         data: [totalCompletedSession, totalInCompleteSession],
-        borderColor: "rgb(75, 192, 192)",
-        backgroundColor: "rgba(75, 192, 192, 0.2)",
+        backgroundColor: ["rgb(109, 129, 242)", "rgb(242, 94, 134)"],
+        borderWidth: 0,
         tension: 0.4,
       },
     ],
@@ -106,18 +110,72 @@ export default function AnalyticsPanel({ user }) {
   const options = {
     responsive: true,
     maintainAspectRatio: false,
+    scales: {
+      x: {
+        ticks: {
+          color: "white",
+          maxRotation: 45,
+          minRotation: 45,
+          callback: function (value, index, values) {
+            let label = this.getLabelForValue(value);
+            return label?.length > 10 ? label.substring(0, 10) + "..." : label;
+          },
+        },
+        grid: { color: "rgba(255, 255, 255, 0.2)" },
+      },
+      y: {
+        ticks: {
+          color: "white",
+          font: { size: 8 },
+          callback: function (value) {
+            return value ?? "";
+          },
+        },
+        grid: { color: "rgba(255, 255, 255, 0.2)" },
+      },
+    },
+    plugins: {
+      legend: {
+        labels: {
+          color: "white",
+          font: { size: 10 },
+          boxWidth: 20,
+          padding: 10,
+        },
+      },
+      tooltip: {
+        callbacks: {
+          label: function (tooltipItem) {
+            return `${tooltipItem.dataset.label}: ${tooltipItem.raw}`;
+          },
+        },
+      },
+      datalabels: { display: false },
+    },
   };
 
-  const LoadingSpinner = () => <div className="loading-spinner"></div>;
+  const LoadingSpinner = () => <div className="analytics-spinner"></div>;
+
+  const NoDataImage = ({ text }) => (
+    <div className="no-data-container">
+      <img
+        src="/no_data_available.png"
+        alt="No data"
+        className="no-data-image"
+      />
+      <p>{text}</p>
+    </div>
+  );
 
   return (
     <div className="analytics-container">
-      <h3 className="analytics-title">Analytics Overview</h3>
       <div className="charts-grid">
         <div className="chart-box">
           <h4>Users Growth</h4>
           {isLoading ? (
             <LoadingSpinner />
+          ) : isEmptyData(sessionGrade) ? (
+            <NoDataImage text="No data available for User Growth" />
           ) : (
             <Line data={user_growth_data} options={options} />
           )}
@@ -126,6 +184,8 @@ export default function AnalyticsPanel({ user }) {
           <h4>Average Soft Skill Grade</h4>
           {isLoading ? (
             <LoadingSpinner />
+          ) : isEmptyData(categoryGrade) ? (
+            <NoDataImage text="No data available for Soft Skill Grades" />
           ) : (
             <Bar data={average_soft_skill_data} options={options} />
           )}
@@ -134,14 +194,20 @@ export default function AnalyticsPanel({ user }) {
           <h4>Activity</h4>
           {isLoading ? (
             <LoadingSpinner />
+          ) : isEmptyData(totalCompletedSession) ||
+            isEmptyData(totalInCompleteSession) ? (
+            <NoDataImage text="No data available for Activity" />
           ) : (
             <Pie data={activity_data} options={options} />
           )}
         </div>
+
         <div className="chart-box">
           <h4>Performance</h4>
           {isLoading ? (
             <LoadingSpinner />
+          ) : isEmptyData(sessionDatesCount) ? (
+            <NoDataImage text="No data available for Performance" />
           ) : (
             <Line data={performance_data} options={options} />
           )}

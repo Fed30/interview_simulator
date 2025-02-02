@@ -81,11 +81,12 @@ export default function InsightPanel({ user }) {
     labels: ["Completed", "Remaining"],
     datasets: [
       {
-        data: [completedSessions, remainingSessions], // Two parts
+        data: [completedSessions, remainingSessions],
         backgroundColor:
           completedSessions === 0
-            ? ["#b2bec3", "#b2bec3"]
-            : ["#55efc4", "#b2bec3"], // Green if >0, otherwise all grey
+            ? ["#6D81F2", "#F25E86"]
+            : ["#F25E86", "#6D81F2"],
+        borderWidth: 0,
       },
     ],
   };
@@ -94,11 +95,12 @@ export default function InsightPanel({ user }) {
     labels: ["Sessions Incomplete", "Remaining"],
     datasets: [
       {
-        data: [incompleteSessions, remainingIncompleteSessions], // Two parts
+        data: [incompleteSessions, remainingIncompleteSessions],
         backgroundColor:
           incompleteSessions === 0
-            ? ["#b2bec3", "#b2bec3"]
-            : ["#55efc4", "#b2bec3"], // Green if >0, otherwise all grey
+            ? ["#6D81F2", "#F25E86"]
+            : ["#F25E86", "#6D81F2"],
+        borderWidth: 0,
       },
     ],
   };
@@ -107,16 +109,17 @@ export default function InsightPanel({ user }) {
     labels: ["Overall Score", "Remaining"],
     datasets: [
       {
-        data: [overallScoreSessions, remainingScoreSessions], // Two parts
+        data: [overallScoreSessions, remainingScoreSessions],
         backgroundColor: [
-          overallScoreSessions === 0 ? "#b2bec3" : "#55efc4", // Grey if score is 0, otherwise green
-          "#b2bec3", // Always grey for remaining
+          overallScoreSessions === 0 ? "#6D81F2" : "#F25E86",
+          "#F25E86",
         ],
+        borderWidth: 0,
       },
     ],
   };
 
-  const LoadingSpinner = () => <div className="loading-spinner"></div>;
+  const LoadingSpinner = () => <div className="analytics-spinner"></div>;
 
   return (
     <div className="insight-panel">

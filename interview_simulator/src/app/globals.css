@@ -391,6 +391,8 @@ h4.text-center {
 }
 
 .insight-panel h3 {
+	font-size: 1.1rem;
+	font-weight: 500;
 	color: white;
 	text-align: center;
 }
@@ -416,7 +418,7 @@ h4.text-center {
 .profile-info h3 {
 	font-size: 1.1rem;
 	font-weight: 500;
-	margin-left: 10px; /* Space between icon and username */
+	margin-left: 10px;
 }
 
 
@@ -435,8 +437,7 @@ h4.text-center {
 .nav-tabs {
 	display: flex;
 	justify-content: flex-start;
-	border-bottom: 2px solid #ddd;
-	padding: 10px;
+	border-bottom: 2px solid #6D81F2; 	
 }
 
 .nav-item {
@@ -444,19 +445,31 @@ h4.text-center {
 }
 
 .nav-link {
-	font-size: 0.8rem;
+	font-size: 0.9rem; 
 	color: whitesmoke;
-	padding: 10px 20px;
+	padding: 12px 20px; 
 	cursor: pointer;
-	transition: background-color 0.3s ease;
+	transition: all 0.3s ease;
+	text-decoration: none; 
+	display: block; 
+	border-bottom: 3px solid transparent; 
 }
 
-.nav-link:hover,
-.nav-link.active {
-	background: linear-gradient(to top, rgb(50, 55, 65), rgb(33, 33, 78));
-	color: white;
-	border-radius: 5px;
+.nav-link:hover {
+	color: white; 
+	background-color: rgba(242, 94, 134, 0.1); 
+	border-bottom: 3px solid #F25E86; 
+	border-radius: 4px; 
 }
+
+.nav-link.active {
+	color: white;
+	background-color: rgba(242, 94, 134, 0.2); 
+	border-bottom: 3px solid #F25E86; 
+	border-radius: 4px; 
+	font-weight: bold;
+}
+
 
 /* Tab Content */
 .tab-content {
@@ -468,67 +481,67 @@ h4.text-center {
 }
 
 .scrollable-content {
-	background-color: #f1f1f1;
-	padding: 10px;
+	background-color: #1e1e2f;
 	border-radius: 5px;
-	flex: 1; /* Ensure this section grows and fills the available space */
 	overflow-y: auto; 
 }
 
 .editProfile-btn {
-	background: linear-gradient(145deg, #34e89e, #0f9b8e); /* Gradient from light green to darker green */
 	color: white;
 	padding: 10px 20px;
 	font-size: 1rem;
-	border: none;
+	border: 1px solid #6D81F2;
 	border-radius: 5px;
 	cursor: pointer;
-	transition: all 0.3s ease; /* Smooth transition for all properties */
-	margin-top: 20px; /* Adds space between the message and button */
-	box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+	transition: all 0.3s ease; 
+	margin-top: 20px; 
+	box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); 
 }
 
 .editProfile-btn:hover {
-	background: linear-gradient(145deg, #0f9b8e, #34e89e); /* Reverse the gradient */
-	transform: scale(1.05); /* Slightly increase size */
-	box-shadow: 0 8px 12px rgba(0, 0, 0, 0.2); /* More prominent shadow */
+	background: linear-gradient(145deg, #6a82fb, #fc5c7d);
+	border:none;
+	transform: scale(1.05); 
+	box-shadow: 0 8px 12px rgba(0, 0, 0, 0.2); 
 }
 
 .editProfile-btn:active {
-	transform: scale(0.97); /* Slight shrink on click */
-	box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Reduced shadow */
+	transform: scale(0.97); 
+	border:none;
+	box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); 
 }
 
 
 .resetPwd-btn {
-	background: linear-gradient(145deg, #ff416c, #ff4b2b); /* Gradient from red to a deeper red */
 	color: white;
 	padding: 10px 20px;
 	font-size: 1rem;
-	border: none;
+	border: 1px solid #F25E86;
 	border-radius: 5px;
 	cursor: pointer;
-	transition: all 0.3s ease; /* Smooth transition for all properties */
-	margin-top: 20px; /* Adds space between the message and button */
-	box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+	transition: all 0.3s ease; 
+	margin-top: 20px; 
+	box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); 
 }
 
 .resetPwd-btn:hover {
-	background: linear-gradient(145deg, #ff4b2b, #ff416c); /* Reverse the gradient */
-	transform: scale(1.05); /* Slightly increase size */
-	box-shadow: 0 8px 12px rgba(0, 0, 0, 0.2); /* More prominent shadow */
+	background: linear-gradient(145deg, #fc5c7d, #6a82fb);
+	border:none;
+	transform: scale(1.05); 
+	box-shadow: 0 8px 12px rgba(0, 0, 0, 0.2); 
 }
 
 .resetPwd-btn:active {
-	transform: scale(0.97); /* Slight shrink on click */
-	box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Reduced shadow */
+	transform: scale(0.97); 
+	border:none;
+	box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); 
 }
 
 
 /*CHAT PAGE*/
 
 .booklet_background {
-	background: linear-gradient(145deg, #6a82fb, #fc5c7d); /* Gradient */
+	background: linear-gradient(145deg, #6a82fb, #fc5c7d);
 	color: white;
 	display: flex;
 	flex-direction: column;
@@ -898,8 +911,8 @@ h4.text-center {
 	display: flex;
 	align-items: stretch;
 	width: 90%;
-	margin: 100px auto 0;
-	height: 100vh;
+	margin: 100px auto 10px;
+	height: auto;
 	padding: 10px;
 	background-color: #1e1e2f;
 	border-radius: 5px;
@@ -912,15 +925,16 @@ h4.text-center {
 	gap: 20px;
 	padding: 10px;
 	border-radius: 5px;
-	margin-top: 20px;
+	margin-top: 10px;
 	flex: 1; 
 	min-height: 0;
 }
 
 .chart-card {
 	width: 90%;
-	height: 170px; 
-	background: linear-gradient(135deg, #3498db, #8e44ad);
+	height: auto; 
+	background-color: #1e1e2f;
+	border: 2px solid #6D81F2;
 	border-radius: 5px;
 	display: flex;
 	flex-direction: column; 
@@ -932,50 +946,30 @@ h4.text-center {
 }
 .chart-wrapper {
 	position: relative; 
-	width: 140px; 
-	height: 140px; 
+	width: 130px; 
+	height: 130px; 
 	padding: 10px;
-}
-.loading-spinner {
-	position: absolute; 
-	top: 50%; 
-	left: 50%; 
-	transform: translate(-50%, -50%); 
-	font-weight: bold;
-	border: 8px solid #1a2b4c; 
-	border-top: 8px solid #3498db; 
-	border-radius: 50%;
-	width: 50px;
-	height: 50px;
-	animation: spin 1s linear infinite;
 }
 
 
 .chart-card h4 {
 	text-align: center;
 	font-size: 10px;
-	font-weight: bold;
 	margin-bottom: 10px;
+	font-weight: 500;
 	margin-top: 10px;
 	color: #ffffff; 
 }
 
-/*Analytics Tab styling*/
+/*Analytics styling*/
 .analytics-container {
 	display: flex;
 	flex-direction: column;
 	gap: 10px;
 	padding: 10px;
 	border-radius: 5px;
-	background: white;
-	flex: 1; /* Makes both elements take up equal space */
+	flex: 1; 
 	min-height: 0;
-}
-
-.analytics-title {
-	text-align: center;
-	font-size: 20px;
-	margin-bottom: 5px;
 }
 
 .charts-grid {
@@ -985,12 +979,13 @@ h4.text-center {
 }
 
 .chart-box {
-	background: #f9f9f9;
-	padding: 15px;
+	padding: 20px;
 	border-radius: 5px;
+	background-color: #1e1e2f;
+	border: 2px solid #6D81F2;
 	box-shadow: 0 1px 5px rgba(0, 0, 0, 0.1);
 	text-align: center;
-	height: 200px; 
+	height: 255px; 
 	width: 100%;
 	display: flex;
 	flex-direction: column;
@@ -999,7 +994,9 @@ h4.text-center {
 
 .chart-box h4 {
 	margin-bottom: 10px;
-	color: black;
+	font-size: 1rem;
+	font-weight: 500;
+	color: white;
 }
 
 /* Responsive Design */
@@ -1009,3 +1006,50 @@ h4.text-center {
 	}
 }
 
+/*Profile spinner*/
+.analytics-spinner {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	height: 100px; 
+	font-size: 18px;
+	color: #ffffff; 
+	font-weight: bold;
+}
+
+.analytics-spinner:after {
+	content: "";
+	display: block;
+	width: 40px;
+	height: 40px;
+	border: 8px solid #1a2b4c; /* Dark Blue */
+	border-top: 8px solid #3498db; /* Blue */ 
+	border-radius: 50%;
+	animation: spin 1s linear infinite; 
+}
+
+/* Animation for the spinner */
+@keyframes spin {
+	0% {
+		transform: rotate(0deg);
+	}
+	100% {
+		transform: rotate(360deg);
+	}
+}
+/* NO DATA conditional rendering style*/
+.no-data-container {
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	text-align: center;
+	padding: 20px;
+}
+
+.no-data-image {
+	width: 100px; 
+	height: 100px; 
+	object-fit: contain;
+	margin-bottom: 10px; 
+}
