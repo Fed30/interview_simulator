@@ -123,8 +123,8 @@ export default function InsightPanel({ user }) {
 
   return (
     <div className="insight-panel">
-      <h3>Insights Panel</h3>
       <div className="chart-container">
+        <h3>Insights Panel</h3>
         <div className="chart-card">
           <h4>Completed Sessions</h4>
           <div className="chart-wrapper">

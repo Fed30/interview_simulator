@@ -1,30 +1,32 @@
 "use client";
 import React, { useState } from "react";
-import { auth, createUserWithEmailAndPassword, firebaseSignOut } from "../firebase"; // Import Firebase auth functions
+import {
+  auth,
+  createUserWithEmailAndPassword,
+  firebaseSignOut,
+} from "../firebase"; // Import Firebase auth functions
 import { getDatabase, ref, set } from "firebase/database"; // Import Firebase Realtime Database functions
-import { toast } from 'react-toastify';
-import { useLoading } from '../context/LoadingContext';
-
+import { toast } from "react-toastify";
+import { useLoading } from "../context/LoadingContext";
 
 const SignUpModal = ({ isOpen, onClose, onSwitchToLogin }) => {
-  const [firstName, setFirstName] = useState('');
-  const [lastName, setLastName] = useState('');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
-  const [emailError, setEmailError] = useState('');
-  const [passwordError, setPasswordError] = useState('');
-  const [nameError, setNameError] = useState('');
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+  const [emailError, setEmailError] = useState("");
+  const [passwordError, setPasswordError] = useState("");
+  const [nameError, setNameError] = useState("");
   const { setLoading } = useLoading();
-  
 
   const handleFirstNameInput = (e) => {
-    const newValue = e.target.value.replace(/[^a-zA-Z\s]/g, ''); // Allow only letters and spaces
+    const newValue = e.target.value.replace(/[^a-zA-Z\s]/g, ""); // Allow only letters and spaces
     setFirstName(newValue);
   };
 
   const handleLastNameInput = (e) => {
-    const newValue = e.target.value.replace(/[^a-zA-Z\s]/g, ''); // Allow only letters and spaces
+    const newValue = e.target.value.replace(/[^a-zA-Z\s]/g, ""); // Allow only letters and spaces
     setLastName(newValue);
   };
   const handleEmailChange = (e) => setEmail(e.target.value);
@@ -34,18 +36,16 @@ const SignUpModal = ({ isOpen, onClose, onSwitchToLogin }) => {
   const validatePassword = (password) => password.length >= 6;
   const validateName = (firstName, lastName) => firstName && lastName;
 
-  
-
   // Function to reset all states to their initial values
   const resetForm = () => {
-    setFirstName('');
-    setLastName('');
-    setEmail('');
-    setPassword('');
-    setError('');
-    setEmailError('');
-    setPasswordError('');
-    setNameError('');
+    setFirstName("");
+    setLastName("");
+    setEmail("");
+    setPassword("");
+    setError("");
+    setEmailError("");
+    setPasswordError("");
+    setNameError("");
   };
   const handleLoginClick = () => {
     resetForm(); // Reset the form state
@@ -62,71 +62,74 @@ const SignUpModal = ({ isOpen, onClose, onSwitchToLogin }) => {
     if (!string) return string;
     return string
       .split(" ")
-      .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+      .map((word) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
       .join(" ");
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-  
-    setEmailError('');
-    setPasswordError('');
-    setNameError('');
-  
+
+    setEmailError("");
+    setPasswordError("");
+    setNameError("");
+
     if (!validateName(firstName, lastName)) {
-      setNameError('Please enter both first name and last name.');
+      setNameError("Please enter both first name and last name.");
       return;
     }
-  
+
     if (!validateEmail(email)) {
-      setEmailError('Please enter a valid email address.');
+      setEmailError("Please enter a valid email address.");
       return;
     }
-  
+
     if (!validatePassword(password)) {
-      setPasswordError('Password must be at least 6 characters.');
+      setPasswordError("Password must be at least 6 characters.");
       return;
     }
-  
+
     const formattedFirstName = capitalize(firstName);
     const formattedLastName = capitalize(lastName);
     setLoading(true);
     try {
-      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-  
+      const userCredential = await createUserWithEmailAndPassword(
+        auth,
+        email,
+        password
+      );
+
       const idToken = await userCredential.user.getIdToken(); // Get ID token
-  
+
       // Send the ID token to the Flask backend
-      const response = await fetch('http://localhost:5000/verify_token', {
-        method: 'POST',
+      const response = await fetch("http://localhost:5000/verify_token", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
-        body: JSON.stringify({ idToken })
+        body: JSON.stringify({ idToken }),
       });
-  
+
       const data = await response.json();
-      
-      if (data.message === 'User authenticated successfully') {
+
+      if (data.message === "User authenticated successfully") {
         // Proceed with saving user data and other operations
         const db = getDatabase();
-        await set(ref(db, 'Users/' + userCredential.user.uid), {
+        await set(ref(db, "Users/" + userCredential.user.uid), {
           firstName: formattedFirstName,
           lastName: formattedLastName,
           email,
         });
-  
+
         // Log out the user immediately after successful sign-up
         await firebaseSignOut(auth);
         setTimeout(() => {
-                toast.success("Sign Up Successful!");
-                handleClose();
-                setLoading(false);
-              }, 3000);
+          toast.success("Sign Up Successful!");
+          handleClose();
+          setLoading(false);
+        }, 3000);
         // Clear any previous error messages
-        setError('');
+        setError("");
 
-        
         // Switch to login modal after sign-up, but wait for auth state to update
         auth.onAuthStateChanged((user) => {
           if (!user) {
@@ -138,23 +141,22 @@ const SignUpModal = ({ isOpen, onClose, onSwitchToLogin }) => {
         });
       } else {
         await firebaseSignOut(auth);
-        toast.error('Server Authentication error');
+        toast.error("Server Authentication error");
         setLoading(false);
       }
     } catch (error) {
-      console.error('Error signing up:', error);
+      console.error("Error signing up:", error);
       await firebaseSignOut(auth);
       setLoading(false);
-      setError('Error signing up. Please try again.');
-      toast.error('Error signing up. Please try again.');
+      setError("Error signing up. Please try again.");
+      toast.error("Error signing up. Please try again.");
     }
   };
-  
 
   return (
     <>
       {isOpen && (
-        <div className="modal fixed top-0 left-0 w-full h-full bg-gray-900 bg-opacity-50 flex justify-center items-center">
+        <div className="fixed inset-0 flex self-center items-center justify-center z-50">
           <div className="modal-content bg-white p-8 rounded shadow-lg relative">
             {/* Close Button */}
             <span
@@ -163,10 +165,14 @@ const SignUpModal = ({ isOpen, onClose, onSwitchToLogin }) => {
             >
               &times;
             </span>
-            <h4 className="text-center text-lg font-semibold text-white">SIGN UP</h4>
+            <h4 className="text-center text-2xl font-semibold text-white">
+              SIGN UP
+            </h4>
             <form id="signUpForm" onSubmit={handleSubmit}>
               <div className="form-group">
-                <label htmlFor="firstName" className="text-white">First Name:</label>
+                <label htmlFor="firstName" className="text-white">
+                  First Name:
+                </label>
                 <input
                   type="text"
                   className="form-control w-full p-2 text-black border mt-2 rounded"
@@ -179,7 +185,9 @@ const SignUpModal = ({ isOpen, onClose, onSwitchToLogin }) => {
               </div>
 
               <div className="form-group mt-4">
-                <label htmlFor="lastName" className="text-white">Last Name:</label>
+                <label htmlFor="lastName" className="text-white">
+                  Last Name:
+                </label>
                 <input
                   type="text"
                   className="form-control w-full p-2 text-black border mt-2 rounded"
@@ -192,7 +200,9 @@ const SignUpModal = ({ isOpen, onClose, onSwitchToLogin }) => {
               </div>
 
               <div className="form-group mt-4">
-                <label htmlFor="email" className="text-white">Email:</label>
+                <label htmlFor="email" className="text-white">
+                  Email:
+                </label>
                 <input
                   type="email"
                   className="form-control w-full p-2 text-black border mt-2 rounded"
@@ -208,7 +218,9 @@ const SignUpModal = ({ isOpen, onClose, onSwitchToLogin }) => {
               </div>
 
               <div className="form-group mt-4">
-                <label htmlFor="password" className="text-white">Password:</label>
+                <label htmlFor="password" className="text-white">
+                  Password:
+                </label>
                 <input
                   type="password"
                   className="form-control text-black w-full p-2 border mt-2 rounded"
@@ -228,7 +240,9 @@ const SignUpModal = ({ isOpen, onClose, onSwitchToLogin }) => {
               )}
 
               {error && (
-                <span className="error-message text-red-500 block mt-2">{error}</span>
+                <span className="error-message text-red-500 block mt-2">
+                  {error}
+                </span>
               )}
 
               <button
@@ -241,17 +255,17 @@ const SignUpModal = ({ isOpen, onClose, onSwitchToLogin }) => {
             <hr className="my-4" />
             {/* Switch to Sign Up link */}
             <div className="form-group mt-3 text-center">
-                <p>
-                  Already have an account?{" "}
-                  <span
-                    className="links cursor-pointer"
-                    onClick={handleLoginClick} // Switch to Login modal
-                  >
-                    Login
-                  </span>
-                </p>
-              </div>
+              <p>
+                Already have an account?{" "}
+                <span
+                  className="links cursor-pointer"
+                  onClick={handleLoginClick} // Switch to Login modal
+                >
+                  Login
+                </span>
+              </p>
             </div>
+          </div>
         </div>
       )}
     </>

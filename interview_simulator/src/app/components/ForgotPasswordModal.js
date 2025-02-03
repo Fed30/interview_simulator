@@ -2,13 +2,13 @@
 import React, { useState } from "react";
 import { sendPasswordResetEmail } from "firebase/auth"; // Firebase function for password reset
 import { auth } from "../firebase"; // Firebase auth import
-import { toast } from 'react-toastify';
-import { useLoading } from '../context/LoadingContext';
+import { toast } from "react-toastify";
+import { useLoading } from "../context/LoadingContext";
 
 const ForgotPasswordModal = ({ isOpen, onClose, onSwitchToLogin }) => {
-  const [email, setEmail] = useState('');
-  const [error, setError] = useState('');
-  const [message, setMessage] = useState('');
+  const [email, setEmail] = useState("");
+  const [error, setError] = useState("");
+  const [message, setMessage] = useState("");
   const { setLoading } = useLoading();
 
   const handleEmailChange = (e) => setEmail(e.target.value);
@@ -16,53 +16,57 @@ const ForgotPasswordModal = ({ isOpen, onClose, onSwitchToLogin }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    setError('');
-    setMessage('');
+    setError("");
+    setMessage("");
 
     if (!email) {
       setError("Please enter your email address.");
       return;
     }
-    
+
     setLoading(true);
     try {
       await sendPasswordResetEmail(auth, email);
-        
-        setTimeout(() => {
-          handleClose(); // Close the modal after saving
-          setLoading(false);
-          toast.success("Password reset link sent! Check your email.");
-        }, 4000);
-    } catch (err) {
-        setError("Failed to send reset email. Please try again.");
-        toast.error("Failed to send reset email. Please try again.");
+
+      setTimeout(() => {
+        handleClose(); // Close the modal after saving
         setLoading(false);
+        toast.success("Password reset link sent! Check your email.");
+      }, 4000);
+    } catch (err) {
+      setError("Failed to send reset email. Please try again.");
+      toast.error("Failed to send reset email. Please try again.");
+      setLoading(false);
     }
   };
 
   const handleClose = () => {
-    setEmail('');  // Clear the email input
-    setError('');  // Clear the error message
-    setMessage('');  // Clear the success message
-    onClose();  // Close the modal
+    setEmail(""); // Clear the email input
+    setError(""); // Clear the error message
+    setMessage(""); // Clear the success message
+    onClose(); // Close the modal
   };
 
   return (
     <>
       {isOpen && (
-        <div className="modal fixed top-0 left-0 w-full h-full bg-gray-900 bg-opacity-50 flex justify-center items-center">
+        <div className="fixed inset-0 flex self-center items-center justify-center z-50">
           <div className="modal-content bg-white p-8 rounded shadow-lg relative">
             {/* Close Button */}
             <span
               className="close cursor-pointer text-2xl absolute top-2 right-2"
-              onClick={handleClose}  // Use handleClose to clear inputs and close the modal
+              onClick={handleClose} // Use handleClose to clear inputs and close the modal
             >
               &times;
             </span>
-            <h4 className="text-center text-lg font-semibold">FORGOT PASSWORD</h4>
+            <h4 className="text-center text-2xl font-semibold">
+              FORGOT PASSWORD
+            </h4>
             <form onSubmit={handleSubmit}>
               <div className="form-group">
-                <label htmlFor="email" className="text-white">Email:</label>
+                <label htmlFor="email" className="text-white">
+                  Email:
+                </label>
                 <input
                   type="email"
                   className="form-control w-full p-2 text-black border mt-2 rounded"
@@ -74,9 +78,7 @@ const ForgotPasswordModal = ({ isOpen, onClose, onSwitchToLogin }) => {
                 />
               </div>
 
-              {error && (
-                <span className="text-red-500 text-sm">{error}</span>
-              )}
+              {error && <span className="text-red-500 text-sm">{error}</span>}
               {message && (
                 <span className="text-green-500 text-sm">{message}</span>
               )}

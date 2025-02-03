@@ -2,7 +2,7 @@
 import React, { useState } from "react";
 import { updatePassword } from "firebase/auth"; // Import updatePassword from Firebase Auth
 import { toast } from "react-toastify"; // Import toast for notifications
-import { useLoading } from '../context/LoadingContext';
+import { useLoading } from "../context/LoadingContext";
 import { auth, firebaseSignOut } from "../firebase";
 import { useRouter } from "next/navigation";
 
@@ -13,7 +13,6 @@ const ResetPwdModal = ({ isOpen, onClose }) => {
   const [confirmPasswordError, setConfirmPasswordError] = useState("");
   const { setLoading } = useLoading();
   const router = useRouter();
-
 
   const handlePasswordChange = (e) => setPassword(e.target.value);
   const handleConfirmPasswordChange = (e) => setConfirmPassword(e.target.value);
@@ -38,52 +37,53 @@ const ResetPwdModal = ({ isOpen, onClose }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-  
+
     // Validate password
     if (!validatePassword(password)) {
       setPasswordError("Password must be at least 6 characters.");
       return;
     }
-  
+
     // Ensure the password includes additional complexity
-    const complexityRegex = /^(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{6,}$/;
+    const complexityRegex =
+      /^(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{6,}$/;
     if (!complexityRegex.test(password)) {
       setPasswordError(
         "Password must include at least one uppercase letter, one number, and one special character."
       );
       return;
     }
-  
+
     // Validate confirm password
     if (!validateConfirmPassword(password, confirmPassword)) {
       setConfirmPasswordError("Passwords do not match.");
       return;
     }
-  
+
     // Reset errors
     setPasswordError("");
     setConfirmPasswordError("");
-  
+
     try {
       setLoading(true);
       const currentUser = auth.currentUser; // Get the current authenticated user
-      
+
       if (currentUser) {
         const idToken = await currentUser.getIdToken();
         // Send the ID token to the Flask backend for verification
-        const response = await fetch('http://localhost:5000/verify_token', {
-          method: 'POST',
-          credentials: 'include',
+        const response = await fetch("http://localhost:5000/verify_token", {
+          method: "POST",
+          credentials: "include",
           headers: {
-            'Content-Type': 'application/json',
+            "Content-Type": "application/json",
             Authorization: `Bearer ${idToken}`, // Pass the ID token
           },
-          body: JSON.stringify({ idToken })
+          body: JSON.stringify({ idToken }),
         });
 
         const data = await response.json();
-  
-        if (data.message === 'User authenticated successfully') {
+
+        if (data.message === "User authenticated successfully") {
           await updatePassword(currentUser, password); // Update the password
           setTimeout(() => {
             toast.success("Password reset successful!"); // Show success toast
@@ -93,11 +93,10 @@ const ResetPwdModal = ({ isOpen, onClose }) => {
         } else {
           // Backend returned an error, sign out the user
           await signOut(auth); // Log the user out
-          toast.error(data.error || 'Authentication failed');
+          toast.error(data.error || "Authentication failed");
           setLoading(false);
         }
-
-      } 
+      }
     } catch (error) {
       //console.error("Error resetting password:", error);
       setLoading(false);
@@ -113,7 +112,9 @@ const ResetPwdModal = ({ isOpen, onClose }) => {
           setLoading(false);
           break;
         case "auth/weak-password":
-          setPasswordError("The password is too weak. Please choose a stronger password.");
+          setPasswordError(
+            "The password is too weak. Please choose a stronger password."
+          );
           break;
         case "auth/network-request-failed":
           toast.error(
@@ -125,7 +126,6 @@ const ResetPwdModal = ({ isOpen, onClose }) => {
       }
     }
   };
-  
 
   return (
     <>
@@ -139,7 +139,7 @@ const ResetPwdModal = ({ isOpen, onClose }) => {
             >
               &times;
             </span>
-            <h4 className="text-center text-lg font-semibold text-white">
+            <h4 className="text-center text-2xl font-semibold text-white">
               RESET PASSWORD
             </h4>
             <form id="signUpForm" onSubmit={handleSubmit}>

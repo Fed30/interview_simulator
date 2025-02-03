@@ -4,7 +4,7 @@ import Link from "next/link";
 import LoginModal from "./LoginModal";
 import SignUpModal from "./SignUpModal";
 import ForgotPwd from "./ForgotPasswordModal";
-import { useAuth } from "../context/AuthContext"; // Import useAuth
+import { useAuth } from "../context/AuthContext";
 import { auth, firebaseSignOut } from "../firebase";
 import { toast } from "react-toastify";
 import { useRouter } from "next/navigation";
@@ -12,18 +12,19 @@ import "@fortawesome/fontawesome-free/css/all.min.css";
 import { useLoading } from "../context/LoadingContext";
 
 const Header = () => {
-  const { isLoggedIn, setIsLoggedIn } = useAuth(); // Get the logged-in state from context
+  const { isLoggedIn, setIsLoggedIn } = useAuth();
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
   const [isSignUpModalOpen, setIsSignUpModalOpen] = useState(false);
   const [isForgotPwdModalOpen, setIsForgotPwdModalOpen] = useState(false);
-  const [isDropdownOpen, setIsDropdownOpen] = useState(false); // State for dropdown visibility
-  const dropdownRef = useRef(null); // Reference to the dropdown container
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [scrollingUp, setScrollingUp] = useState(true); // Track scroll direction
+  const dropdownRef = useRef(null);
   const router = useRouter();
   const { setLoading } = useLoading();
 
   const handleClickOutside = (event) => {
     if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
-      setIsDropdownOpen(false); // Close the dropdown if clicking outside
+      setIsDropdownOpen(false);
     }
   };
 
@@ -31,6 +32,37 @@ const Header = () => {
     document.addEventListener("mousedown", handleClickOutside);
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+
+  // Track the scroll position and detect scrolling direction
+  useEffect(() => {
+    let lastScrollY = window.scrollY;
+
+    const handleScroll = () => {
+      const isScrollable =
+        document.documentElement.scrollHeight > window.innerHeight;
+
+      if (!isScrollable) {
+        // If the page is not scrollable, keep the header visible
+        setScrollingUp(true);
+        return;
+      }
+
+      // If the page is scrollable, detect the scroll direction
+      if (window.scrollY > lastScrollY) {
+        setScrollingUp(false); // Scrolling down
+      } else {
+        setScrollingUp(true); // Scrolling up
+      }
+
+      lastScrollY = window.scrollY;
+    };
+
+    window.addEventListener("scroll", handleScroll);
+
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
     };
   }, []);
 
@@ -75,7 +107,7 @@ const Header = () => {
   };
 
   const handleToggleDropdown = () => {
-    setIsDropdownOpen((prevState) => !prevState); // Toggle dropdown visibility
+    setIsDropdownOpen((prevState) => !prevState);
   };
 
   const handleLogout = async (e) => {
@@ -84,9 +116,9 @@ const Header = () => {
     await firebaseSignOut(auth);
     setTimeout(() => {
       toast.success("Logout Successful!");
-      setIsLoggedIn(false); // Update login state in context
-      router.push("/"); // Redirect to home
-      setIsDropdownOpen(false); // Close the dropdown
+      setIsLoggedIn(false);
+      router.push("/");
+      setIsDropdownOpen(false);
       setLoading(false);
     }, 1000);
   };
@@ -96,24 +128,27 @@ const Header = () => {
     setLoading(true);
     setTimeout(() => {
       router.push("/profile");
-      setIsDropdownOpen(false); // Close the dropdown
+      setIsDropdownOpen(false);
       setLoading(false);
     }, 1000);
   };
 
   return (
-    <header className="flex justify-center items-center p-4 text-white">
+    <header
+      className={`flex justify-center items-center p-4 text-white ${
+        !scrollingUp ? "header-hidden" : "header-visible"
+      }`}
+    >
       <div className="logo">
         <Link href="/">
           <img
             src="/logo.png"
-            className="rounded-full w-16 h-16 transition duration-300 hover:scale-110"
+            className="rounded-full w-8 h-8 transition duration-300 hover:scale-110"
             alt="Logo"
           />
         </Link>
       </div>
 
-      {/* Conditional Rendering */}
       {isLoggedIn ? (
         <div className="flex space-x-4">
           <button className="transition duration-300 hover:scale-110">
@@ -121,12 +156,11 @@ const Header = () => {
           </button>
           <button
             className="transition duration-300 hover:scale-110"
-            onClick={handleToggleDropdown} // Toggle dropdown visibility
+            onClick={handleToggleDropdown}
           >
-            <i className="fas fa-user-circle text-white text-4xl mr-3"></i>
+            <i className="fas fa-user-circle text-white text-2xl mr-3"></i>
           </button>
 
-          {/* Profile Dropdown Menu */}
           {isDropdownOpen && (
             <div
               ref={dropdownRef}
@@ -165,22 +199,17 @@ const Header = () => {
         </div>
       )}
 
-      {/* Login Modal */}
       <LoginModal
         isOpen={isLoginModalOpen}
         onClose={handleCloseLoginModal}
         onSwitchToSignUp={handleSwitchToSignUp}
         onSwitchToForgotPwd={handleSwitchToForgotPwd}
       />
-
-      {/* Sign Up Modal */}
       <SignUpModal
         isOpen={isSignUpModalOpen}
         onClose={handleCloseSignUpModal}
         onSwitchToLogin={handleSwitchToLogin}
       />
-
-      {/* Forgot Password Modal */}
       <ForgotPwd
         isOpen={isForgotPwdModalOpen}
         onClose={handleCloseForgotPwdModal}

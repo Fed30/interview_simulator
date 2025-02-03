@@ -9,6 +9,7 @@ import { auth } from "../firebase";
 import { onAuthStateChanged } from "firebase/auth";
 import { useRouter } from "next/navigation";
 import InsightPanel from "../components/insight_panel";
+import FeedbackPanel from "../components/feedback_panel";
 
 const Profile = () => {
   const [activeTab, setActiveTab] = useState("analyticsContent");
@@ -83,7 +84,7 @@ const Profile = () => {
         }
       } else {
         console.log("User is not authenticated");
-        router.push("/");
+        router.push("/"); // Redirect if not authenticated
       }
     });
 
@@ -105,90 +106,110 @@ const Profile = () => {
   };
 
   return (
-    <div className="dashboard-container bg-cover">
-      {/* Profile Section on the Left */}
-      <div className="profile-wrapper">
-        <div className="profile-info">
-          <div className="profile-header d-flex align-items-center">
-            <div className="profile_icon">
-              <i className="fas fa-user-circle fa-5x"></i>
+    <div className="profile-page">
+      <div className="dashboard-container">
+        {/* Profile Section on the Left */}
+        <div className="profile-wrapper">
+          <div className="profile-info">
+            <div className="profile-header d-flex align-items-center">
+              <div className="profile_icon">
+                <i className="fas fa-user-circle fa-5x"></i>
+              </div>
+              <div className="ml-3">
+                <h3 id="userName">{userName || "Loading..."}</h3>
+              </div>
+              <div className="button-wrapper ml-auto">
+                <button className="btn editProfile-btn" onClick={openModal}>
+                  Edit Profile
+                </button>
+                <button
+                  className="btn resetPwd-btn ml-3"
+                  onClick={openResetPwdModal}
+                >
+                  Reset Password
+                </button>
+              </div>
             </div>
-            <div className="ml-3">
-              <h3 id="userName">{userName || "Loading..."}</h3>
+          </div>
+          <EditProfileModal
+            isOpen={isModalOpen}
+            onClose={closeModal}
+            onProfileUpdate={handleProfileUpdate}
+          />
+
+          <ResetPasswordModal
+            isOpen={isResetPwdModalOpen}
+            onClose={closeResetPwdModal}
+          />
+          {/* Tabs for Profile */}
+          <div className="tabs mt-4">
+            <ul className="nav nav-tabs">
+              <li className="nav-item">
+                <a
+                  className={`nav-link ${
+                    activeTab === "analyticsContent" ? "active" : ""
+                  }`}
+                  href="#"
+                  onClick={() => handleTabClick("analyticsContent")}
+                >
+                  Analytics
+                </a>
+              </li>
+              <li className="nav-item">
+                <a
+                  className={`nav-link ${
+                    activeTab === "feedbackContent" ? "active" : ""
+                  }`}
+                  href="#"
+                  onClick={() => handleTabClick("feedbackContent")}
+                >
+                  Feedback
+                </a>
+              </li>
+              <li className="nav-item">
+                <a
+                  className={`nav-link ${
+                    activeTab === "badgesContent" ? "active" : ""
+                  }`}
+                  href="#"
+                  onClick={() => handleTabClick("badgesContent")}
+                >
+                  Badges
+                </a>
+              </li>
+            </ul>
+          </div>
+
+          {/* Tab Content */}
+          <div className="scrollable-content mt-4">
+            {/* Always render all tab content, but show the active one */}
+            <div
+              style={{
+                display: activeTab === "analyticsContent" ? "block" : "none",
+              }}
+            >
+              <AnalyticsPanel user={user} />
             </div>
-            <div className="button-wrapper ml-auto">
-              <button className="btn editProfile-btn" onClick={openModal}>
-                Edit Profile
-              </button>
-              <button
-                className="btn resetPwd-btn ml-3"
-                onClick={openResetPwdModal}
-              >
-                Reset Password
-              </button>
+            <div
+              style={{
+                display: activeTab === "feedbackContent" ? "block" : "none",
+              }}
+            >
+              <FeedbackPanel user={user} />
+            </div>
+            <div
+              style={{
+                display: activeTab === "badgesContent" ? "block" : "none",
+              }}
+            >
+              <p>Badges content goes here...</p>
             </div>
           </div>
         </div>
-        <EditProfileModal
-          isOpen={isModalOpen}
-          onClose={closeModal}
-          onProfileUpdate={handleProfileUpdate}
-        />
-
-        <ResetPasswordModal
-          isOpen={isResetPwdModalOpen}
-          onClose={closeResetPwdModal}
-        />
-        {/* Tabs for Profile */}
-        <div className="tabs mt-4">
-          <ul className="nav nav-tabs">
-            <li className="nav-item">
-              <a
-                className={`nav-link ${
-                  activeTab === "analyticsContent" ? "active" : ""
-                }`}
-                href="#"
-                onClick={() => handleTabClick("analyticsContent")}
-              >
-                Analytics
-              </a>
-            </li>
-            <li className="nav-item">
-              <a
-                className={`nav-link ${
-                  activeTab === "feedbackContent" ? "active" : ""
-                }`}
-                href="#"
-                onClick={() => handleTabClick("feedbackContent")}
-              >
-                Feedback
-              </a>
-            </li>
-            <li className="nav-item">
-              <a
-                className={`nav-link ${
-                  activeTab === "badgesContent" ? "active" : ""
-                }`}
-                href="#"
-                onClick={() => handleTabClick("badgesContent")}
-              >
-                Badges
-              </a>
-            </li>
-          </ul>
-        </div>
-
-        {/* Tab Content */}
-        <div className="scrollable-content mt-4">
-          {activeTab === "analyticsContent" && <AnalyticsPanel user={user} />}
-          {activeTab === "feedbackContent" && (
-            <p>Feedback content goes here...</p>
-          )}
-          {activeTab === "badgesContent" && <p>Badges content goes here...</p>}
-        </div>
+        {/* Insight Panel on the Right */}
+        <InsightPanel user={user} />
       </div>
-      {/* Insight Panel on the Right */}
-      <InsightPanel user={user} />
+      <button className="btn cancel-account-btn">Delete Account</button>
     </div>
   );
 };

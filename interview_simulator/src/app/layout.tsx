@@ -1,11 +1,11 @@
 import { Inter } from "next/font/google";
 import "./globals.css";
-import Header from './components/header';
-import { ToastContainer, toast } from 'react-toastify';
+import { ToastContainer } from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css'; 
 import { AuthProvider } from './context/AuthContext';
 import { LoadingProvider } from './context/LoadingContext';
 import Spinner from './components/spinner';
+import Header from './components/header';
 
 const inter = Inter({
   variable: "--font-inter",
@@ -24,13 +24,13 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body
-        className={`${inter.variable} antialiased`} // Apply the correct class for the selected font
-      >
+      <body className={`${inter.variable} antialiased`}>
         <LoadingProvider>
           <AuthProvider>
-            <Header />
-            {children}
+              <Header />
+            <main>
+              {children} 
+            </main>
             <Spinner />
             <ToastContainer position="bottom-center" autoClose={5000} hideProgressBar={true} />
           </AuthProvider>
