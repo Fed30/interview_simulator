@@ -50,8 +50,8 @@ const ForgotPasswordModal = ({ isOpen, onClose, onSwitchToLogin }) => {
   return (
     <>
       {isOpen && (
-        <div className="fixed inset-0 flex self-center items-center justify-center z-50">
-          <div className="modal-content bg-white p-8 rounded shadow-lg relative">
+        <div className="fixed inset-0 self-center bg-opacity-50 flex justify-center items-center z-50r">
+          <div className="modal-content p-8 rounded shadow-lg relative">
             {/* Close Button */}
             <span
               className="close cursor-pointer text-2xl absolute top-2 right-2"
@@ -59,7 +59,7 @@ const ForgotPasswordModal = ({ isOpen, onClose, onSwitchToLogin }) => {
             >
               &times;
             </span>
-            <h4 className="text-center text-2xl font-semibold">
+            <h4 className="text-center text-2xl font-semibold leading-tight text-shadow-lg">
               FORGOT PASSWORD
             </h4>
             <form onSubmit={handleSubmit}>

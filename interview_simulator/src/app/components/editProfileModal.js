@@ -118,8 +118,8 @@ const EditProfileModal = ({ isOpen, onClose, onProfileUpdate }) => {
   return (
     <>
       {isOpen && (
-        <div className="modal fixed top-0 left-0 w-full h-full bg-gray-900 bg-opacity-50 flex justify-center items-center">
-          <div className="modal-content bg-white p-8 rounded shadow-lg relative">
+        <div className="fixed inset-0 self-center bg-opacity-50 flex justify-center items-center z-50">
+          <div className="modal-content p-8 rounded shadow-lg relative">
             {/* Close Button */}
             <span
               className="close cursor-pointer text-2xl absolute top-2 right-2"
@@ -127,7 +127,7 @@ const EditProfileModal = ({ isOpen, onClose, onProfileUpdate }) => {
             >
               &times;
             </span>
-            <h4 className="text-center text-2xl font-semibold text-white">
+            <h4 className="text-center text-2xl font-semibold text-white leading-tight text-shadow-lg">
               EDIT PROFILE
             </h4>
             <form id="signUpForm" onSubmit={handleSubmit}>

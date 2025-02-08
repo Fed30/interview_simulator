@@ -84,7 +84,7 @@ const Home = () => {
 
           {/* Right Side: Text */}
           <div className="w-full sm:w-1/2 text-center pr-8">
-          <h2 className="lg:text-4xl text-2xl font-semibold text-transparent bg-clip-text bg-gradient-to-r from-blue-500 to-teal-500 relative pb-2">
+          <h2 className="lg:text-4xl text-2xl font-semibold text-transparent bg-clip-text bg-gradient-to-r from-[#F25E86] to-[#6D81F2] relative pb-2">
             Practice 500+ Industry-Standard Questions
           </h2>
 
@@ -95,28 +95,28 @@ const Home = () => {
             {/* Skills Section */}
             <div className="mt-8 space-y-4">
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-4">
-                <div className="border-2 border-blue-600 p-4 rounded-lg shadow-md hover:shadow-lg transition duration-300 ease-in-out">
+                <div className="section-style p-4 rounded-lg shadow-md hover:shadow-lg transition duration-300 ease-in-out">
                   <h4 className="text-xl font-medium">Communication & Networking</h4>
                   <p className="mt-2 text-sm opacity-80">
                     Effective communication and networking are essential in every tech role to work collaboratively and build professional relationships.
                   </p>
                 </div>
 
-                <div className="border-2 border-blue-600 p-4 rounded-lg shadow-md hover:shadow-lg transition duration-300 ease-in-out">
+                <div className="section-style p-4 rounded-lg shadow-md hover:shadow-lg transition duration-300 ease-in-out">
                   <h4 className="text-xl font-medium">Teamwork & Collaboration</h4>
                   <p className="mt-2 text-sm opacity-80">
                     Being able to work in a team and collaborate efficiently is crucial in solving complex problems and achieving common goals.
                   </p>
                 </div>
 
-                <div className="border-2 border-blue-600 p-4 rounded-lg shadow-md hover:shadow-lg transition duration-300 ease-in-out">
+                <div className="section-style p-4 rounded-lg shadow-md hover:shadow-lg transition duration-300 ease-in-out">
                   <h4 className="text-xl font-medium">Analytical and Problem Solving</h4>
                   <p className="mt-2 text-sm opacity-80">
                     Analytical skills help you break down complex problems into manageable tasks and find efficient solutions.
                   </p>
                 </div>
 
-                <div className="border-2 border-blue-600 p-4 rounded-lg shadow-md hover:shadow-lg transition duration-300 ease-in-out">
+                <div className="section-style p-4 rounded-lg shadow-md hover:shadow-lg transition duration-300 ease-in-out">
                   <h4 className="text-xl font-medium">Creativity and Critical Thinking</h4>
                   <p className="mt-2 text-sm opacity-80">
                     Creativity helps generate unique solutions, while critical thinking ensures logical evaluation and informed decision-making.
@@ -134,7 +134,7 @@ const Home = () => {
         <div className="max-w-6xl mx-auto flex flex-col sm:flex-row items-center justify-between relative z-10 px-4">
           {/* Left Side: Text */}
           <div className="w-full sm:w-1/2 text-center pr-8">
-          <h2 className="lg:text-4xl text-2xl font-semibold text-transparent bg-clip-text bg-gradient-to-r from-teal-500 to-blue-500 relative pb-2">
+          <h2 className="lg:text-4xl text-2xl font-semibold text-transparent bg-clip-text bg-gradient-to-r from-[#F25E86] to-[#6D81F2] relative pb-2">
             Get Tailored Feedback
           </h2>
             <p className="text-lg mt-4 opacity-90 text-shadow-md text-animated animate__animated animate__fadeIn animate__delay-1s">
@@ -204,7 +204,7 @@ const Home = () => {
 
           {/* Right Side: Text & Interactive Content */}
           <div className="w-full sm:w-1/2 text-center pl-8">
-            <h2 className="lg:text-4xl text-2xl font-semibold text-transparent bg-clip-text bg-gradient-to-r from-teal-500 to-blue-500 relative pb-2">
+            <h2 className="lg:text-4xl text-2xl font-semibold text-transparent bg-clip-text bg-gradient-to-r from-[#F25E86] to-[#6D81F2] relative pb-2">
               Practice the STAR method
             </h2>
             <p className="text-lg mt-4 opacity-90 text-shadow-md text-animated animate__animated animate__fadeIn animate__delay-1s">
@@ -214,7 +214,7 @@ const Home = () => {
             {/* Real-Life Example */}
             <div className="mt-4">
               <h3 className="text-2xl font-semibold">Real-Life Example</h3>
-              <div className="mt-6 border-2 border-blue-600 p-6 rounded-lg shadow-lg">
+              <div className="mt-6 section-style p-6 rounded-lg shadow-lg">
                 <p className="text-lg opacity-80">
                   <strong>Situation:</strong> Describe a challenging situation you faced at work. <br />
                   <strong>Task:</strong> Explain the task you were given. <br />

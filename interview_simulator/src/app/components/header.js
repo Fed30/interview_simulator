@@ -68,42 +68,51 @@ const Header = () => {
 
   const handleLoginClick = () => {
     setIsLoginModalOpen(true);
+    document.body.classList.add("modal-open");
   };
 
   const handleSignUpClick = () => {
     setIsSignUpModalOpen(true);
+    document.body.classList.add("modal-open");
   };
 
   const handleCloseLoginModal = () => {
     setIsLoginModalOpen(false);
+    document.body.classList.remove("modal-open");
   };
 
   const handleCloseSignUpModal = () => {
     setIsSignUpModalOpen(false);
+    document.body.classList.remove("modal-open");
   };
 
   const handleCloseForgotPwdModal = () => {
     setIsForgotPwdModalOpen(false);
+    document.body.classList.remove("modal-open");
   };
 
   const handleSwitchToSignUp = () => {
     setIsLoginModalOpen(false);
     setIsSignUpModalOpen(true);
+    document.body.classList.add("modal-open");
   };
 
   const handleSwitchToForgotPwd = () => {
     setIsLoginModalOpen(false);
     setIsForgotPwdModalOpen(true);
+    document.body.classList.add("modal-open");
   };
 
   const handleSwitchToLogin = () => {
     setIsSignUpModalOpen(false);
     setIsLoginModalOpen(true);
+    document.body.classList.add("modal-open");
   };
 
   const handleSwitchTFromForgotPwdToLogin = () => {
     setIsForgotPwdModalOpen(false);
     setIsLoginModalOpen(true);
+    document.body.classList.add("modal-open");
   };
 
   const handleToggleDropdown = () => {
@@ -135,11 +144,12 @@ const Header = () => {
 
   return (
     <header
-      className={`flex justify-center items-center p-4 text-white ${
+      className={`flex justify-between items-center p-4 text-white ${
         !scrollingUp ? "header-hidden" : "header-visible"
       }`}
     >
-      <div className="logo">
+      {/* Logo + Navigation Links */}
+      <div className="flex items-center space-x-8">
         <Link href="/">
           <img
             src="/logo.png"
@@ -147,16 +157,35 @@ const Header = () => {
             alt="Logo"
           />
         </Link>
+
+        {/* Navigation Links */}
+        {isLoggedIn && (
+          <nav className="flex space-x-6 text-sm">
+            <Link
+              href="/"
+              className="hover:text-[#6D81F2] hover:scale-110 transition"
+            >
+              HOME
+            </Link>
+            <Link
+              href="/chat"
+              className="hover:text-[#6D81F2] hover:scale-110 transition"
+            >
+              PRACTICE
+            </Link>
+          </nav>
+        )}
       </div>
 
+      {/* User Section */}
       {isLoggedIn ? (
         <div className="flex space-x-4">
           <button className="transition duration-300 hover:scale-110">
-            <i className="fas fa-bell text-white text-xl mr-3 "></i>
+            <i className="fas fa-bell text-white text-xl mr-3"></i>
           </button>
           <button
             className="transition duration-300 hover:scale-110"
-            onClick={handleToggleDropdown}
+            onClick={() => setIsDropdownOpen((prev) => !prev)}
           >
             <i className="fas fa-user-circle text-white text-2xl mr-3"></i>
           </button>
@@ -164,12 +193,12 @@ const Header = () => {
           {isDropdownOpen && (
             <div
               ref={dropdownRef}
-              className="absolute right-7 mt-12 dropdown-menu rounded w-48"
+              className="absolute right-7 mt-12 dropdown-menu rounded w-48 bg-gray-800 shadow-lg"
             >
               <ul>
                 <li>
                   <button
-                    onClick={handleProfileNav}
+                    onClick={() => router.push("/profile")}
                     className="block px-4 py-2 text-sm w-full text-left"
                   >
                     Your Account
@@ -190,30 +219,27 @@ const Header = () => {
       ) : (
         <div className="flex space-x-4">
           <button
-            className="btn login-button rounded"
+            className="btn login-button"
             id="loginBtn"
-            onClick={handleLoginClick}
+            onClick={() => setIsLoginModalOpen(true)}
           >
-            LOGIN
+            Login
           </button>
         </div>
       )}
 
+      {/* Modals */}
       <LoginModal
         isOpen={isLoginModalOpen}
-        onClose={handleCloseLoginModal}
-        onSwitchToSignUp={handleSwitchToSignUp}
-        onSwitchToForgotPwd={handleSwitchToForgotPwd}
+        onClose={() => setIsLoginModalOpen(false)}
       />
       <SignUpModal
         isOpen={isSignUpModalOpen}
-        onClose={handleCloseSignUpModal}
-        onSwitchToLogin={handleSwitchToLogin}
+        onClose={() => setIsSignUpModalOpen(false)}
       />
       <ForgotPwd
         isOpen={isForgotPwdModalOpen}
-        onClose={handleCloseForgotPwdModal}
-        onSwitchToLogin={handleSwitchTFromForgotPwdToLogin}
+        onClose={() => setIsForgotPwdModalOpen(false)}
       />
     </header>
   );

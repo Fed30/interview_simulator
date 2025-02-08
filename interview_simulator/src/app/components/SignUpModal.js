@@ -156,8 +156,8 @@ const SignUpModal = ({ isOpen, onClose, onSwitchToLogin }) => {
   return (
     <>
       {isOpen && (
-        <div className="fixed inset-0 flex self-center items-center justify-center z-50">
-          <div className="modal-content bg-white p-8 rounded shadow-lg relative">
+        <div className="fixed inset-0 self-center bg-opacity-50 flex justify-center items-center z-50">
+          <div className="modal-content p-8 rounded shadow-lg relative">
             {/* Close Button */}
             <span
               className="close cursor-pointer text-2xl absolute top-2 right-2"
@@ -165,7 +165,7 @@ const SignUpModal = ({ isOpen, onClose, onSwitchToLogin }) => {
             >
               &times;
             </span>
-            <h4 className="text-center text-2xl font-semibold text-white">
+            <h4 className="text-center text-2xl font-semibold text-white leading-tight text-shadow-lg">
               SIGN UP
             </h4>
             <form id="signUpForm" onSubmit={handleSubmit}>

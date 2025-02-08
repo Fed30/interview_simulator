@@ -4,23 +4,28 @@ import { useEffect, useState } from "react";
 
 Chart.register(ArcElement, Tooltip, Legend);
 
-// Center Text Plugin for Doughnut Chart
 const centerTextPlugin = {
   id: "centerText",
   beforeDraw(chart) {
     const { width, height, ctx } = chart;
-    const text = chart.config.data.datasets[0].data[0] || 0; // Handle empty case
+    const showCenterText = chart.config.options.showCenterText; // Check if the flag is set
 
-    ctx.save();
-    ctx.font = "bold 16px Arial";
-    ctx.fillStyle = "#fff";
-    ctx.textAlign = "center";
-    ctx.textBaseline = "middle";
-    ctx.fillText(text, width / 2, height / 2);
-    ctx.restore();
+    // If flag is true, draw the center text
+    if (showCenterText) {
+      const text = chart.config.data.datasets[0].data[0] || 0;
+
+      ctx.save();
+      ctx.font = "bold 16px Arial";
+      ctx.fillStyle = "#fff";
+      ctx.textAlign = "center";
+      ctx.textBaseline = "middle";
+      ctx.fillText(text, width / 2, height / 2);
+      ctx.restore();
+    }
   },
 };
 
+// Register the plugin globally
 Chart.register(centerTextPlugin);
 
 export default function InsightPanel({ user }) {
@@ -61,8 +66,8 @@ export default function InsightPanel({ user }) {
         const data = await response.json();
         console.log("Fetched insights:", data);
 
-        setCompleted(data.completed_sessions);
-        setIncomplete(data.incomplete_sessions);
+        setCompleted(data.completed_sessions || 0);
+        setIncomplete(data.incomplete_sessions || 0);
         setScore(data.overall_score);
       } catch (error) {
         console.error("Error fetching insights:", error);
@@ -84,7 +89,7 @@ export default function InsightPanel({ user }) {
         data: [completedSessions, remainingSessions],
         backgroundColor:
           completedSessions === 0
-            ? ["#6D81F2", "#F25E86"]
+            ? ["#6D81F2", "#6D81F2"]
             : ["#F25E86", "#6D81F2"],
         borderWidth: 0,
       },
@@ -98,7 +103,7 @@ export default function InsightPanel({ user }) {
         data: [incompleteSessions, remainingIncompleteSessions],
         backgroundColor:
           incompleteSessions === 0
-            ? ["#6D81F2", "#F25E86"]
+            ? ["#6D81F2", "#6D81F2"]
             : ["#F25E86", "#6D81F2"],
         borderWidth: 0,
       },
@@ -111,8 +116,8 @@ export default function InsightPanel({ user }) {
       {
         data: [overallScoreSessions, remainingScoreSessions],
         backgroundColor: [
-          overallScoreSessions === 0 ? "#6D81F2" : "#F25E86",
-          "#F25E86",
+          overallScoreSessions === 0 ? "#6D81F2" : "#6D81F2",
+          overallScoreSessions > 0 ? "#F25E86" : "#6D81F2",
         ],
         borderWidth: 0,
       },
@@ -139,6 +144,7 @@ export default function InsightPanel({ user }) {
                     legend: { display: false },
                     centerText: true,
                   },
+                  showCenterText: true,
                 }}
               />
             )}
@@ -159,6 +165,7 @@ export default function InsightPanel({ user }) {
                     legend: { display: false },
                     centerText: true,
                   },
+                  showCenterText: true,
                 }}
               />
             )}
@@ -179,6 +186,7 @@ export default function InsightPanel({ user }) {
                     legend: { display: false },
                     centerText: true,
                   },
+                  showCenterText: true,
                 }}
               />
             )}

@@ -269,8 +269,8 @@ export default function Chat() {
   };
 
   return (
-    <div className="flex items-center justify-center mt-10 h-screen px-4 sm:px-6 md:px-8">
-      <div className="flex flex-col sm:flex-row w-full max-w-6xl h-[80vh] shadow-lg rounded-lg overflow-hidden">
+    <div className="flex items-center justify-center mt-14 h-screen w-full ">
+      <div className="flex flex-col sm:flex-row w-full h-full shadow-lg  overflow-hidden">
         {/* Booklet Section */}
         <div className="w-full sm:w-1/3 booklet_background text-white p-6 flex flex-col justify-between mb-6 sm:mb-0">
           <h2 className="text-2xl font-bold mb-4">STAR Method</h2>
@@ -292,7 +292,7 @@ export default function Chat() {
         </div>
 
         {/* Chat Section */}
-        <div className="w-full sm:w-2/3 flex flex-col bg-white">
+        <div className="w-full sm:w-2/3 flex flex-col bg-transparent h-full">
           {/* Chat Header */}
           <div className="chat_container text-white py-4 px-6 flex items-center">
             <img
@@ -371,7 +371,7 @@ export default function Chat() {
             <div ref={chatEndRef} />
           </div>
 
-          {/* Chatbot typing indicator*/}
+          {/* Chatbot typing indicator */}
           {isTyping && (
             <div className="flex justify-start ml-2 space-x-3">
               <img

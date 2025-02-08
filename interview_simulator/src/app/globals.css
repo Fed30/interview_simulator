@@ -5,15 +5,19 @@
 
 /*GLOBAL STYLE*/
 html, body {
-	height: 100vh;
+	height: 100%;
+	width: 100%;
 	font-family: 'Inter', sans-serif;
-	background: rgb(39,18,160);
-	background: radial-gradient(circle, rgba(39,18,160,1) 6%, rgba(53,102,184,1) 78%);
+	background-color: #1e1e2f;
 	background-size: cover;
 }
 
 body {
 	overflow-y: auto;
+}
+body.modal-open {
+	overflow: hidden;
+	height: 100vh;
 }
 
 header {
@@ -23,18 +27,8 @@ header {
 	margin: 15px;
 	height: 40px;
 	border: 2px dashed rgb(242, 94, 134); 
-	border-radius: 15px;
+	border-radius: 5px;
 	box-shadow: 0 4px 20px rgba(109, 129, 242, 0.7), 0 2px 15px rgba(242, 94, 134, 0.5);
-}
-
-.header-hidden {
-	transform: translateY(-150%); 
-	transition: transform 0.3s ease-in-out;
-	position: fixed;
-	top: 0;
-	left: 0;
-	width: 97%;
-	z-index: 1000;
 }
 
 .header-visible {
@@ -46,6 +40,53 @@ header {
 	width: 97%;
 	z-index: 1000;
 }
+.header-hidden {
+	transform: translateY(-150%); 
+	transition: transform 0.3s ease-in-out;
+	position: fixed;
+	top: 0;
+	left: 0;
+	width: 97%;
+	z-index: 1000;
+}
+/* Navigation Links */
+nav {
+	display: flex;
+	gap: 5px;
+}
+
+nav a {
+	text-decoration: none;
+	color: white;
+	font-size: clamp(14px, 1vw, 18px); 
+	font-weight: 500;
+	transition: color 0.3s ease-in-out;
+}
+
+nav a:hover {
+	color: #f25e86;
+}
+
+/* Make header responsive */
+@media (max-width: 768px) {
+	header {
+		max-width: 90%;
+		flex-wrap: wrap;
+		height: auto;
+		padding: 10px;
+	}
+
+	nav {
+		justify-content: center;
+		flex-wrap: wrap;
+	}
+
+	nav a {
+		font-size: 14px;
+	}
+}
+
+
 
 h1, h2, h3, h4  {
     letter-spacing: 1px;
@@ -83,70 +124,83 @@ p, span, button {
 }
 
 .text-shadow-lg {
-	text-shadow: 2px 4px 6px rgba(0, 0, 0, 0.7); /* Strong shadow for titles */
+	text-shadow: 2px 4px 6px rgba(0, 0, 0, 0.7); 
 }
 
 .text-shadow-md {
-	text-shadow: 1px 3px 4px rgba(0, 0, 0, 0.5); /* Softer shadow for body text */
+	text-shadow: 1px 3px 4px rgba(0, 0, 0, 0.5); 
 }
 
 
 /* Button Styles */
 .start-btn {
-	background: linear-gradient(145deg, #6a82fb, #fc5c7d); /* Gradient background */
-	color: linear-gradient(145deg, #6a82fb, #fc5c7d);
+	background: linear-gradient(145deg, #6a82fb, #fc5c7d);
 	padding: 10px 20px;
 	font-size: 2rem;
 	border: none;
 	border-radius: 5px;
 	cursor: pointer;
-	transition: all 0.3s ease; /* Smooth transition for all properties */
-	margin-top: 20px; /* Adds space between the message and button */
-	box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+	transition: all 0.3s ease; 
+	margin-top: 20px; 
+	box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); 
 }
 
 .start-btn:hover {
-	background: linear-gradient(145deg, #fc5c7d, #6a82fb); /* Reverse the gradient */
-	transform: scale(1.05); /* Slightly increase size */
-	box-shadow: 0 8px 12px rgba(0, 0, 0, 0.2); /* More prominent shadow */
+	background: linear-gradient(145deg, #fc5c7d, #6a82fb); 
+	transform: scale(1.05); 
+	box-shadow: 0 8px 12px rgba(0, 0, 0, 0.2); 
 }
 
 .start-btn:active {
-	transform: scale(0.97); /* Slight shrink on click */
-	box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Reduced shadow */
+	transform: scale(0.97); 
+	box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); 
 }
 
+@media (max-width: 768px) {
+    .start-btn {
+        font-size: 1.5rem; /* Smaller font size on mobile */
+        padding: 8px 16px; /* Adjust padding on smaller screens */
+    }
+}
+
+@media (max-width: 480px) {
+    .start-btn {
+        font-size: 1.2rem; /* Further reduce font size on very small screens */
+        padding: 6px 12px; /* Reduce padding even more */
+    }
+}
 
 
 /* Login button styling */
 .login-button {
 	position: absolute;
-	top: 13px;
+	top: 6px;
 	right: 20px;
-	padding: 5px 15px;
+	padding: 4px 10px;
 	color: white;
-	font-size: 20px;
+	font-size: 10px;
 	font-weight: bold;
 	background-color: transparent;
-	border: 2px solid white;
+	border: 2px solid #F25E86;
 	border-radius: 5px;
 	cursor: pointer;
 	transition: background-color 0.3s, color 0.3s, transform 0.3s, box-shadow 0.3s;
-	box-shadow: 0 4px 10px rgba(255, 255, 255, 0.1); /* Subtle default glow */
+	box-shadow: 0 4px 20px rgba(109, 129, 242, 0.7), 0 2px 15px rgba(242, 94, 134, 0.5);
 }
 
 .login-button:hover {
-	background-color: white;
-	color: #0056b3;
+	background-color: #6D81F2;
+	color: white;
+	border: 2px solid #6D81F2;
 	transform: scale(1.1);
-	box-shadow: 0 4px 20px rgba(0, 123, 255, 0.5); /* Glow on hover */
+	box-shadow: 0 4px 20px rgba(109, 129, 242, 0.7), 0 2px 15px rgba(242, 94, 134, 0.5);
 }
 
 .login-button:active {
 	transform: scale(0.95);
-	background-color: #0056b3;
+	background-color: rgb(242, 94, 134);
 	color: white;
-	box-shadow: 0 2px 10px rgba(0, 123, 255, 0.7); /* Slightly subdued glow */
+	box-shadow: 0 4px 20px rgba(109, 129, 242, 0.7), 0 2px 15px rgba(242, 94, 134, 0.5);
 }
 
 /*Login button animation*/
@@ -158,36 +212,36 @@ p, span, button {
 	0% {
 		transform: scale(1);
 		opacity: 1;
-		box-shadow: 0 0 0 0 rgba(0, 123, 255, 0.4); /* Softer initial shadow */
+		box-shadow: 0 0 0 0 rgba(242, 94, 134, 0.5); /* Softer initial shadow */
 	}
 	50% {
 		transform: scale(1.1);
 		opacity: 0.8;
-		box-shadow: 0 0 25px 10px rgba(0, 123, 255, 0.4); /* Brighter shadow */
+		box-shadow: 0 0 25px 10px rgba(242, 94, 134, 0.5); /* Brighter shadow */
 	}
 	100% {
 		transform: scale(1);
 		opacity: 1;
-	  	box-shadow: 0 0 0 0 rgba(0, 123, 255, 0.4); /* Reset shadow */
+		box-shadow: 0 0 0 0 rgba(242, 94, 134, 0.5);
 	}
+}
+
+.section-style{
+	border: 2px solid #6D81F2;
 }
 
 /*MODAL*/
 
 .modal-content {
-	margin: 5% auto;
-	padding: 20px;
-	background: linear-gradient(145deg, rgba(44, 28, 145, 0.95), rgba(28, 36, 95, 0.9), rgba(62, 78, 148, 0.95));
+    padding: 20px;
+	background: radial-gradient(circle, rgba(30, 30, 47, 1) 6%, rgba(53, 102, 184, 1) 78%);
+	background: linear-gradient(145deg, #1e1e2f, #6a82fb);
 	box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
-	border: none;
-	position: relative;
-	/* Minimum width for larger screens */
-	min-width: 300px;
-	 /* Max width to prevent it from becoming too large */
-	max-width: 500px;
-	 /* Flexible width for responsiveness */
-	width: 80%
+    border-radius: 5px;
+    min-width: 300px;
+    max-width: 500px;
 }
+
 .links {
 	color: #58cc71;
 	text-decoration: none;
@@ -207,72 +261,72 @@ p, span, button {
 }
 
 .links:hover::after, .links:focus::after {
-	width: 100%; /* Expands underline */
+	width: 100%; 
 }
 .links:hover, .links:focus, .links.active {
-	color: #45a860; /* Darker green */
+	color: #45a860; 
 }  
 
 /*MODAL BUTTONS*/
 .loginModal-btn {
-	background: linear-gradient(145deg, #6a82fb, #fc5c7d); /* Gradient background */
+	background: linear-gradient(145deg, #6a82fb, #fc5c7d); 
 	color: white;
 	padding: 10px 20px;
 	font-size: 1rem;
 	border: none;
 	border-radius: 5px;
 	cursor: pointer;
-	transition: all 0.3s ease; /* Smooth transition for all properties */
-	margin-top: 20px; /* Adds space between the message and button */
-	box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+	transition: all 0.3s ease; 
+	margin-top: 20px; 
+	box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); 
 }
 
 .loginModal-btn:hover {
-	background: linear-gradient(145deg, #fc5c7d, #6a82fb); /* Reverse the gradient */
-	transform: scale(1.05); /* Slightly increase size */
-	box-shadow: 0 8px 12px rgba(0, 0, 0, 0.2); /* More prominent shadow */
+	background: linear-gradient(145deg, #fc5c7d, #6a82fb); 
+	transform: scale(1.05); 
+	box-shadow: 0 8px 12px rgba(0, 0, 0, 0.2); 
 }
 
 .loginModal-btn:active {
-	transform: scale(0.97); /* Slight shrink on click */
-	box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Reduced shadow */
+	transform: scale(0.97); 
+	box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); 
 }
 
 .signUpModal-btn {
-	background: linear-gradient(145deg, #6a82fb, #fc5c7d); /* Gradient background */
+	background: linear-gradient(145deg, #6a82fb, #fc5c7d); 
 	color: white;
 	padding: 10px 20px;
 	font-size: 1rem;
 	border: none;
 	border-radius: 5px;
 	cursor: pointer;
-	transition: all 0.3s ease; /* Smooth transition for all properties */
-	margin-top: 20px; /* Adds space between the message and button */
-	box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+	transition: all 0.3s ease; 
+	margin-top: 20px; 
+	box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); 
 }
 
 .signUpModal-btn:hover {
-	background: linear-gradient(145deg, #fc5c7d, #6a82fb); /* Reverse the gradient */
-	transform: scale(1.05); /* Slightly increase size */
-	box-shadow: 0 8px 12px rgba(0, 0, 0, 0.2); /* More prominent shadow */
+	background: linear-gradient(145deg, #fc5c7d, #6a82fb); 
+	transform: scale(1.05); 
+	box-shadow: 0 8px 12px rgba(0, 0, 0, 0.2); 
 }
 
 .signUpModal-btn:active {
-	transform: scale(0.97); /* Slight shrink on click */
-	box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Reduced shadow */
+	transform: scale(0.97); 
+	box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); 
 }
 
 .resetModal-btn {
-	background: linear-gradient(145deg, #6a82fb, #fc5c7d); /* Gradient background */
+	background: linear-gradient(145deg, #6a82fb, #fc5c7d); 
 	color: white;
 	padding: 10px 20px;
 	font-size: 1rem;
 	border: none;
 	border-radius: 5px;
 	cursor: pointer;
-	transition: all 0.3s ease; /* Smooth transition for all properties */
-	margin-top: 20px; /* Adds space between the message and button */
-	box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+	transition: all 0.3s ease; 
+	margin-top: 20px; 
+	box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
 .resetModal-btn:hover {
@@ -290,15 +344,15 @@ p, span, button {
 	font-size: 27px;
 	font-weight: bold;
 	border: none;
-	background-color: transparent; /* No background by default */
+	background-color: transparent; 
 	padding: 5px;
-	border-radius: 50%; /* Circular button */
+	border-radius: 50%;
 	transition: color 0.3s ease, background-color 0.3s ease, transform 0.2s ease;
 }
 
 .close:hover {
 	color: #fff;
-	background-color: rgba(170, 170, 170, 0.5); /* Semi-transparent gray */
+	background-color: rgba(242, 94, 134, 0.1); 
 	transform: scale(1.1);
 	cursor: pointer;
 }
@@ -306,7 +360,8 @@ p, span, button {
 
  /* HEADER DROPDOWN */
 .dropdown-menu {
-    background: linear-gradient(145deg, rgba(44, 28, 145, 0.95), rgba(28, 36, 95, 0.9), rgba(62, 78, 148, 0.95));
+    background: radial-gradient(circle, rgba(30, 30, 47, 1) 6%, rgba(53, 102, 184, 1) 78%);
+	background: linear-gradient(145deg, #1e1e2f, #6a82fb);
 	box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
     transition: opacity 0.3s ease, transform 0.3s ease;
     transform: translateY(-10px);
@@ -334,38 +389,45 @@ p, span, button {
 
 /* INPUT FIELDS STYLES */
 .form-control {
-	background-color: white; /* white background */
-	color: #2c3e50; /* Dark text for contrast */
-	transition: all 0.3s ease; /* Smooth transition on hover/focus */
+	background-color: transparent; 
+	border: 1px solid #6D81F2;
+	color: white; 
+	transition: all 0.3s ease; 
 }
 
 /* Hover Effect for Input Fields */
 .form-control:hover {
-	border: 2px solid rgba(0, 123, 255, 0.7);
-	background-color: white; /* white background on hover */
+	border: 2px solid #6D81F2;
+	background-color: transparent; 
 }
 
 /* Focus Effect for Input Fields */
 .form-control:focus {
-	border: 2px solid rgba(0, 123, 255, 0.7);
-	background-color: white; 
-	outline: none; /* Remove default browser outline */
-	box-shadow: 0 2px 10px rgba(0, 123, 255, 0.7); /* Slightly subdued glow */
+	border: 2px solid #6D81F2;
+	background-color: transparent; 
+	outline: none; 
+	box-shadow: 0 2px 10px #F25E86; 
+}
+.form-control:active {
+	border: 2px solid #6D81F2;
+	background-color: transparent; 
+	outline: none; 
+	box-shadow: 0 2px 10px #F25E86; 
 }
 input:disabled {
-	background-color: #f0f0f0; /* Change background color */
-	color: #a0a0a0; /* Change text color */
-	cursor: not-allowed; /* Change cursor to indicate disabled state */
+	background-color: transparent; 
+	color: #a0a0a0; 
+	cursor: not-allowed; 
 }
 
 h4.text-center {
 	font-family: "Verdana", "Geneva", sans-serif;
-	font-size: 2rem; /* Larger font size for emphasis */
-	font-weight: 700; /* Bold weight for stronger presence */
-	color: #fff; /* White color for contrast */
-	letter-spacing: 1px; /* Add slight spacing between letters */
-	text-transform: uppercase; /* Capitalize text for a more striking effect */
-	padding: 20px; /* Add space around the text */
+	font-size: 2rem; 
+	font-weight: 700; 
+	color: #fff; 
+	letter-spacing: 1px; 
+	text-transform: uppercase;
+	padding: 20px; 
 }
 
 .form-group{
@@ -374,7 +436,7 @@ h4.text-center {
 
 /* PROFILE PAGE */
 
-  /* Left Profile Section */
+/* Left Profile Section */
 .profile-wrapper {
 	width: 80%;
 	margin-top: 50px;
@@ -536,12 +598,104 @@ h4.text-center {
 	border:none;
 	box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); 
 }
+/* Responsive Profile Design */
+@media (max-width: 1024px) {
+	.profile-wrapper {
+		flex-direction: column;
+		width: 95%;
+	}
 
+	.profile-info, .insight-panel {
+		width: 100%; 
+	}
+
+	.profile-info h3 {
+		font-size: 1rem;
+	}
+
+	.button-wrapper {
+		justify-content: center;
+	}
+}
+
+@media (max-width: 768px) {
+	.profile-wrapper {
+		display: flex;
+		flex-direction: column;
+		width: 100%;
+		padding: 15px;
+		width: 100%;
+	}
+
+	.profile-info {
+		width: 100%;
+	}
+
+	.button-wrapper {
+		display: flex;
+		justify-content: center;
+		width: 100%; 
+		margin-top: 10px; 
+	}
+	
+
+	.profile-info h3 {
+		font-size: 0.9rem;
+	}
+
+	.nav-tabs {
+		overflow-x: auto;
+		display: flex;
+		justify-content: flex-start;
+		white-space: nowrap;
+		width: 100%;
+	}
+
+	.nav-link {
+		font-size: 0.7rem;
+		padding: 5px 8px;
+	}
+
+	.editProfile-btn, .resetPwd-btn {
+		font-size: 0.9rem;
+		padding: 8px 16px;
+	}
+}
+
+@media (max-width: 480px) {
+	.profile-wrapper {
+		padding: 10px;
+	}
+
+	.profile-info h3 {
+		font-size: 0.85rem;
+	}
+
+	.nav-tabs {
+		overflow-x: auto;
+	}
+
+	.nav-link {
+		font-size: 0.7rem;
+		padding: 4px 6px;
+	}
+
+	.editProfile-btn, .resetPwd-btn {
+		font-size: 0.8rem;
+		padding: 7px 14px;
+		width: auto;
+		margin-left: auto;
+	}
+	.button-wrapper {
+		flex-direction: column; /* Stacks buttons vertically */
+		align-items: center; /* Centers buttons */
+	}
+}
 
 /*CHAT PAGE*/
 
 .booklet_background {
-	background: linear-gradient(145deg, #6a82fb, #fc5c7d);
+	background: linear-gradient(145deg, #1e1e2f, #6a82fb);
 	color: white;
 	display: flex;
 	flex-direction: column;
@@ -549,8 +703,9 @@ h4.text-center {
 }
 
 .chat-container {
-    background: rgba(255, 255, 255, 0.2); /* Transparent white */
-    backdrop-filter: blur(10px); /* Frosted glass effect */
+    /*background: rgba(255, 255, 255, 0.2); /* Transparent white */
+    /*backdrop-filter: blur(10px); /* Frosted glass effect */
+	background: transparent;
     border: 1px solid rgba(255, 255, 255, 0.3); /* Soft border */
     box-shadow: 0 8px 32px rgba(0, 0, 0, 0.25); /* Subtle shadow */
     border-radius: 20px; /* Rounded corners */
@@ -558,14 +713,13 @@ h4.text-center {
 }
 
 
-.chat_timer{
-	border: 2px solid rgba(0, 123, 255, 0.7);
-	background-color: transparent; 
+.chat_timer {
+	border: 2px solid rgba(255, 255, 255, 0.7); /* Soft pearl border */
 	border-radius: 5px;
 	font-size: 1.2rem;
-	color: rgba(0, 123, 255, 0.7);
+	color: rgba(255, 255, 255, 0.8); /* Lighter text color for contrast */
 	font-weight: bold;
-	box-shadow: 0 2px 10px rgba(0, 123, 255, 0.7); 
+	box-shadow: 0 2px 10px rgba(255, 255, 255, 0.3); /* Soft, pearl-like shadow */
 }
 
 /* Chat Header Image */
@@ -577,13 +731,13 @@ h4.text-center {
 /* Header Title and Subtext */
 
 .chat_container p {
-	color: #2c3e50; 
+	color: white; 
 	font-size: 1rem;
 	margin-top: 2px;
 }
 
 .progress_header {
-	color: #2c3e50;
+	color: white;
 	font-size: 1rem;
 	margin-top: 2px;
 }
@@ -754,25 +908,25 @@ h4.text-center {
 }
 
 .form-control-chat {
-	background-color: transparent; /* white background */
+	background-color: transparent; 
 	border-radius: 5px;
-	color: #2c3e50;
-	border: 1px solid rgba(0, 123, 255, 0.7);
-	transition: all 0.3s ease; /* Smooth transition on hover/focus */
+	color: whitesmoke;
+	border: 1px solid #6D81F2;
+	transition: all 0.3s ease; 
 }
 
 /* Hover Effect for Input Fields */
 .form-control-chat:hover {
-	border: 2px solid rgba(0, 123, 255, 0.7);
+	border: 2px solid #6D81F2;
 	background-color: transparent; 
 }
 
 /* Focus Effect for Input Fields */
 .form-control-chat:focus {
-	border: 2px solid rgba(0, 123, 255, 0.7);
+	border: 2px solid #6D81F2;
 	background-color: transparent; 
-	outline: none; /* Remove default browser outline */
-	box-shadow: 0 2px 10px rgba(0, 123, 255, 0.7); /* Slightly subdued glow */
+	outline: none; 
+	box-shadow: 0 2px 10px #F25E86; 
 }
 
 /*Typing indicator*/
@@ -813,43 +967,43 @@ h4.text-center {
 /* chat page mobile responsive */
 @media (max-width: 768px) {
     .form-control-chat {
-        width: 100%; /* Ensure the text area takes the full width on mobile */
-        min-height: 50px; /* Ensure the input field isn't too small */
+        width: 100%; 
+        min-height: 50px; 
     }
     
     .chat-container {
-        padding: 10px; /* Add padding for smaller screens */
+        padding: 10px; 
     }
 
     .chat_container img {
-        width: 40px; /* Adjust image size for mobile */
+        width: 40px; 
         height: 40px;
     }
 
     /* Ensure chat bubbles are not too large */
     .chat-bubble-assistant, .chat-bubble-user {
-        max-width: 90%; /* Allow bubbles to take more space on small screens */
+        max-width: 90%; 
         padding: 10px;
     }
 
     .sendMsg-btn {
-        padding: 10px; /* Increase button size for easier tapping on mobile */
+        padding: 10px;
         font-size: 1.1rem;
     }
 
     .progress-bar {
-        height: 0.8rem; /* Make the progress bar smaller on mobile */
+        height: 0.8rem; 
     }
 }
 
 /* Additional styling to make sure the page is scrollable */
 @media (max-width: 600px) {
     .chat-container {
-        width: 100%; /* Full width for chat container on small screens */
+        width: 100%; 
     }
 
     .booklet_background {
-        display: none; /* Hide the booklet section on mobile to maximize screen space */
+        display: none; 
     }
 }
 /*SPINNER*/
@@ -871,7 +1025,7 @@ h4.text-center {
 .spinner {
 	position: relative;
 	border: 8px solid #1a2b4c; /* Dark Blue */
-	border-top: 8px solid #3498db; /* Blue */
+	border-top: 8px solid #F25E86; /* Blue */
 	border-radius: 50%;
 	width: 50px;
 	height: 50px;
@@ -1008,7 +1162,7 @@ h4.text-center {
 /* Responsive Design */
 @media (max-width: 768px) {
 	.charts-grid {
-	  grid-template-columns: 1fr; /* Show one chart per row on smaller screens */
+		grid-template-columns: 1fr;
 	}
 }
 
@@ -1029,7 +1183,7 @@ h4.text-center {
 	width: 40px;
 	height: 40px;
 	border: 8px solid #1a2b4c; /* Dark Blue */
-	border-top: 8px solid #3498db; /* Blue */ 
+	border-top: 8px solid #F25E86;  
 	border-radius: 50%;
 	animation: spin 1s linear infinite; 
 }
@@ -1177,4 +1331,93 @@ h4.text-center {
 .cancel-account-btn:active {
 	border:none;
 	box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); 
+}
+
+/* Adjust dashboard layout for smaller screens */
+@media (max-width: 768px) {
+	.dashboard-container {
+		flex-direction: column; /* Stack elements vertically */
+		height: auto;
+		padding: 5px;
+	}
+
+	.chart-container,
+	.analytics-container {
+		width: auto;
+		margin-top: 20px;
+	}
+
+	.chart-card {
+		width: 100%; /* Full width */
+	}
+
+	.charts-grid {
+		grid-template-columns: 1fr; /* Show one chart per row */
+	}
+}
+
+/* Further adjust layout for very small screens (phones) */
+@media (max-width: 480px) {
+	.chart-wrapper {
+		width: 100px;
+		height: 100px;
+	}
+
+	.chart-card {
+		padding: 5px;
+		font-size: 0.9rem;
+	}
+
+	.chart-box {
+		padding: 10px;
+		height: 200px;
+	}
+
+	.feedback-table th,
+	.feedback-table td {
+		padding: 8px;
+		font-size: 0.7rem; /* Reduce text size */
+	}
+
+	.no-data-container {
+		padding: 10px;
+	}
+
+	.no-data-image {
+		width: 80px;
+		height: 80px;
+	}
+}
+@media (max-width: 768px) {
+	.cancel-account-btn {
+		padding: 8px 15px;
+		font-size: 0.9rem;
+		margin: 10px auto;
+		display: block;
+		text-align: center;
+	}
+}
+@media (max-width: 480px) {
+	.profile-page {
+		padding: 5px;
+	}
+
+	.chart-container,
+	.analytics-container {
+		gap: 5px;
+	}
+
+	.filter-container {
+		flex-wrap: wrap; /* Allow filters to wrap */
+		gap: 10px;
+	}
+
+	.filter-label {
+		font-size: 12px;
+	}
+
+	.filter-radio {
+		width: 10px;
+		height: 10px;
+	}
 }
