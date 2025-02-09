@@ -33,18 +33,16 @@ export default function Chat() {
           Authorization: `Bearer ${idToken}`,
         },
       });
-
       const data = await response.json();
       if (data.error) {
         toast.error("Error: " + data.error);
         return;
       }
-
+      console.log(data);
       const conversationHistory = data.conversation_history || [];
       const progressValue = Number(data.progress) || 0;
       const nextQuestion = data.next_question || "No more questions.";
       const remainingTime = Math.ceil(Number(data.remaining_time || 60)); // Ensure the time is in seconds
-
       if (isMounted.current) {
         // Ensure the component is still mounted before updating state
         if (conversationHistory.length > 0) {
@@ -98,7 +96,6 @@ export default function Chat() {
         router.push("/");
       }
     });
-
     const timer = setInterval(() => {
       setTimeLeft((prev) => {
         if (prev <= 1) {
@@ -106,22 +103,18 @@ export default function Chat() {
           handleSessionExpiration(); // Handle session expiration when time runs out
           return 0;
         }
-
         // Check if the time left is less than or equal to 2 minutes (120 seconds)
         if (prev <= 120 && timeLeft > 0) {
           setTimerStyle("gradient-text");
         }
-
         return prev - 1;
       });
     }, 1000);
-
     return () => {
       unsubscribe();
       clearInterval(timer);
     };
   }, [router, hasSessionExpired, timerStyle]);
-
   // Manage session expiration and loading state
   useEffect(() => {
     if (hasSessionExpired) {
@@ -134,12 +127,9 @@ export default function Chat() {
     if (hasSessionExpired && !isConversationSaved) {
       const auth = getAuth();
       const user = auth.currentUser;
-
       if (user && messages.length > 0) {
-        setTimeout(() => {
-          sendConversationHistory(messages);
-          setIsConversationSaved(true); // Flag that conversation has been saved
-        }, 1500); // Introduce a 1.5-second delay before calling save function
+        sendConversationHistory(messages); // Save conversation when session expires
+        setIsConversationSaved(true); // Flag that conversation has been saved
       }
     }
   }, [hasSessionExpired, messages, isConversationSaved]);
@@ -154,12 +144,11 @@ export default function Chat() {
   const sendConversationHistory = async (conversation) => {
     const auth = getAuth();
     const user = auth.currentUser;
-
+    console.log("CONVERSATION: ", conversation);
     if (!user || !conversation || conversation.length === 0) {
       toast.error("No conversation history to save.");
       return;
     }
-
     setLoading(true);
     try {
       const idToken = await user.getIdToken(true);
@@ -172,11 +161,10 @@ export default function Chat() {
         },
         body: JSON.stringify({ conversationHistory: conversation }),
       });
-
       const data = await response.json();
       if (data.success) {
         toast.success("Practice Session saved successfully!");
-        router.push("/");
+        router.push("/"); // Navigate after success
       } else {
         toast.error("Error saving conversation history.");
       }
@@ -194,25 +182,23 @@ export default function Chat() {
       .toString()
       .padStart(2, "0")}`;
   };
-
   const handleSendMessage = async (event) => {
-    //event.preventDefault();
     if (hasSessionExpired || isConversationSaved) return;
 
-    const messageInput = document.getElementById("text");
-    const userMessage = messageInput.value.trim();
+    const userMessage = document.getElementById("text").value.trim();
     if (!userMessage) return;
 
-    const newMessages = [...messages, { role: "user", content: userMessage }];
-    setMessages(newMessages);
+    // Optimized state update for messages
+    setMessages((prevMessages) => [
+      ...prevMessages,
+      { role: "user", content: userMessage },
+    ]);
 
     try {
       const response = await fetch("http://127.0.0.1:5000/chat", {
         method: "POST",
         credentials: "include",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ message: userMessage }),
       });
 
@@ -221,44 +207,53 @@ export default function Chat() {
         toast.error("Error: " + data.error);
         return;
       }
-      // Show typing indicator
+
       setIsTyping(true);
-      setProgress(Number(data.progress) || 0);
+      setProgress(data.progress ? Number(data.progress) : 0);
       setTimeLeft(timeLeft);
-      const assistantMessages = [
-        ...newMessages,
-        { role: "assistant", content: data.chatbot_response },
-      ];
+
+      console.log("Response: ", data);
+
+      const assistantResponse = {
+        role: "assistant",
+        content: data.chatbot_response,
+      };
+
+      setMessages((prevMessages) => [...prevMessages, assistantResponse]);
 
       if (data.next_question) {
-        assistantMessages.push({
-          role: "assistant",
-          content: data.next_question,
-        });
         setTimeout(() => {
-          setMessages(assistantMessages);
+          setMessages((prevMessages) => [
+            ...prevMessages,
+            {
+              role: "assistant",
+              category: data.next_question_category || "No category provided",
+              content: data.next_question,
+            },
+          ]);
           setCurrentQuestion(data.next_question);
           setIsTyping(false);
         }, 2000);
       } else {
-        assistantMessages.push({
-          role: "assistant",
-          content: data.final_message,
-        });
-        setMessages(assistantMessages);
-
-        if (!isConversationSaved) {
-          setTimeout(() => {
-            sendConversationHistory(assistantMessages);
-            setIsConversationSaved(true);
-          }, 1000);
-        }
+        setMessages((prevMessages) => [
+          ...prevMessages,
+          {
+            role: "assistant",
+            content: data.final_message,
+          },
+        ]);
+        setTimeout(() => {
+          setIsTyping(false);
+          // Save conversation history asynchronously after message update
+          sendConversationHistory([...messages, assistantResponse]);
+        }, 2000);
       }
     } catch (error) {
       toast.error("Error sending message. Please try again.");
       setIsTyping(false);
     }
-    messageInput.value = "";
+
+    document.getElementById("text").value = ""; // Clear input
   };
 
   const handleKeyDown = (e) => {
@@ -290,7 +285,6 @@ export default function Chat() {
             impactful answers during the interview.
           </p>
         </div>
-
         {/* Chat Section */}
         <div className="w-full sm:w-2/3 flex flex-col bg-transparent h-full">
           {/* Chat Header */}
@@ -313,7 +307,6 @@ export default function Chat() {
               </div>
             </div>
           </div>
-
           {/* Progress Bar */}
           <div className="px-3 py-3">
             <label
@@ -336,7 +329,6 @@ export default function Chat() {
               </div>
             </div>
           </div>
-
           {/* Chat Area */}
           <div className="flex-grow chat-area overflow-y-auto p-4 space-y-4">
             {messages.map((msg, index) => (
@@ -370,7 +362,6 @@ export default function Chat() {
             {/* Dummy element to track the bottom */}
             <div ref={chatEndRef} />
           </div>
-
           {/* Chatbot typing indicator */}
           {isTyping && (
             <div className="flex justify-start ml-2 space-x-3">
@@ -388,7 +379,6 @@ export default function Chat() {
               </div>
             </div>
           )}
-
           {/* Input Field */}
           <form
             className="flex items-end space-x-2 m-3"

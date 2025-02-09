@@ -230,10 +230,13 @@ const Header = () => {
 
       {/* Modals */}
       <LoginModal
+        onSwitchToSignUp={handleSwitchToSignUp}
+        onSwitchToForgotPwd={handleSwitchToForgotPwd}
         isOpen={isLoginModalOpen}
         onClose={() => setIsLoginModalOpen(false)}
       />
       <SignUpModal
+        onSwitchToLogin={handleSwitchToLogin}
         isOpen={isSignUpModalOpen}
         onClose={() => setIsSignUpModalOpen(false)}
       />
