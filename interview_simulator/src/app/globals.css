@@ -544,9 +544,50 @@ h4.text-center {
 .scrollable-content {
 	background-color: #1e1e2f;
 	border-radius: 5px;
-	overflow-y: auto; 
-	max-height: calc(100vh - 100px);
+	overflow-y: hidden; /* Hides the scrollbar when not needed */
+	max-height: calc(100vh - 180px);
 }
+
+.scrollable-content:active, .scrollable-content:hover {
+	overflow-y: auto; /* Makes the scrollbar visible when the content is active or hovered */
+}
+/* Apply styles to the scrollbar */
+.scrollable-content {
+	background-color: #1e1e2f;
+	border-radius: 5px;
+	overflow-y: auto;
+	max-height: calc(100vh - 180px);
+}
+
+/* Style the scrollbar itself */
+.scrollable-content::-webkit-scrollbar {
+	width: 6px; /* Set the width of the scrollbar */
+	height: 12px; /* Set the height of the scrollbar for horizontal scrolling */
+}
+
+/* Style the track (background) of the scrollbar */
+.scrollable-content::-webkit-scrollbar-track {
+	background: #1e1e2f; /* Dark background color for the track */
+	border-radius: 5px;
+	border: 1px solid #6D81F2;
+}
+
+/* Style the thumb (draggable part) of the scrollbar */
+.scrollable-content::-webkit-scrollbar-thumb {
+	background-color: #6D81F2; /* Color of the thumb */
+	border-radius: 5px;
+}
+
+/* Hover effect on the scrollbar thumb */
+.scrollable-content::-webkit-scrollbar-thumb:hover {
+	background-color: #F25E86; /* Darker color when hovered */
+}
+
+/* Optional: style the scrollbar corner (where horizontal and vertical scrollbars meet) */
+.scrollable-content::-webkit-scrollbar-corner {
+	background: #6D81F2;
+}
+
 
 .editProfile-btn {
 	color: white;
@@ -1126,16 +1167,16 @@ h4.text-center {
 	display: flex;
 	flex-direction: column;
 	gap: auto;
-	padding: 10px;
 	border-radius: 5px;
 	flex: 1; 
 	min-height: 0;
+	overflow-y: auto;
 }
 
 .charts-grid {
 	display: grid;
 	grid-template-columns: repeat(2, 1fr); /* Two columns per row */
-	gap: 10px;
+	gap: 5px;
 }
 
 .chart-box {
@@ -1218,7 +1259,6 @@ h4.text-center {
 /*Feedback style*/
 .feedback-table {
 	width: 100%;
-	border-collapse: collapse;
 	border: 1px solid #6D81F2;
 	margin-top: 10px;
 	font-size: 1rem;

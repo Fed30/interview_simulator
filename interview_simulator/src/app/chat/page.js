@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useLayoutEffect, useRef } from "react";
 import "@fortawesome/fontawesome-free/css/all.min.css";
 import { useRouter } from "next/navigation";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
@@ -10,7 +10,7 @@ export default function Chat() {
   const [messages, setMessages] = useState([]); // Safe default initialization
   const [progress, setProgress] = useState(0); // Ensure progress is always a number
   const [currentQuestion, setCurrentQuestion] = useState("");
-  const [timeLeft, setTimeLeft] = useState(40 * 60); // 40 minutes in seconds
+  const [timeLeft, setTimeLeft] = useState(2 * 60); // 40 minutes in seconds
   const router = useRouter();
   const { setLoading } = useLoading();
   const [hasSessionExpired, setHasSessionExpired] = useState(false);
@@ -20,8 +20,9 @@ export default function Chat() {
   const isMounted = useRef(true); // Track if the component is still mounted
   const chatEndRef = useRef(null); // Reference to the bottom of the chat
   const [isTyping, setIsTyping] = useState(false);
+  const [questionFetched, setQuestionFetched] = useState(false);
 
-  // Function to handle session expiration
+  // Function to fetch initial questions
   const fetchInitialQuestion = async (user) => {
     try {
       setIsConversationSaved(false);
@@ -38,52 +39,58 @@ export default function Chat() {
         toast.error("Error: " + data.error);
         return;
       }
-      console.log(data);
+
       const conversationHistory = data.conversation_history || [];
       const progressValue = Number(data.progress) || 0;
       const nextQuestion = data.next_question || "No more questions.";
-      const remainingTime = Math.ceil(Number(data.remaining_time || 60)); // Ensure the time is in seconds
+      const remainingTime = Math.ceil(Number(data.remaining_time || 60));
+
       if (isMounted.current) {
-        // Ensure the component is still mounted before updating state
-        if (conversationHistory.length > 0) {
+        if (messages.length === 0) {
           setMessages(conversationHistory);
-          setProgress(progressValue);
           setCurrentQuestion(nextQuestion);
+          setProgress(progressValue);
+          setTimeLeft(remainingTime);
         } else {
-          setMessages([
-            {
-              role: "assistant",
-              content: `${data.message || ""}, ${nextQuestion}`,
-            },
-          ]);
-          setProgress(progressValue);
-          setCurrentQuestion(nextQuestion);
+          // Prevent duplicate questions on reload
+          const lastMessage = messages[messages.length - 1];
+          if (lastMessage?.content !== nextQuestion) {
+            setMessages((prev) => [
+              ...prev,
+              { role: "assistant", content: nextQuestion },
+            ]);
+            setCurrentQuestion(nextQuestion);
+          }
         }
-        setTimeLeft(remainingTime); // Update the timer
       }
     } catch (error) {
       toast.error("Failed to load the initial question. Please try again.");
     }
   };
 
-  // Function to handle session expiration
-  const handleSessionExpiration = () => {
-    if (hasSessionExpired || saveFlag.current) return;
-    saveFlag.current = true;
+  // Function to handle session expiration (triggered only when the timer runs out)
+  const handleSessionExpiration = async () => {
+    if (hasSessionExpired || saveFlag.current || isConversationSaved) return; // Prevent duplicate saves
+
+    saveFlag.current = true; // Prevent further saves
+
     setMessages((prevMessages) => {
       const updatedMessages = [
         ...prevMessages,
-        { role: "system", content: "Session Expired" },
+        { role: "assistant", content: "Session Expired" },
       ];
-      return updatedMessages;
+
+      // Call sendConversationHistory with updated messages
+      sendConversationHistory(updatedMessages);
+      return updatedMessages; // Ensure state gets updated
     });
-    setHasSessionExpired(true); // Flag the session as expired
+
+    setHasSessionExpired(true);
     isMounted.current = false;
-    // Handle session expiration
-    setTimeout(() => {
-      toast.info("Your session has expired. Please try again.");
-      router.push("/"); // Redirect to home page
-    }, 1000);
+
+    // Notify user and redirect
+    toast.info("Your session has expired. Please start a new Session.");
+    router.push("/");
   };
 
   // Session expiration logic
@@ -91,7 +98,12 @@ export default function Chat() {
     const auth = getAuth();
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       if (user) {
-        fetchInitialQuestion(user); // Fetch initial question as soon as user is authenticated
+        if (!questionFetched) {
+          // Only fetch if it hasn't been fetched
+          fetchInitialQuestion(user).then(() => {
+            setQuestionFetched(true); // Set to true *only* after fetching is complete
+          });
+        }
       } else {
         router.push("/");
       }
@@ -114,25 +126,14 @@ export default function Chat() {
       unsubscribe();
       clearInterval(timer);
     };
-  }, [router, hasSessionExpired, timerStyle]);
+  }, [router, questionFetched, hasSessionExpired, timerStyle]);
+
   // Manage session expiration and loading state
-  useEffect(() => {
+  useLayoutEffect(() => {
     if (hasSessionExpired) {
-      setLoading(false); // Set loading false when session expires
+      setLoading(false);
     }
   }, [hasSessionExpired, setLoading]);
-
-  // Handle sending the conversation history (with loading state handling)
-  useEffect(() => {
-    if (hasSessionExpired && !isConversationSaved) {
-      const auth = getAuth();
-      const user = auth.currentUser;
-      if (user && messages.length > 0) {
-        sendConversationHistory(messages); // Save conversation when session expires
-        setIsConversationSaved(true); // Flag that conversation has been saved
-      }
-    }
-  }, [hasSessionExpired, messages, isConversationSaved]);
 
   // Scroll to the bottom whenever messages change
   useEffect(() => {
@@ -149,29 +150,35 @@ export default function Chat() {
       toast.error("No conversation history to save.");
       return;
     }
-    setLoading(true);
-    try {
-      const idToken = await user.getIdToken(true);
-      const response = await fetch("http://127.0.0.1:5000/save_conversation", {
-        method: "POST",
-        credentials: "include",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${idToken}`,
-        },
-        body: JSON.stringify({ conversationHistory: conversation }),
-      });
-      const data = await response.json();
-      if (data.success) {
-        toast.success("Practice Session saved successfully!");
-        router.push("/"); // Navigate after success
-      } else {
-        toast.error("Error saving conversation history.");
+    if (!isConversationSaved) {
+      setLoading(true);
+      try {
+        const idToken = await user.getIdToken(true);
+        const response = await fetch(
+          "http://127.0.0.1:5000/save_conversation",
+          {
+            method: "POST",
+            credentials: "include",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${idToken}`,
+            },
+            body: JSON.stringify({ conversationHistory: conversation }),
+          }
+        );
+        const data = await response.json();
+        if (data.success) {
+          setIsConversationSaved(true);
+          toast.success("Practice Session saved successfully!");
+          router.push("/");
+        } else {
+          toast.error("Error saving conversation history.");
+        }
+      } catch (error) {
+        toast.error("Error saving conversation history. Please try again.");
+      } finally {
+        setLoading(false);
       }
-    } catch (error) {
-      toast.error("Error saving conversation history. Please try again.");
-    } finally {
-      setLoading(false);
     }
   };
 
@@ -182,13 +189,13 @@ export default function Chat() {
       .toString()
       .padStart(2, "0")}`;
   };
+
   const handleSendMessage = async (event) => {
-    if (hasSessionExpired || isConversationSaved) return;
+    if (hasSessionExpired || isConversationSaved || saveFlag.current) return; // Prevent saving if conversation is already saved
 
     const userMessage = document.getElementById("text").value.trim();
     if (!userMessage) return;
 
-    // Optimized state update for messages
     setMessages((prevMessages) => [
       ...prevMessages,
       { role: "user", content: userMessage },
@@ -210,44 +217,47 @@ export default function Chat() {
 
       setIsTyping(true);
       setProgress(data.progress ? Number(data.progress) : 0);
-      setTimeLeft(timeLeft);
 
       console.log("Response: ", data);
 
+      // Prepare responses
       const assistantResponse = {
         role: "assistant",
         content: data.chatbot_response,
       };
-
-      setMessages((prevMessages) => [...prevMessages, assistantResponse]);
-
-      if (data.next_question) {
-        setTimeout(() => {
-          setMessages((prevMessages) => [
-            ...prevMessages,
-            {
-              role: "assistant",
-              category: data.next_question_category || "No category provided",
-              content: data.next_question,
-            },
-          ]);
-          setCurrentQuestion(data.next_question);
-          setIsTyping(false);
-        }, 2000);
-      } else {
-        setMessages((prevMessages) => [
-          ...prevMessages,
-          {
+      const nextQuestion = data.next_question
+        ? {
             role: "assistant",
-            content: data.final_message,
-          },
-        ]);
-        setTimeout(() => {
-          setIsTyping(false);
-          // Save conversation history asynchronously after message update
-          sendConversationHistory([...messages, assistantResponse]);
-        }, 2000);
-      }
+            category: data.next_question_category || "No category provided",
+            content: data.next_question,
+          }
+        : null;
+
+      setTimeout(() => {
+        setMessages((prevMessages) => {
+          let updatedMessages = [...prevMessages, assistantResponse];
+          if (nextQuestion) {
+            updatedMessages.push(nextQuestion);
+            setCurrentQuestion(data.next_question);
+          } else {
+            updatedMessages.push({
+              role: "assistant",
+              content: data.final_message,
+            });
+            // Delay saving the conversation to allow user to read the final message
+            setTimeout(() => {
+              // Ensure conversation is saved only once
+              if (!isConversationSaved && !saveFlag.current) {
+                saveFlag.current = true; // Prevent future saves
+                sendConversationHistory(updatedMessages);
+                setIsConversationSaved(true); // Mark conversation as saved
+              }
+            }, 4000);
+          }
+          return updatedMessages;
+        });
+        setIsTyping(false);
+      }, 2000);
     } catch (error) {
       toast.error("Error sending message. Please try again.");
       setIsTyping(false);

@@ -128,7 +128,7 @@ export default function AnalyticsPanel({ user }) {
           color: "white",
           font: { size: 8 },
           callback: function (value) {
-            return value ?? "";
+            return value.toFixed(2);
           },
         },
         grid: { color: "rgba(255, 255, 255, 0.2)" },
@@ -194,8 +194,7 @@ export default function AnalyticsPanel({ user }) {
           <h4>Activity</h4>
           {isLoading ? (
             <LoadingSpinner />
-          ) : isEmptyData(totalCompletedSession) ||
-            isEmptyData(totalInCompleteSession) ? (
+          ) : totalCompletedSession === 0 && totalInCompleteSession === 0 ? (
             <NoDataImage text="No data available for Activity" />
           ) : (
             <Pie data={activity_data} options={options} />

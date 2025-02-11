@@ -8,6 +8,7 @@
         "jsonify",
         "ntplib",
         "registerables",
+        "scrollbars",
         "Toastify",
         "unixtime",
         "urandom"

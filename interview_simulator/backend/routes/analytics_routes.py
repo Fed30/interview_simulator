@@ -58,7 +58,8 @@ def get_analytics_panel_data():
         })
 
     session_grades = []  # List of session-specific averages
-    session_full_dates = []  # Keep track of session dates
+    #session_full_dates = []  # Keep track of session dates
+    session_date_set = set() 
 
     for session_id, session_info in sessions.items():
         status = session_info.get("status")
@@ -70,10 +71,14 @@ def get_analytics_panel_data():
             if timestamp:
                 session_date = parse_timestamp(timestamp)
                 if session_date:
-                    session_full_dates.append(session_date.strftime('%d-%m-%y'))
-                    # Count occurrences of each date
-                    for date in session_full_dates:
-                        session_date_counts[date] += 1
+                    session_date_str = session_date.strftime('%d-%m-%y')  # Format date
+                    
+                    # Append the date to the full list
+                    #session_full_dates.append(session_date_str)
+                    session_date_set.add(session_date_str)
+
+                    # Increment the session count for that date
+                    session_date_counts[session_date_str] += 1  # Ensure each session increments count
 
             if session_link:
                 match = re.search(r'documents/(.*)', session_link)
@@ -93,7 +98,7 @@ def get_analytics_panel_data():
                                 role = entry.get("role")
                                 content = entry.get("content")
                                 if role == "assistant" and content:
-                                    matched_category, grade_value = match_and_extract_grade(content, dataset, entry, history)
+                                    matched_category, grade_value = match_and_extract_grade(content, history)
                                     if matched_category and grade_value is not None:
                                         session_individual_grades.append(grade_value)
                                         category_grades[matched_category].append(grade_value)
@@ -108,6 +113,8 @@ def get_analytics_panel_data():
                         print(f"Error fetching session document: {e}")
         elif status == "Incomplete":
             total_incomplete_sessions += 1
+            
+    session_full_dates = sorted(list(session_date_set))
 
     # Compute category averages
     category_avg_grades = {category: round(sum(grades) / len(grades), 2) for category, grades in category_grades.items()}
