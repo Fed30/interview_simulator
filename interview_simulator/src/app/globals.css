@@ -63,6 +63,12 @@ nav a {
 	transition: color 0.3s ease-in-out;
 }
 
+/* Color for highlighted text */
+::selection {
+	background-color: white;
+	color: black; 
+}
+
 nav a:hover {
 	color: #f25e86;
 }
