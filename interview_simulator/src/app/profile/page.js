@@ -115,7 +115,7 @@ const Profile = () => {
               <div className="profile_icon">
                 <i className="fas fa-user-circle fa-5x"></i>
               </div>
-              <div className="ml-3">
+              <div className="ml-3 mb-3">
                 <h3 id="userName">{userName || "Loading..."}</h3>
               </div>
               <div className="button-wrapper ml-auto">
