@@ -11,9 +11,11 @@ const Home = () => {
   const router = useRouter();
   const { triggerLoginAnimation } = useAuth();
   const { setLoading } = useLoading();
+  const [pageLoaded, setPageLoaded] = useState(false);
   
 
   useEffect(() => {
+    setPageLoaded(true);
     const unsubscribe = auth.onAuthStateChanged((user) => {
       setIsLoggedIn(!!user);
     });
@@ -38,7 +40,7 @@ const Home = () => {
 
 
   return (
-    <div>
+    <div className={`page-transition ${pageLoaded ? 'loaded' : ''}`}>
       {/* Section 1: Main Section */}
       <section
         className="relative py-24 text-white h-screen flex items-center justify-center"

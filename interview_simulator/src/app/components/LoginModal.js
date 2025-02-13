@@ -5,6 +5,7 @@ import ForgotPasswordModal from "./ForgotPasswordModal"; // Import ForgotPasswor
 import { toast } from "react-toastify";
 import { useLoading } from "../context/LoadingContext";
 import { signOut } from "firebase/auth";
+import { EyeIcon, EyeOffIcon } from "@heroicons/react/solid";
 
 const LoginModal = ({
   isOpen,
@@ -14,6 +15,7 @@ const LoginModal = ({
 }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [isPasswordVisible, setPasswordVisible] = useState(false);
   const [error, setError] = useState("");
   const [emailError, setEmailError] = useState("");
   const [passwordError, setPasswordError] = useState("");
@@ -26,6 +28,10 @@ const LoginModal = ({
 
   const validateEmail = (email) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
   const validatePassword = (password) => password.length >= 6;
+
+  const togglePasswordVisibility = () => {
+    setPasswordVisible(!isPasswordVisible);
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -152,7 +158,7 @@ const LoginModal = ({
                 </label>
                 <input
                   type="email"
-                  className="form-control w-full p-2 text-black border mt-2 rounded"
+                  className="form-control w-full p-2 mt-2 rounded"
                   id="email"
                   name="email"
                   value={email}
@@ -167,15 +173,29 @@ const LoginModal = ({
                 <label htmlFor="password" className="text-white">
                   Password:
                 </label>
-                <input
-                  type="password"
-                  className="form-control text-black w-full p-2 border mt-2 rounded"
-                  id="password"
-                  name="password"
-                  value={password}
-                  onChange={handlePasswordChange}
-                  required
-                />
+                <div className="relative w-full">
+                  <input
+                    type={isPasswordVisible ? "text" : "password"}
+                    className="form-control text-black w-full p-2 pr-10 border mt-2 rounded"
+                    id="password"
+                    name="password"
+                    value={password}
+                    onChange={handlePasswordChange}
+                    required
+                  />
+                  <button
+                    type="button"
+                    onClick={togglePasswordVisibility}
+                    className="absolute right-3 top-1/2 transform -translate-y-1/4 text-white hover:text-white"
+                  >
+                    {isPasswordVisible ? (
+                      <EyeOffIcon className="h-5 w-5" />
+                    ) : (
+                      <EyeIcon className="h-5 w-5" />
+                    )}
+                  </button>
+                </div>
+
                 {passwordError && (
                   <span className="text-red-500 text-sm">{passwordError}</span>
                 )}

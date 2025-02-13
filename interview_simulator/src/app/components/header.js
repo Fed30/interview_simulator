@@ -13,6 +13,7 @@ import { useLoading } from "../context/LoadingContext";
 
 const Header = () => {
   const { isLoggedIn, setIsLoggedIn } = useAuth();
+  const { userInitials } = useAuth();
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
   const [isSignUpModalOpen, setIsSignUpModalOpen] = useState(false);
   const [isForgotPwdModalOpen, setIsForgotPwdModalOpen] = useState(false);
@@ -153,7 +154,7 @@ const Header = () => {
         <Link href="/">
           <img
             src="/logo.png"
-            className="rounded-full w-8 h-8 transition duration-300 hover:scale-110"
+            className="rounded w-7 h-7 transition duration-300 hover:scale-110"
             alt="Logo"
           />
         </Link>
@@ -180,14 +181,13 @@ const Header = () => {
       {/* User Section */}
       {isLoggedIn ? (
         <div className="flex space-x-4">
-          <button className="transition duration-300 hover:scale-110">
-            <i className="fas fa-bell text-white text-xl mr-3"></i>
-          </button>
           <button
             className="transition duration-300 hover:scale-110"
             onClick={() => setIsDropdownOpen((prev) => !prev)}
           >
-            <i className="fas fa-user-circle text-white text-2xl mr-3"></i>
+            <div className="w-7 h-7 flex items-center justify-center bg-[#6D81F2] text-white font-bold rounded text-lg">
+              {userInitials}
+            </div>
           </button>
 
           {isDropdownOpen && (
@@ -201,7 +201,7 @@ const Header = () => {
                     onClick={() => router.push("/profile")}
                     className="block px-4 py-2 text-sm w-full text-left"
                   >
-                    Your Account
+                    My Profile
                   </button>
                 </li>
                 <li>
@@ -219,11 +219,11 @@ const Header = () => {
       ) : (
         <div className="flex space-x-4">
           <button
-            className="btn login-button"
+            className="btn login-button rounded"
             id="loginBtn"
             onClick={() => setIsLoginModalOpen(true)}
           >
-            Login
+            LOGIN
           </button>
         </div>
       )}

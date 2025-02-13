@@ -15,6 +15,9 @@ const inter = Inter({
 export const metadata: Metadata = {
   title: "Interview Simulator",
   description: "Interview Simulator",
+  icons: {
+    icon: "/logo.png",
+  },
 };
 
 export default function RootLayout({
@@ -32,7 +35,7 @@ export default function RootLayout({
               {children} 
             </main>
             <Spinner />
-            <ToastContainer position="bottom-center" autoClose={5000} hideProgressBar={true} />
+            <ToastContainer position="bottom-center" autoClose={3000} hideProgressBar={true} />
           </AuthProvider>
         </LoadingProvider>
       </body>

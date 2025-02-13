@@ -10,6 +10,7 @@ import { onAuthStateChanged } from "firebase/auth";
 import { useRouter } from "next/navigation";
 import InsightPanel from "../components/insight_panel";
 import FeedbackPanel from "../components/feedback_panel";
+import { useAuth } from "../context/AuthContext";
 
 const Profile = () => {
   const [activeTab, setActiveTab] = useState("analyticsContent");
@@ -19,6 +20,8 @@ const Profile = () => {
   const [loading, setLoading] = useState(true); // State to track loading
   const router = useRouter(); // Initialize the router
   const [user, setUser] = useState(null);
+  const { userInitials } = useAuth();
+  const [pageLoaded, setPageLoaded] = useState(false);
 
   const handleTabClick = (tab) => {
     setActiveTab(tab);
@@ -68,6 +71,7 @@ const Profile = () => {
   };
 
   useEffect(() => {
+    setPageLoaded(true);
     const unsubscribe = onAuthStateChanged(auth, async (authUser) => {
       if (authUser) {
         try {
@@ -106,15 +110,19 @@ const Profile = () => {
   };
 
   return (
-    <div className="profile-page">
+    <div
+      className={`profile-page page-transition ${pageLoaded ? "loaded" : ""}`}
+    >
       <div className="dashboard-container">
         {/* Profile Section on the Left */}
         <div className="profile-wrapper">
           <div className="profile-info">
             <div className="profile-header d-flex align-items-center">
-              <div className="profile_icon">
-                <i className="fas fa-user-circle fa-5x"></i>
-              </div>
+              <button className="transition duration-300 hover:scale-110">
+                <div className="w-7 h-7 flex items-center justify-center bg-[#6D81F2] text-white font-bold rounded text-lg">
+                  {userInitials}
+                </div>
+              </button>
               <div className="ml-3 mb-3">
                 <h3 id="userName">{userName || "Loading..."}</h3>
               </div>
@@ -209,7 +217,6 @@ const Profile = () => {
         {/* Insight Panel on the Right */}
         <InsightPanel user={user} />
       </div>
-      <button className="btn cancel-account-btn">Delete Account</button>
     </div>
   );
 };

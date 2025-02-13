@@ -121,7 +121,13 @@ export default function AnalyticsPanel({ user }) {
             return label?.length > 10 ? label.substring(0, 10) + "..." : label;
           },
         },
-        grid: { color: "rgba(255, 255, 255, 0.2)" },
+        grid: {
+          display: false, // Hides the grid for the x-axis
+          color: "rgb(255, 255, 255)",
+        },
+        border: {
+          color: "rgb(255, 255, 255)", // Axis line color
+        },
       },
       y: {
         ticks: {
@@ -131,7 +137,61 @@ export default function AnalyticsPanel({ user }) {
             return value.toFixed(2);
           },
         },
-        grid: { color: "rgba(255, 255, 255, 0.2)" },
+        grid: {
+          display: false, // Hides the grid for the x-axis
+          color: "rgb(255, 255, 255)",
+        },
+        border: {
+          color: "rgb(255, 255, 255)", // Axis line color
+        },
+      },
+    },
+    plugins: {
+      legend: {
+        labels: {
+          color: "white",
+          font: { size: 10 },
+          boxWidth: 20,
+          padding: 10,
+        },
+      },
+      tooltip: {
+        callbacks: {
+          label: function (tooltipItem) {
+            return `${tooltipItem.dataset.label}: ${tooltipItem.raw}`;
+          },
+        },
+      },
+      datalabels: { display: false },
+    },
+  };
+
+  const options_activity = {
+    responsive: true,
+    maintainAspectRatio: false,
+    scales: {
+      x: {
+        ticks: {
+          display: false,
+        },
+        grid: {
+          display: false,
+        },
+        border: {
+          display: false,
+        },
+      },
+      y: {
+        ticks: {
+          display: false,
+          font: { size: 8 },
+        },
+        grid: {
+          display: false,
+        },
+        border: {
+          display: false,
+        },
       },
     },
     plugins: {
@@ -197,7 +257,7 @@ export default function AnalyticsPanel({ user }) {
           ) : totalCompletedSession === 0 && totalInCompleteSession === 0 ? (
             <NoDataImage text="No data available for Activity" />
           ) : (
-            <Pie data={activity_data} options={options} />
+            <Pie data={activity_data} options={options_activity} />
           )}
         </div>
 

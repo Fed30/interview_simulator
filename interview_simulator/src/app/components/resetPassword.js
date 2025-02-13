@@ -5,14 +5,25 @@ import { toast } from "react-toastify"; // Import toast for notifications
 import { useLoading } from "../context/LoadingContext";
 import { auth, firebaseSignOut } from "../firebase";
 import { useRouter } from "next/navigation";
+import { EyeIcon, EyeOffIcon } from "@heroicons/react/solid";
 
 const ResetPwdModal = ({ isOpen, onClose }) => {
   const [password, setPassword] = useState("");
+  const [isPasswordVisible, setPasswordVisible] = useState(false);
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [isConfirmPasswordVisible, setConfirmPasswordVisible] = useState(false);
   const [passwordError, setPasswordError] = useState("");
   const [confirmPasswordError, setConfirmPasswordError] = useState("");
   const { setLoading } = useLoading();
   const router = useRouter();
+
+  const togglePasswordVisibility = () => {
+    setPasswordVisible(!isPasswordVisible);
+  };
+
+  const toggleConfirmPasswordVisibility = () => {
+    setConfirmPasswordVisible(!isConfirmPasswordVisible);
+  };
 
   const handlePasswordChange = (e) => setPassword(e.target.value);
   const handleConfirmPasswordChange = (e) => setConfirmPassword(e.target.value);
@@ -147,15 +158,28 @@ const ResetPwdModal = ({ isOpen, onClose }) => {
                 <label htmlFor="password" className="text-white">
                   New Password:
                 </label>
-                <input
-                  type="password"
-                  className="form-control text-black w-full p-2 border mt-2 rounded"
-                  id="password"
-                  name="password"
-                  value={password}
-                  onChange={handlePasswordChange}
-                  required
-                />
+                <div className="relative w-full">
+                  <input
+                    type={isPasswordVisible ? "text" : "password"}
+                    className="form-control text-black w-full p-2 pr-10 border mt-2 rounded"
+                    id="password"
+                    name="password"
+                    value={password}
+                    onChange={handlePasswordChange}
+                    required
+                  />
+                  <button
+                    type="button"
+                    onClick={togglePasswordVisibility}
+                    className="absolute right-3 top-1/2 transform -translate-y-1/4 text-white hover:text-white"
+                  >
+                    {isPasswordVisible ? (
+                      <EyeOffIcon className="h-5 w-5" />
+                    ) : (
+                      <EyeIcon className="h-5 w-5" />
+                    )}
+                  </button>
+                </div>
                 {passwordError && (
                   <span className="text-red-500 text-sm">{passwordError}</span>
                 )}
@@ -164,15 +188,28 @@ const ResetPwdModal = ({ isOpen, onClose }) => {
                 <label htmlFor="confirmPassword" className="text-white">
                   Confirm New Password:
                 </label>
-                <input
-                  type="password"
-                  className="form-control text-black w-full p-2 border mt-2 rounded"
-                  id="confirmPassword"
-                  name="confirmPassword"
-                  value={confirmPassword}
-                  onChange={handleConfirmPasswordChange}
-                  required
-                />
+                <div className="relative w-full">
+                  <input
+                    type={isConfirmPasswordVisible ? "text" : "password"}
+                    className="form-control text-black w-full p-2 pr-10 border mt-2 rounded"
+                    id="confirmPassword"
+                    name="confirmPassword"
+                    value={confirmPassword}
+                    onChange={handleConfirmPasswordChange}
+                    required
+                  />
+                  <button
+                    type="button"
+                    onClick={toggleConfirmPasswordVisibility}
+                    className="absolute right-3 top-1/2 transform -translate-y-1/4 text-white hover:text-white"
+                  >
+                    {isPasswordVisible ? (
+                      <EyeOffIcon className="h-5 w-5" />
+                    ) : (
+                      <EyeIcon className="h-5 w-5" />
+                    )}
+                  </button>
+                </div>
                 {confirmPasswordError && (
                   <span className="text-red-500 text-sm">
                     {confirmPasswordError}

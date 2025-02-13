@@ -8,17 +8,23 @@ import {
 import { getDatabase, ref, set } from "firebase/database"; // Import Firebase Realtime Database functions
 import { toast } from "react-toastify";
 import { useLoading } from "../context/LoadingContext";
+import { EyeIcon, EyeOffIcon } from "@heroicons/react/solid";
 
 const SignUpModal = ({ isOpen, onClose, onSwitchToLogin }) => {
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [isPasswordVisible, setPasswordVisible] = useState(false);
   const [error, setError] = useState("");
   const [emailError, setEmailError] = useState("");
   const [passwordError, setPasswordError] = useState("");
   const [nameError, setNameError] = useState("");
   const { setLoading } = useLoading();
+
+  const togglePasswordVisibility = () => {
+    setPasswordVisible(!isPasswordVisible);
+  };
 
   const handleFirstNameInput = (e) => {
     const newValue = e.target.value.replace(/[^a-zA-Z\s]/g, ""); // Allow only letters and spaces
@@ -221,15 +227,28 @@ const SignUpModal = ({ isOpen, onClose, onSwitchToLogin }) => {
                 <label htmlFor="password" className="text-white">
                   Password:
                 </label>
-                <input
-                  type="password"
-                  className="form-control text-black w-full p-2 border mt-2 rounded"
-                  id="password"
-                  name="password"
-                  value={password}
-                  onChange={handlePasswordChange}
-                  required
-                />
+                <div className="relative w-full">
+                  <input
+                    type={isPasswordVisible ? "text" : "password"}
+                    className="form-control text-black w-full p-2 pr-10 border mt-2 rounded"
+                    id="password"
+                    name="password"
+                    value={password}
+                    onChange={handlePasswordChange}
+                    required
+                  />
+                  <button
+                    type="button"
+                    onClick={togglePasswordVisibility}
+                    className="absolute right-3 top-1/2 transform -translate-y-1/4 text-white hover:text-white"
+                  >
+                    {isPasswordVisible ? (
+                      <EyeOffIcon className="h-5 w-5" />
+                    ) : (
+                      <EyeIcon className="h-5 w-5" />
+                    )}
+                  </button>
+                </div>
                 {passwordError && (
                   <span className="text-red-500 text-sm">{passwordError}</span>
                 )}

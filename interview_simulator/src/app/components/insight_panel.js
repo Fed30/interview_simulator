@@ -40,9 +40,7 @@ export default function InsightPanel({ user }) {
 
   // Compute values for sessions and scores
   const completedSessions = Math.min(completed, maxSessions);
-  const remainingSessions = maxSessions - completedSessions;
   const incompleteSessions = Math.min(incomplete, maxSessions);
-  const remainingIncompleteSessions = maxSessions - incompleteSessions;
   const overallScoreSessions = Math.min(score, maxSessions);
   const remainingScoreSessions = maxSessions - overallScoreSessions;
   console.log("Overall Score Sessions:", overallScoreSessions);
@@ -83,10 +81,10 @@ export default function InsightPanel({ user }) {
 
   // Doughnut Chart Data
   const completedData = {
-    labels: ["Completed", "Remaining"],
+    labels: ["Completed", "Incomplete"],
     datasets: [
       {
-        data: [completedSessions, remainingSessions],
+        data: [completedSessions, incompleteSessions],
         backgroundColor:
           completedSessions === 0
             ? ["#6D81F2", "#6D81F2"]
@@ -97,10 +95,10 @@ export default function InsightPanel({ user }) {
   };
 
   const incompleteData = {
-    labels: ["Sessions Incomplete", "Remaining"],
+    labels: ["Incomplete", "Completed"],
     datasets: [
       {
-        data: [incompleteSessions, remainingIncompleteSessions],
+        data: [incompleteSessions, completedSessions],
         backgroundColor:
           incompleteSessions === 0
             ? ["#6D81F2", "#6D81F2"]
@@ -132,6 +130,7 @@ export default function InsightPanel({ user }) {
         <h3>Insights Panel</h3>
         <div className="chart-card">
           <h4>Completed Sessions</h4>
+          <h6>vs incomplete sessions</h6>
           <div className="chart-wrapper">
             {isLoadingCompleted ? (
               <LoadingSpinner />
@@ -153,6 +152,7 @@ export default function InsightPanel({ user }) {
 
         <div className="chart-card">
           <h4>Incomplete Sessions</h4>
+          <h6>vs completed sessions</h6>
           <div className="chart-wrapper">
             {isLoadingIncomplete ? (
               <LoadingSpinner />
@@ -174,6 +174,7 @@ export default function InsightPanel({ user }) {
 
         <div className="chart-card">
           <h4>Overall Score</h4>
+          <h6>total session average</h6>
           <div className="chart-wrapper">
             {isLoadingOverall ? (
               <LoadingSpinner />

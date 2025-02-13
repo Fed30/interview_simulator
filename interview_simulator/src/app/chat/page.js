@@ -10,7 +10,7 @@ export default function Chat() {
   const [messages, setMessages] = useState([]); // Safe default initialization
   const [progress, setProgress] = useState(0); // Ensure progress is always a number
   const [currentQuestion, setCurrentQuestion] = useState("");
-  const [timeLeft, setTimeLeft] = useState(2 * 60); // 40 minutes in seconds
+  const [timeLeft, setTimeLeft] = useState(40 * 60); // 40 minutes in seconds
   const router = useRouter();
   const { setLoading } = useLoading();
   const [hasSessionExpired, setHasSessionExpired] = useState(false);
@@ -21,6 +21,15 @@ export default function Chat() {
   const chatEndRef = useRef(null); // Reference to the bottom of the chat
   const [isTyping, setIsTyping] = useState(false);
   const [questionFetched, setQuestionFetched] = useState(false);
+  const [isDisabled, setIsDisabled] = useState(false);
+  const textareaRef = useRef(null);
+  const [pageLoaded, setPageLoaded] = useState(false);
+
+  useEffect(() => {
+    if (!isDisabled && textareaRef.current) {
+      textareaRef.current.focus(); // Automatically focus when enabled
+    }
+  }, [isDisabled]);
 
   // Function to fetch initial questions
   const fetchInitialQuestion = async (user) => {
@@ -95,6 +104,7 @@ export default function Chat() {
 
   // Session expiration logic
   useEffect(() => {
+    setPageLoaded(true);
     const auth = getAuth();
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       if (user) {
@@ -143,6 +153,7 @@ export default function Chat() {
   }, [messages, isTyping]);
 
   const sendConversationHistory = async (conversation) => {
+    setIsDisabled(true);
     const auth = getAuth();
     const user = auth.currentUser;
     console.log("CONVERSATION: ", conversation);
@@ -200,6 +211,7 @@ export default function Chat() {
       ...prevMessages,
       { role: "user", content: userMessage },
     ]);
+    setIsDisabled(true);
 
     try {
       const response = await fetch("http://127.0.0.1:5000/chat", {
@@ -239,6 +251,7 @@ export default function Chat() {
           if (nextQuestion) {
             updatedMessages.push(nextQuestion);
             setCurrentQuestion(data.next_question);
+            setIsDisabled(false);
           } else {
             updatedMessages.push({
               role: "assistant",
@@ -274,29 +287,72 @@ export default function Chat() {
   };
 
   return (
-    <div className="flex items-center justify-center mt-14 h-screen w-full ">
+    <div
+      className={`flex items-center justify-center mt-14 h-screen w-full page-transition ${
+        pageLoaded ? "loaded" : ""
+      }`}
+    >
       <div className="flex flex-col sm:flex-row w-full h-full shadow-lg  overflow-hidden">
         {/* Booklet Section */}
-        <div className="w-full sm:w-1/3 booklet_background text-white p-6 flex flex-col justify-between mb-6 sm:mb-0">
-          <h2 className="text-2xl font-bold mb-4">STAR Method</h2>
+        <div className="w-full sm:w-1/4 booklet_background text-white p-6 flex flex-col justify-between mb-6 sm:mb-0">
+          <h2 className="text-2xl font-semibold text-transparent bg-clip-text bg-gradient-to-r from-[#F25E86] to-[#6D81F2] mb-4">
+            STAR Method
+          </h2>
+
+          {/* Centered & Smaller Image */}
+          <div className="flex justify-center items-center">
+            <img
+              src="/learning.png"
+              alt="Feedback"
+              className="w-3/4 sm:w-2/3 h-auto object-contain image-hover"
+            />
+          </div>
+
           <p className="text-sm leading-6 mb-4">
-            <strong>S - Situation:</strong> Describe the context or background
-            of the task.
+            <strong>
+              <span className="text-2xl font-semibold text-transparent bg-clip-text bg-gradient-to-r from-[#F25E86] to-[#6D81F2]">
+                S
+              </span>
+              - Situation:
+            </strong>{" "}
+            Describe the context of the task.
             <br />
-            <strong>T - Task:</strong> Explain the challenge or responsibility
-            you faced.
+            <strong>
+              <span className="text-2xl font-semibold text-transparent bg-clip-text bg-gradient-to-r from-[#F25E86] to-[#6D81F2]">
+                T
+              </span>
+              - Task:
+            </strong>{" "}
+            Explain the challenge you faced.
             <br />
-            <strong>A - Action:</strong> Detail the specific steps you took.
+            <strong>
+              <span className="text-2xl font-semibold text-transparent bg-clip-text bg-gradient-to-r from-[#F25E86] to-[#6D81F2]">
+                A
+              </span>
+              - Action:
+            </strong>{" "}
+            Detail the specific steps you took.
             <br />
-            <strong>R - Result:</strong> Share the outcome of your actions.
+            <strong>
+              <span className="text-2xl font-semibold text-transparent bg-clip-text bg-gradient-to-r from-[#F25E86] to-[#6D81F2]">
+                R
+              </span>
+              - Result:
+            </strong>{" "}
+            Share the outcome of your actions.
           </p>
+
+          {/* Divider after R */}
+          <hr className="border-t border-gray-400 my-4" />
+
           <p className="text-sm">
             Use this structured approach to provide clear, concise, and
             impactful answers during the interview.
           </p>
         </div>
+
         {/* Chat Section */}
-        <div className="w-full sm:w-2/3 flex flex-col bg-transparent h-full">
+        <div className="w-full sm:w-3/4 flex flex-col h-full">
           {/* Chat Header */}
           <div className="chat_container text-white py-4 px-6 flex items-center">
             <img
@@ -318,12 +374,15 @@ export default function Chat() {
             </div>
           </div>
           {/* Progress Bar */}
-          <div className="px-3 py-3">
+          <div
+            className="px-3 py-3 border-b-2"
+            style={{ borderBottomColor: "#2A2A40" }}
+          >
             <label
               htmlFor="progress-bar"
               className="block text-sm progress_header mb-2"
             >
-              Session Progress
+              Progress
             </label>
             <div className="relative w-full progress-bar shadow-md overflow-hidden">
               <div
@@ -380,7 +439,7 @@ export default function Chat() {
                 alt="assistant"
                 className="w-8 h-8 rounded-full"
               />
-              <div className="max-w-[80%] p-3 text-sm message bg-white shadow-md rounded-lg ">
+              <div className="max-w-[80%] p-3 text-sm message bg-[#2A2A40] shadow-md rounded-lg ">
                 <div className="typing-dots">
                   <span>.</span>
                   <span>.</span>
@@ -395,10 +454,14 @@ export default function Chat() {
             onSubmit={handleSendMessage}
           >
             <textarea
+              ref={textareaRef}
               id="text"
               placeholder="Type your answer here..."
-              className="flex-grow px-3 py-2 form-control-chat border resize-none chat-area overflow-y-auto"
+              className={`flex-grow px-3 py-2 form-control-chat border resize-none chat-area overflow-y-auto ${
+                isDisabled ? "disabled" : "focused"
+              }`}
               rows="1"
+              disabled={isDisabled}
               style={{
                 minHeight: "40px",
                 maxHeight: "80px",
