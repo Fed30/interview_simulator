@@ -39,8 +39,8 @@ export default function InsightPanel({ user }) {
   const maxSessions = 10;
 
   // Compute values for sessions and scores
-  const completedSessions = Math.min(completed, maxSessions);
-  const incompleteSessions = Math.min(incomplete, maxSessions);
+  const completedSessions = completed;
+  const incompleteSessions = incomplete;
   const overallScoreSessions = Math.min(score, maxSessions);
   const remainingScoreSessions = maxSessions - overallScoreSessions;
   console.log("Overall Score Sessions:", overallScoreSessions);

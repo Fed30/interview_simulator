@@ -1099,12 +1099,12 @@ h4.text-center {
   /* Spinner with rotating border */
 .spinner {
 	position: relative;
-	border: 8px solid #1a2b4c; /* Dark Blue */
-	border-top: 8px solid #F25E86; /* Blue */
+	border: 8px solid #1a2b4c; 
+	border-top: 8px solid #F25E86; 
 	border-radius: 50%;
 	width: 50px;
 	height: 50px;
-	animation: spin 1s linear infinite; /* Apply spin animation to the ring */
+	animation: spin 1s linear infinite; 
 }
 
 /* Logo inside the spinner (fixed in center) */
@@ -1112,8 +1112,8 @@ h4.text-center {
 	position: absolute;
 	top: 50%;
 	left: 50%;
-	transform: translate(-50%, -50%); /* Center the logo */
-	z-index: 2; /* Make sure the logo stays above the spinner */
+	transform: translate(-50%, -50%); 
+	z-index: 2; 
 }
 
 /* Spin Animation */
@@ -1123,14 +1123,14 @@ h4.text-center {
 }  
 /* Global class for blur effect on body */
 .body-blur {
-	filter: blur(5px);  /* Apply blur to the whole page */
+	filter: blur(5px);  
 }
 
 .header-blur {
-	filter: blur(5px);  /* Apply blur to the header */
+	filter: blur(5px);  
 }
 
-/* Optional: If you want to blur other elements (like sidebar, etc.) */
+
 .sidebar-blur {
 	filter: blur(5px);
 }

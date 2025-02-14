@@ -31,9 +31,9 @@ def get_feedback_panel_data():
 
     sessions = user_data.get("Sessions", {})
 
-    # Lists to store formatted timestamps
-    completed_session_timestamps = []
-    incomplete_session_timestamps = []
+    # Lists to store formatted timestamps and session data (including report link for completed sessions)
+    completed_sessions = []
+    incomplete_sessions = []
 
     total_completed_sessions = 0
     total_incomplete_sessions = 0
@@ -41,6 +41,7 @@ def get_feedback_panel_data():
     for session_id, session_info in sessions.items():
         status = session_info.get("status")
         timestamp = session_info.get("timestamp")
+        report_link = session_info.get("report_link", None)  # Fetch report_link
 
         formatted_date = None
         if timestamp:
@@ -50,21 +51,23 @@ def get_feedback_panel_data():
 
         if status == "Complete":
             total_completed_sessions += 1
-            if formatted_date:
-                completed_session_timestamps.append(formatted_date)
+            session_data = {"date": formatted_date}
+            if report_link:
+                session_data["report_link"] = report_link  # Add report_link if exists
+            completed_sessions.append(session_data)
         
         elif status == "Incomplete":
             total_incomplete_sessions += 1
             if formatted_date:
-                incomplete_session_timestamps.append(formatted_date)
+                incomplete_sessions.append({"date": formatted_date})
 
     return jsonify({
         "completedSessions": {
             "count": total_completed_sessions,
-            "timestamps": completed_session_timestamps
+            "sessions": completed_sessions
         },
         "incompleteSessions": {
             "count": total_incomplete_sessions,
-            "timestamps": incomplete_session_timestamps
+            "sessions": incomplete_sessions
         }
     })

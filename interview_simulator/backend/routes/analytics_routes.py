@@ -74,7 +74,6 @@ def get_analytics_panel_data():
                     session_date_str = session_date.strftime('%d-%m-%y')  # Format date
                     
                     # Append the date to the full list
-                    #session_full_dates.append(session_date_str)
                     session_date_set.add(session_date_str)
 
                     # Increment the session count for that date

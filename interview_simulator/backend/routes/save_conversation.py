@@ -7,6 +7,8 @@ from utils.openai_get_grade import get_grade_from_openai
 from utils.question_utils import load_dataset
 import os
 from dotenv import load_dotenv
+import threading
+from utils.generate_pdf_report import generate_pdf_report
 
 save_conversation = Blueprint('save_conversation', __name__)
 
@@ -94,7 +96,11 @@ def save_conversation_route():
 
         try:
             response = firebase_db.child(f'Users/{user_id}/Sessions').push(session_data)
+            firebase_session_id = response.key   # Firebase returns the unique ID in the 'name' field
             print(f"Realtime DB push successful, response: {response}")
+            if status == "Complete":
+                thread = threading.Thread(target=generate_pdf_report, args=(user_id, graded_conversation, timestamp, status, doc_id, firebase_session_id))
+                thread.start()
         except Exception as e:
             print("Error saving to Firebase Realtime Database:", e)
             return jsonify({"error": "Failed to save session to Firebase Realtime Database: " + str(e)}), 500

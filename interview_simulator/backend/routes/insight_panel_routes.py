@@ -32,9 +32,9 @@ def get_insight_panel_data():
 
     # Fetch user data from Firebase Realtime Database
     users_ref = firebase_db.child("Users").child(user_id)
-    user_data = users_ref.get()
+    #user_data = users_ref.get()
 
-    if not user_data:
+    if not users_ref:
         return jsonify({"error": "User data not found"}), 404
 
     completed_sessions = 0
@@ -42,7 +42,9 @@ def get_insight_panel_data():
     overall_score = 0
     total_grades = []
     
-    sessions = user_data.get("Sessions", {})
+    #sessions = user_data.get("Sessions", {})
+    sessions = users_ref.child("Sessions").get() or {}
+
 
     if not sessions:
         return jsonify({
@@ -82,10 +84,13 @@ def get_insight_panel_data():
                         print(f"Error fetching session document: {e}")
         elif status == "Incomplete":
             incomplete_sessions += 1
-    print(total_grades)
+    print("INSIGHT PANEL DATA")        
+    print("Total grades",total_grades)
+    print("COMPLETE SESSIONS",completed_sessions)
+    print("INCOMPLETE SESSIONS",incomplete_sessions)
     # Compute overall average score
     overall_score = round(sum(total_grades) / len(total_grades), 2) if total_grades else 0
-    print(overall_score)
+    print("Overall score",overall_score)
 
     return jsonify({
         "completed_sessions": completed_sessions,

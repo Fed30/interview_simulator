@@ -6,6 +6,7 @@ from .insight_panel_routes import insight_panel_data
 from .analytics_routes import analytics_panel_data
 from .feedback_routes import feedback_data
 
+
 def register_routes(app):
     app.register_blueprint(chat_routes)
     app.register_blueprint(save_conversation)

@@ -5,6 +5,7 @@ export default function FeedbackPanel({ user }) {
   const [filteredSessions, setFilteredSessions] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [statusFilter, setStatusFilter] = useState("All"); // Default to "All"
+  const [error, setError] = useState(null); // To track errors
 
   useEffect(() => {
     if (!user) return;
@@ -25,25 +26,25 @@ export default function FeedbackPanel({ user }) {
         const formattedSessions = [];
 
         // Format completed sessions
-        if (data.completedSessions?.timestamps) {
-          data.completedSessions.timestamps.forEach((date, index) => {
+        if (data.completedSessions?.sessions) {
+          data.completedSessions.sessions.forEach((session, index) => {
             formattedSessions.push({
-              id: Math.floor(100000 + Math.random() * 900000), // Random 6-digit ID
-              date,
+              id: session.id || Math.floor(100000 + Math.random() * 900000), // Use session id from API or generate a random one
+              date: session.date,
               status: "Complete",
-              feedbackLink: "#", // Placeholder for future functionality
+              feedbackLink: session.report_link || "#", // Placeholder or actual link
             });
           });
         }
 
         // Format incomplete sessions
-        if (data.incompleteSessions?.timestamps) {
-          data.incompleteSessions.timestamps.forEach((date, index) => {
+        if (data.incompleteSessions?.sessions) {
+          data.incompleteSessions.sessions.forEach((session, index) => {
             formattedSessions.push({
-              id: Math.floor(100000 + Math.random() * 900000), // Random 6-digit ID
-              date,
+              id: session.id || Math.floor(100000 + Math.random() * 900000),
+              date: session.date,
               status: "Incomplete",
-              feedbackLink: "--", // Show "--" for incomplete sessions
+              feedbackLink: "--", // Placeholder for incomplete sessions
             });
           });
         }
@@ -52,6 +53,7 @@ export default function FeedbackPanel({ user }) {
         setFilteredSessions(formattedSessions); // Initially, show all sessions
       } catch (error) {
         console.error("Error fetching insights:", error);
+        setError("Failed to load session data. Please try again later."); // Set error message
       } finally {
         setIsLoading(false);
       }
@@ -115,6 +117,8 @@ export default function FeedbackPanel({ user }) {
 
       {isLoading ? (
         <div className="analytics-spinner"></div>
+      ) : error ? (
+        <p>{error}</p> // Display error if there is an issue fetching data
       ) : filteredSessions.length === 0 ? (
         <p>No session data available.</p>
       ) : (
@@ -138,7 +142,12 @@ export default function FeedbackPanel({ user }) {
                   {session.status === "Incomplete" ? (
                     "--"
                   ) : (
-                    <a href={session.feedbackLink} className="feedback-link">
+                    <a
+                      href={session.feedbackLink}
+                      className="feedback-link"
+                      target="_blank" // Opens the link in a new tab
+                      rel="noopener noreferrer"
+                    >
                       View Feedback
                     </a>
                   )}

@@ -8,22 +8,21 @@ def match_and_extract_grade(content, history):
     for idx, entry in enumerate(history):
         # Check if this entry is an assistant response
         if entry.get("role") == "assistant" and clean_text(entry.get("content", "").strip().lower()) == content:
-            #print("MATCHED CONTENT:", content)
-            print("ASSISTANT: ", entry.get("content"))
+            #print("ASSISTANT: ", entry.get("content"))
 
             # Now, look for the corresponding user response in the history
             if idx + 1 < len(history) and history[idx + 1].get("role") == "user":
                 user_entry = history[idx + 1]
-                print("USER RESPONSE:", user_entry.get("content"))
+                #print("USER RESPONSE:", user_entry.get("content"))
                 # Extract grade from the user response
                 grade = user_entry.get("grade")
-                print("GRADE:", grade)
+                #print("GRADE:", grade)
 
                 # If a grade exists, return the matched category and the grade
                 if grade:
                     # Extract category directly from the assistant's message
                     matched_category = entry.get("category", None)
-                    print("CATEGORY:", matched_category)
+                    #print("CATEGORY:", matched_category)
 
                     try:
                         return matched_category, float(grade)
