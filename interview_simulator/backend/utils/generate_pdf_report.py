@@ -11,6 +11,7 @@ def add_background(pdf):
 
 def generate_pdf_report(user_id, history, timestamp, status, session_id, firebase_session_id):
     font_path = os.path.join(os.path.dirname(__file__), '..', 'assets', 'dejavu-sans.extralight.ttf')
+    font_bold_path = os.path.join(os.path.dirname(__file__), '..', 'assets', 'dejavu-sans.bold.ttf')
 
     try:
         # Fetch user details from Firebase Realtime Database
@@ -30,7 +31,9 @@ def generate_pdf_report(user_id, history, timestamp, status, session_id, firebas
 
         # Add Font
         pdf.add_font('DejaVu', '', font_path, uni=True)
+        pdf.add_font('DejaVu_bold', '', font_bold_path, uni=True)
         pdf.set_font('DejaVu', size=12)
+        
 
         # Add Logo
         logo_path = os.path.join(os.path.dirname(__file__), '..', 'assets', 'logo.png')
@@ -39,7 +42,7 @@ def generate_pdf_report(user_id, history, timestamp, status, session_id, firebas
 
         # Title
         pdf.set_text_color(109, 129, 242)
-        pdf.set_font('DejaVu', '', 16)
+        pdf.set_font('DejaVu_bold', size=20)
         pdf.cell(0, 10, "Interview Simulator Feedback Report", ln=True, align='C')
         pdf.ln(10)
         
@@ -52,6 +55,7 @@ def generate_pdf_report(user_id, history, timestamp, status, session_id, firebas
 
         # Session Details
         pdf.ln(10)  
+        pdf.set_font('DejaVu_bold', size=18)
         pdf.set_text_color(255, 255, 255)
         pdf.cell(200, 10, txt=f"User: {full_name}", ln=True, fill=True)
         pdf.cell(200, 10, txt=f"Date: {timestamp}", ln=True, fill=True)
@@ -61,6 +65,7 @@ def generate_pdf_report(user_id, history, timestamp, status, session_id, firebas
         # Introduction
         pdf.add_page()
         add_background(pdf)
+        pdf.set_font('DejaVu_bold', size=14)
         pdf.set_text_color(109, 129, 242)
         pdf.cell(200, 10, "Introduction", ln=True, align='L')
         pdf.ln(5)
@@ -101,11 +106,31 @@ Please note, this report is not an indication of outcome but rather an opportuni
                         "grade": grade,
                         "feedback": feedback
                     })
+        # Dictionary mapping each category to its corresponding image file path
+        one_image_path = os.path.join(os.path.dirname(__file__), '..', 'assets', 'welcome.png') 
+        two_image_path = os.path.join(os.path.dirname(__file__), '..', 'assets', 'feedback.png') 
+        three_image_path = os.path.join(os.path.dirname(__file__), '..', 'assets', 'collaboration.png') 
+        four_image_path = os.path.join(os.path.dirname(__file__), '..', 'assets', 'learning.png') 
+        five_image_path = os.path.join(os.path.dirname(__file__), '..', 'assets', 'feedback.png') 
+        six_image_path = os.path.join(os.path.dirname(__file__), '..', 'assets', 'star_method.png') 
+        seven_image_path = os.path.join(os.path.dirname(__file__), '..', 'assets', 'challenges.png') 
+        eight_image_path = os.path.join(os.path.dirname(__file__), '..', 'assets', 'collaboration.png')
+        
+        category_images = {
+            "Ice Breaking": one_image_path,
+            "Time Management and Prioritization": two_image_path,
+            "Communication and Networking": three_image_path,
+            "Creativity and Critical Thinking": four_image_path,
+            "Transferable": five_image_path,
+            "Leadership and Adaptability": six_image_path,
+            "Analytical and Problem Solving": seven_image_path,
+            "Teamwork and Collaboration": eight_image_path,
+        }
 
         # Generate Report
         pdf.set_text_color(0, 0, 0)
         for category, questions in categorized_questions.items():
-            pdf.set_font('DejaVu', '', 14)
+            pdf.set_font('DejaVu_bold', size=14)
             pdf.set_text_color(109, 129, 242)
             pdf.cell(0, 10, category, ln=True)
             pdf.ln(5)
@@ -123,12 +148,15 @@ Please note, this report is not an indication of outcome but rather an opportuni
                 pdf.ln(1)
                 pdf.multi_cell(0, 5, f"Feedback: {q['feedback']}")
                 pdf.ln(8)
+            # Add category-specific image if available
+            if category in category_images:
+                pdf.image(category_images[category], h=120, w=pdf.w )  
             # Add a new page and background for next category questions
             pdf.add_page()
             add_background(pdf)
         
         # Conclusion
-        pdf.set_font('DejaVu', size=16)
+        pdf.set_font('DejaVu_bold', size=20)
         pdf.set_text_color(109, 129, 242)
         pdf.cell(200, 10, "Thank you", ln=True, align='L')
         pdf.ln(5)
