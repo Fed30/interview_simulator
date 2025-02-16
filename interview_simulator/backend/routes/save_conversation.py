@@ -36,36 +36,35 @@ def save_conversation_route():
         formatted_time = now.strftime("%H:%M:%S")
         timestamp = f"{formatted_date} {formatted_time}"
 
-        # Determine the status based on the conversation content
-        status = "Incomplete" if any(entry.get("content") == "Session Expired" for entry in conversation_history) else "Complete"
-        
-        # Load the dataset
-        dataset = load_dataset() 
+        # Determine the session status
+        is_incomplete = any(entry.get("content") == "Session Expired" for entry in conversation_history)
+        status = "Incomplete" if is_incomplete else "Complete"
 
-        # Grade each user response in the conversation history
-        graded_conversation = []
-        for i, msg in enumerate(conversation_history):
-            if msg.get('role') == 'user':  # Only grade user responses
-                user_response = msg.get('content')
-                if user_response:
-                    question = conversation_history[i-1].get('content') if i > 0 and conversation_history[i-1].get('role') == 'assistant' else "No question provided"
-                    
-                    # Find the ideal response based on the question from the dataset
-                    ideal_response = next((item['user_answer'] for item in dataset if item['prompt'] == question), None)
-                    
-                    # If no ideal response is found,  handle this as an error or default behavior
-                    if ideal_response is None:
-                        return jsonify({"error": "Ideal response not found for the question."}), 400
-                    
-                    # Get the grade and feedback summary for each user response
-                    grade = get_grade_from_openai(user_response,ideal_response, question)  # Get grade
-                    feedback = get_feedback_summary_from_openai(user_response,ideal_response, question)  # Get feedback summary
+        graded_conversation = conversation_history.copy()
 
-                    # Add grade and feedback to the message
-                    msg['grade'] = grade  
-                    msg['feedback'] = feedback  
+        # Only grade responses if the session is complete
+        if not is_incomplete:
+            dataset = load_dataset()  # Load dataset once
 
-            graded_conversation.append(msg)
+            for i, msg in enumerate(graded_conversation):
+                if msg.get('role') == 'user':  # Only grade user responses
+                    user_response = msg.get('content')
+                    if user_response:
+                        question = (
+                            graded_conversation[i - 1].get('content')
+                            if i > 0 and graded_conversation[i - 1].get('role') == 'assistant'
+                            else "No question provided"
+                        )
+
+                        # Find the ideal response from the dataset
+                        ideal_response = next(
+                            (item['user_answer'] for item in dataset if item['prompt'] == question), None
+                        )
+
+                        # Skip grading if no ideal response exists
+                        if ideal_response:
+                            msg['grade'] = get_grade_from_openai(user_response, ideal_response, question)
+                            msg['feedback'] = get_feedback_summary_from_openai(user_response, ideal_response, question)
 
         # Save to Firestore
         try:
@@ -75,29 +74,26 @@ def save_conversation_route():
                 'timestamp': timestamp,
                 'status': status
             })
-
-            print("Firestore save successful, doc ID:", doc_ref)
         except Exception as e:
             print("Error saving to Firestore:", e)
             return jsonify({"error": "Failed to save conversation to Firestore: " + str(e)}), 500
 
+        # Save session metadata to Firebase Realtime Database
         load_dotenv() 
         doc_id = doc_ref.id
         project_id = os.getenv('FIREBASE_PROJECT_ID', 'default_project_id')
-        print("doc id: ",doc_id)
-        print("project id: ", project_id)
 
         session_data = {
             'session_link': f'https://firestore.googleapis.com/v1/projects/{project_id}/databases/(default)/documents/Sessions/{doc_id}',
             'timestamp': timestamp,
             'status': status
         }
-        print("Session data being pushed to Firebase:", session_data)
 
         try:
             response = firebase_db.child(f'Users/{user_id}/Sessions').push(session_data)
-            firebase_session_id = response.key   # Firebase returns the unique ID in the 'name' field
-            print(f"Realtime DB push successful, response: {response}")
+            firebase_session_id = response.key  
+            
+            # Only generate the PDF if the session is complete
             if status == "Complete":
                 thread = threading.Thread(target=generate_pdf_report, args=(user_id, graded_conversation, timestamp, status, doc_id, firebase_session_id))
                 thread.start()
@@ -105,7 +101,6 @@ def save_conversation_route():
             print("Error saving to Firebase Realtime Database:", e)
             return jsonify({"error": "Failed to save session to Firebase Realtime Database: " + str(e)}), 500
 
-        
         session.clear()
         return jsonify({"success": True, "conversationId": doc_id}), 200
 

@@ -14,7 +14,6 @@ questions_by_category = organize_questions(dataset)
 def initiate_chat():
     # Check if an existing session is valid
     if check_existing_session():
-        # Ensure 'selected_questions' exists in the session
         if 'selected_questions' not in session:
             selected_questions = select_random_questions(questions_by_category)
             session['selected_questions'] = selected_questions
@@ -35,12 +34,14 @@ def initiate_chat():
         expiry_time = datetime.fromisoformat(session['expiry_time'])
         remaining_time = max((expiry_time - datetime.utcnow()).total_seconds(), 0)
 
-        session['conversation_history'].append({
-            "role": "assistant",
-            "category": next_question_category,
-            "content": next_question
-        })
-        session.modified = True
+        # ✅ **Check if the last message is already the next_question**
+        if not session['conversation_history'] or session['conversation_history'][-1]["content"] != next_question:
+            session['conversation_history'].append({
+                "role": "assistant",
+                "category": next_question_category,
+                "content": next_question
+            })
+            session.modified = True
 
         return jsonify({
             "message": "Restoring session.",
@@ -59,7 +60,6 @@ def initiate_chat():
     initial_question_category = selected_questions[0]['category']
     introduction_message = "Welcome to your personalized Computer Science interview practice session!"
 
-    # Ensure 'conversation_history' exists for new session
     session['conversation_history'] = [
         {"role": "assistant", "content": introduction_message},
         {"role": "assistant", "category": initial_question_category, "content": initial_question}

@@ -122,23 +122,23 @@ const Header = () => {
 
   const handleLogout = async (e) => {
     e.preventDefault();
+    setIsDropdownOpen(false);
     setLoading(true);
     await firebaseSignOut(auth);
     setTimeout(() => {
       toast.success("Logout Successful!");
       setIsLoggedIn(false);
       router.push("/");
-      setIsDropdownOpen(false);
       setLoading(false);
     }, 1000);
   };
 
   const handleProfileNav = async (e) => {
     e.preventDefault();
+    setIsDropdownOpen(false);
     setLoading(true);
     setTimeout(() => {
       router.push("/profile");
-      setIsDropdownOpen(false);
       setLoading(false);
     }, 1000);
   };
@@ -198,7 +198,7 @@ const Header = () => {
               <ul>
                 <li>
                   <button
-                    onClick={() => router.push("/profile")}
+                    onClick={handleProfileNav}
                     className="block px-4 py-2 text-sm w-full text-left"
                   >
                     My Profile

@@ -162,7 +162,7 @@ Please note, this report is not an indication of outcome but rather an opportuni
         pdf.ln(5)
         pdf.set_font('DejaVu', size=12)
         pdf.set_text_color(255, 255, 255)
-        intro_text = """We hope that you found this report interesting, and that it provides you with useful insights to help you grow and develop. Whatever happens next, we’d like to thank you once again for taking the time to complete our assessment and wish you every success for the future."""
+        intro_text = """We hope that you found this report interesting, and that it provides you with useful insights to help you grow and develop. Whatever happens next, we’d like to thank you once again for taking the time to complete our Practice Session and wish you every success for the future."""
         pdf.multi_cell(0, 5, intro_text)
         pdf.ln(10)
         

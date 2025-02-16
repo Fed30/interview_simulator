@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 import { useLoading } from "../context/LoadingContext";
 import { toast } from "react-toastify";
+import ChatTour from "../components/chatTour";
 
 export default function Chat() {
   const [messages, setMessages] = useState([]); // Safe default initialization
@@ -24,12 +25,20 @@ export default function Chat() {
   const [isDisabled, setIsDisabled] = useState(false);
   const textareaRef = useRef(null);
   const [pageLoaded, setPageLoaded] = useState(false);
+  const [tourCompleted, setTourCompleted] = useState(false);
 
   useEffect(() => {
-    if (!isDisabled && textareaRef.current) {
-      textareaRef.current.focus(); // Automatically focus when enabled
+    document.body.removeAttribute("data-new-gr-c-s-check-loaded");
+    document.body.removeAttribute("data-gr-ext-installed");
+  }, []);
+
+  useEffect(() => {
+    if (!isDisabled) {
+      setTimeout(() => {
+        textareaRef.current?.focus();
+      }, 100); // Small delay to ensure state updates
     }
-  }, [isDisabled]);
+  }, [isDisabled]); // Depend on `isDisabled`
 
   // Function to fetch initial questions
   const fetchInitialQuestion = async (user) => {
@@ -43,34 +52,36 @@ export default function Chat() {
           Authorization: `Bearer ${idToken}`,
         },
       });
+
       const data = await response.json();
+
       if (data.error) {
         toast.error("Error: " + data.error);
         return;
       }
 
+      console.log("Data: ", data);
+
       const conversationHistory = data.conversation_history || [];
       const progressValue = Number(data.progress) || 0;
-      const nextQuestion = data.next_question || "No more questions.";
+      const initialQuestion = data.initial_question;
+      //const nextQuestion = data.next_question;
       const remainingTime = Math.ceil(Number(data.remaining_time || 60));
 
       if (isMounted.current) {
-        if (messages.length === 0) {
-          setMessages(conversationHistory);
-          setCurrentQuestion(nextQuestion);
-          setProgress(progressValue);
-          setTimeLeft(remainingTime);
-        } else {
-          // Prevent duplicate questions on reload
-          const lastMessage = messages[messages.length - 1];
-          if (lastMessage?.content !== nextQuestion) {
-            setMessages((prev) => [
-              ...prev,
-              { role: "assistant", content: nextQuestion },
-            ]);
-            setCurrentQuestion(nextQuestion);
+        setMessages(() => {
+          let fullHistory = [...conversationHistory];
+
+          // If there's no history, add the initial question
+          if (fullHistory.length === 0 && initialQuestion) {
+            fullHistory.push({ role: "assistant", content: initialQuestion });
           }
-        }
+
+          return fullHistory;
+        });
+
+        setProgress(progressValue);
+        setTimeLeft(remainingTime);
       }
     } catch (error) {
       toast.error("Failed to load the initial question. Please try again.");
@@ -104,6 +115,7 @@ export default function Chat() {
 
   // Session expiration logic
   useEffect(() => {
+    if (!tourCompleted) return; // Only proceed if the tour is completed
     setPageLoaded(true);
     const auth = getAuth();
     const unsubscribe = onAuthStateChanged(auth, (user) => {
@@ -136,7 +148,7 @@ export default function Chat() {
       unsubscribe();
       clearInterval(timer);
     };
-  }, [router, questionFetched, hasSessionExpired, timerStyle]);
+  }, [router, questionFetched, hasSessionExpired, timerStyle, tourCompleted]);
 
   // Manage session expiration and loading state
   useLayoutEffect(() => {
@@ -154,6 +166,7 @@ export default function Chat() {
 
   const sendConversationHistory = async (conversation) => {
     setIsDisabled(true);
+    localStorage.removeItem("chatTourCompleted");
     const auth = getAuth();
     const user = auth.currentUser;
     console.log("CONVERSATION: ", conversation);
@@ -288,11 +301,13 @@ export default function Chat() {
 
   return (
     <div
-      className={`flex items-center justify-center mt-14 h-screen w-full page-transition ${
+      className={`flex items-center justify-center mt-2 h-screen w-full page-transition ${
         pageLoaded ? "loaded" : ""
       }`}
     >
-      <div className="flex flex-col sm:flex-row w-full h-full shadow-lg  overflow-hidden">
+      <div className="main-layout  sm:flex-row w-full h-full shadow-lg  overflow-hidden">
+        {/*ChatTour Component*/}
+        <ChatTour onComplete={() => setTourCompleted(true)} />
         {/* Booklet Section */}
         <div className="w-full sm:w-1/4 booklet_background text-white p-6 flex flex-col justify-between mb-6 sm:mb-0">
           <h2 className="text-2xl font-semibold text-transparent bg-clip-text bg-gradient-to-r from-[#F25E86] to-[#6D81F2] mb-4">
@@ -345,7 +360,7 @@ export default function Chat() {
           {/* Divider after R */}
           <hr className="border-t border-gray-400 my-4" />
 
-          <p className="text-sm">
+          <p id="notice" className="text-sm">
             Use this structured approach to provide clear, concise, and
             impactful answers during the interview.
           </p>
@@ -365,6 +380,7 @@ export default function Chat() {
             </div>
             <div className="ml-auto">
               <div
+                id="timer"
                 className={`chat_timer px-3 py-1 ${
                   timeLeft <= 120 && timeLeft > 0 ? "gradient-text" : ""
                 }`}
@@ -399,7 +415,7 @@ export default function Chat() {
             </div>
           </div>
           {/* Chat Area */}
-          <div className="flex-grow chat-area overflow-y-auto p-4 space-y-4">
+          <div className=" chat-area overflow-y-auto p-4 space-y-4">
             {messages.map((msg, index) => (
               <div
                 key={index}
@@ -414,13 +430,13 @@ export default function Chat() {
                       alt="assistant"
                       className="w-8 h-8 rounded-full"
                     />
-                    <div className="max-w-[80%] p-3 text-sm message chat-bubble-assistant">
+                    <div className="text-sm message chat-bubble-assistant">
                       {msg.content || "No content"}
                     </div>
                   </>
                 ) : (
                   <div className="flex flex-col items-end">
-                    <div className="max-w-[80%] p-3 text-sm message chat-bubble-user">
+                    <div className="text-sm message chat-bubble-user">
                       {msg.content || "No content"}
                     </div>
                     <span className="text-sm text-gray-500 mt-1">You</span>
@@ -429,7 +445,7 @@ export default function Chat() {
               </div>
             ))}
             {/* Dummy element to track the bottom */}
-            <div ref={chatEndRef} />
+            <div id="chatEnd" ref={chatEndRef} />
           </div>
           {/* Chatbot typing indicator */}
           {isTyping && (

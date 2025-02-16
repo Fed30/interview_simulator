@@ -36,7 +36,6 @@ body.modal-open {
 .page-transition {
 	animation: slideInFromTop 1s ease-out forwards;
 	height: 100vh; 
-	overflow: hidden;
 }  
 
 header {
@@ -772,7 +771,10 @@ h4.text-center {
 	color: white;
 	display: flex;
 	flex-direction: column;
+	flex-shrink: 0;
 	justify-content: space-between;
+	height: auto;
+	max-height: 100%; 
 }
 
 .chat_timer {
@@ -782,6 +784,7 @@ h4.text-center {
 	font-weight: bold;
 	box-shadow: 0 2px 10px rgba(255, 255, 255, 0.3); 
 }
+
 
 /* Chat Header Image */
 .chat_container img {
@@ -832,10 +835,16 @@ h4.text-center {
 }
 
 .chat-area {
-    overflow-y: auto;
-	flex-grow: 1;
+	flex-grow: 1; 
+    overflow-y: auto; 
+    min-height: 0; 
     -ms-overflow-style: none; /* Hide scrollbar for Internet Explorer and Edge */
     scrollbar-width: none; /* Hide scrollbar for Firefox */
+}
+.main-layout {
+    display: flex;
+    height: 100vh; /* Take up the full viewport height */
+    flex-direction: column; /* Stack the elements vertically */
 }
 
 .chat-area::-webkit-scrollbar {
