@@ -28,6 +28,14 @@ export default function Chat() {
   const [tourCompleted, setTourCompleted] = useState(false);
 
   useEffect(() => {
+    if (typeof window !== "undefined") {
+      const completed = localStorage.getItem("chatTourCompleted");
+      setTourCompleted(completed === "true");
+    }
+    setPageLoaded(true);
+  }, []);
+
+  useEffect(() => {
     document.body.removeAttribute("data-new-gr-c-s-check-loaded");
     document.body.removeAttribute("data-gr-ext-installed");
   }, []);
@@ -115,8 +123,10 @@ export default function Chat() {
 
   // Session expiration logic
   useEffect(() => {
-    if (!tourCompleted) return; // Only proceed if the tour is completed
     setPageLoaded(true);
+    if (!tourCompleted) return; // Only proceed if the tour is completed
+    console.log("Tour Completed State Updated:", tourCompleted);
+
     const auth = getAuth();
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       if (user) {
@@ -294,218 +304,230 @@ export default function Chat() {
 
   const handleKeyDown = (e) => {
     if (e.key === "Enter") {
-      e.preventDefault(); // Prevents creating a new line in the textarea
+      e.preventDefault();
       handleSendMessage();
     }
   };
 
   return (
-    <div
-      className={`flex items-center justify-center mt-2 h-screen w-full page-transition ${
-        pageLoaded ? "loaded" : ""
-      }`}
-    >
-      <div className="main-layout  sm:flex-row w-full h-full shadow-lg  overflow-hidden">
-        {/*ChatTour Component*/}
-        <ChatTour onComplete={() => setTourCompleted(true)} />
-        {/* Booklet Section */}
-        <div className="w-full sm:w-1/4 booklet_background text-white p-6 flex flex-col justify-between mb-6 sm:mb-0">
-          <h2 className="text-2xl font-semibold text-transparent bg-clip-text bg-gradient-to-r from-[#F25E86] to-[#6D81F2] mb-4">
-            STAR Method
-          </h2>
+    <>
+      {!tourCompleted && (
+        <>
+          <ChatTour
+            onComplete={() => {
+              setTourCompleted(true);
+              localStorage.setItem("chatTourCompleted", "true");
+              window.location.reload();
+            }}
+          />
+        </>
+      )}
 
-          {/* Centered & Smaller Image */}
-          <div className="flex justify-center items-center">
-            <img
-              src="/learning.png"
-              alt="Feedback"
-              className="w-3/4 sm:w-2/3 h-auto object-contain image-hover"
-            />
-          </div>
+      <div
+        className={`flex items-center justify-center mt-2 h-screen w-full page-transition ${
+          pageLoaded ? "loaded" : ""
+        }`}
+      >
+        <div className="flex flex-col sm:flex-row w-full h-full shadow-lg  overflow-hidden">
+          {/* Booklet Section */}
+          <div className="w-full sm:w-1/4 booklet_background text-white p-6 flex flex-col justify-between mb-6 sm:mb-0">
+            <h2 className="text-2xl font-semibold text-transparent bg-clip-text bg-gradient-to-r from-[#F25E86] to-[#6D81F2] mb-4">
+              STAR Method
+            </h2>
 
-          <p className="text-sm leading-6 mb-4">
-            <strong>
-              <span className="text-2xl font-semibold text-transparent bg-clip-text bg-gradient-to-r from-[#F25E86] to-[#6D81F2]">
-                S
-              </span>
-              - Situation:
-            </strong>{" "}
-            Describe the context of the task.
-            <br />
-            <strong>
-              <span className="text-2xl font-semibold text-transparent bg-clip-text bg-gradient-to-r from-[#F25E86] to-[#6D81F2]">
-                T
-              </span>
-              - Task:
-            </strong>{" "}
-            Explain the challenge you faced.
-            <br />
-            <strong>
-              <span className="text-2xl font-semibold text-transparent bg-clip-text bg-gradient-to-r from-[#F25E86] to-[#6D81F2]">
-                A
-              </span>
-              - Action:
-            </strong>{" "}
-            Detail the specific steps you took.
-            <br />
-            <strong>
-              <span className="text-2xl font-semibold text-transparent bg-clip-text bg-gradient-to-r from-[#F25E86] to-[#6D81F2]">
-                R
-              </span>
-              - Result:
-            </strong>{" "}
-            Share the outcome of your actions.
-          </p>
-
-          {/* Divider after R */}
-          <hr className="border-t border-gray-400 my-4" />
-
-          <p id="notice" className="text-sm">
-            Use this structured approach to provide clear, concise, and
-            impactful answers during the interview.
-          </p>
-        </div>
-
-        {/* Chat Section */}
-        <div className="w-full sm:w-3/4 flex flex-col h-full">
-          {/* Chat Header */}
-          <div className="chat_container text-white py-4 px-6 flex items-center">
-            <img
-              src="/logo.png"
-              alt="Chatbot"
-              className="w-10 h-10 rounded-full"
-            />
-            <div className="ml-4">
-              <p className="text-md font-medium">Interview Simulator</p>
+            {/* Centered & Smaller Image */}
+            <div className="flex justify-center items-center">
+              <img
+                src="/learning.png"
+                alt="Feedback"
+                className="w-3/4 sm:w-2/3 h-auto object-contain image-hover"
+              />
             </div>
-            <div className="ml-auto">
-              <div
-                id="timer"
-                className={`chat_timer px-3 py-1 ${
-                  timeLeft <= 120 && timeLeft > 0 ? "gradient-text" : ""
-                }`}
-              >
-                Timer: <span id="timer">{formatTime(timeLeft)}</span>
-              </div>
-            </div>
-          </div>
-          {/* Progress Bar */}
-          <div
-            className="px-3 py-3 border-b-2"
-            style={{ borderBottomColor: "#2A2A40" }}
-          >
-            <label
-              htmlFor="progress-bar"
-              className="block text-sm progress_header mb-2"
-            >
-              Progress
-            </label>
-            <div className="relative w-full progress-bar shadow-md overflow-hidden">
-              <div
-                id="progress-bar"
-                className="absolute top-0 left-0 h-full rounded-full progress"
-                style={{
-                  width: `${progress || 0}%`,
-                }}
-              >
-                <span className="text-xs font-bold ml-2 text-white">
-                  {progress || 0}%
+
+            <p id="answer_method" className="text-sm leading-6 mb-4">
+              <strong>
+                <span className="text-2xl font-semibold text-transparent bg-clip-text bg-gradient-to-r from-[#F25E86] to-[#6D81F2]">
+                  S
                 </span>
-              </div>
-            </div>
+                - Situation:
+              </strong>{" "}
+              Describe the context of the task.
+              <br />
+              <strong>
+                <span className="text-2xl font-semibold text-transparent bg-clip-text bg-gradient-to-r from-[#F25E86] to-[#6D81F2]">
+                  T
+                </span>
+                - Task:
+              </strong>{" "}
+              Explain the challenge you faced.
+              <br />
+              <strong>
+                <span className="text-2xl font-semibold text-transparent bg-clip-text bg-gradient-to-r from-[#F25E86] to-[#6D81F2]">
+                  A
+                </span>
+                - Action:
+              </strong>{" "}
+              Detail the specific steps you took.
+              <br />
+              <strong>
+                <span className="text-2xl font-semibold text-transparent bg-clip-text bg-gradient-to-r from-[#F25E86] to-[#6D81F2]">
+                  R
+                </span>
+                - Result:
+              </strong>{" "}
+              Share the outcome of your actions.
+            </p>
+
+            {/* Divider after R */}
+            <hr className="border-t border-gray-400 my-4" />
+
+            <p id="notice" className="text-sm">
+              Use this structured approach to provide clear, concise, and
+              impactful answers during the interview.
+            </p>
           </div>
-          {/* Chat Area */}
-          <div className=" chat-area overflow-y-auto p-4 space-y-4">
-            {messages.map((msg, index) => (
-              <div
-                key={index}
-                className={`flex ${
-                  msg.role === "assistant" ? "justify-start" : "justify-end"
-                } space-x-3`}
-              >
-                {msg.role === "assistant" ? (
-                  <>
-                    <img
-                      src="/logo.png"
-                      alt="assistant"
-                      className="w-8 h-8 rounded-full"
-                    />
-                    <div className="text-sm message chat-bubble-assistant">
-                      {msg.content || "No content"}
-                    </div>
-                  </>
-                ) : (
-                  <div className="flex flex-col items-end">
-                    <div className="text-sm message chat-bubble-user">
-                      {msg.content || "No content"}
-                    </div>
-                    <span className="text-sm text-gray-500 mt-1">You</span>
-                  </div>
-                )}
-              </div>
-            ))}
-            {/* Dummy element to track the bottom */}
-            <div id="chatEnd" ref={chatEndRef} />
-          </div>
-          {/* Chatbot typing indicator */}
-          {isTyping && (
-            <div className="flex justify-start ml-2 space-x-3">
+
+          {/* Chat Section */}
+          <div className="w-full sm:w-3/4 flex flex-col h-full">
+            {/* Chat Header */}
+            <div className="chat_container text-white py-4 px-6 flex items-center">
               <img
                 src="/logo.png"
-                alt="assistant"
-                className="w-8 h-8 rounded-full"
+                alt="Chatbot"
+                className="w-10 h-10 rounded-full"
               />
-              <div className="max-w-[80%] p-3 text-sm message bg-[#2A2A40] shadow-md rounded-lg ">
-                <div className="typing-dots">
-                  <span>.</span>
-                  <span>.</span>
-                  <span>.</span>
+              <div className="ml-4">
+                <p className="text-md font-medium">Interview Simulator</p>
+              </div>
+              <div className="ml-auto">
+                <div
+                  id="timer"
+                  className={`chat_timer px-3 py-1 ${
+                    timeLeft <= 120 && timeLeft > 0 ? "gradient-text" : ""
+                  }`}
+                >
+                  Timer: <span id="timer">{formatTime(timeLeft)}</span>
                 </div>
               </div>
             </div>
-          )}
-          {/* Input Field */}
-          <form
-            className="flex items-end space-x-2 m-3"
-            onSubmit={handleSendMessage}
-          >
-            <textarea
-              ref={textareaRef}
-              id="text"
-              placeholder="Type your answer here..."
-              className={`flex-grow px-3 py-2 form-control-chat border resize-none chat-area overflow-y-auto ${
-                isDisabled ? "disabled" : "focused"
-              }`}
-              rows="1"
-              disabled={isDisabled}
-              style={{
-                minHeight: "40px",
-                maxHeight: "80px",
-                height: "auto",
-              }}
-              onInput={(e) => {
-                e.target.style.height = "auto";
-                e.target.style.height = `${e.target.scrollHeight}px`;
-              }}
-              onKeyDown={handleKeyDown}
-            />
-            <button
-              type="button"
-              id="send"
-              className="sendMsg-btn px-4 py-2 flex-shrink-0"
-              style={{
-                height: "100%",
-              }}
-              onClick={(e) => {
-                e.preventDefault(); // Ensure no page refresh on button click
-                handleSendMessage(e);
-              }}
+            {/* Progress Bar */}
+            <div
+              className="px-3 py-3 border-b-2"
+              style={{ borderBottomColor: "#2A2A40" }}
             >
-              <i className="fas fa-paper-plane"></i>
-            </button>
-          </form>
+              <label
+                htmlFor="progress-bar"
+                className="block text-sm progress_header mb-2"
+              >
+                Progress
+              </label>
+              <div className="relative w-full progress-bar shadow-md overflow-hidden">
+                <div
+                  id="progress-bar"
+                  className="absolute top-0 left-0 h-full rounded-full progress"
+                  style={{
+                    width: `${progress || 0}%`,
+                  }}
+                >
+                  <span className="text-xs font-bold ml-2 text-white">
+                    {progress || 0}%
+                  </span>
+                </div>
+              </div>
+            </div>
+            {/* Chat Area */}
+            <div className="flex-grow chat-area overflow-y-auto p-4 space-y-4">
+              {messages.map((msg, index) => (
+                <div
+                  key={index}
+                  className={`flex ${
+                    msg.role === "assistant" ? "justify-start" : "justify-end"
+                  } space-x-3`}
+                >
+                  {msg.role === "assistant" ? (
+                    <>
+                      <img
+                        src="/logo.png"
+                        alt="assistant"
+                        className="w-8 h-8 rounded-full"
+                      />
+                      <div className="text-sm message chat-bubble-assistant">
+                        {msg.content || "No content"}
+                      </div>
+                    </>
+                  ) : (
+                    <div className="flex flex-col items-end">
+                      <div className="text-sm message chat-bubble-user">
+                        {msg.content || "No content"}
+                      </div>
+                      <span className="text-sm text-gray-500 mt-1">You</span>
+                    </div>
+                  )}
+                </div>
+              ))}
+              {/* Dummy element to track the bottom */}
+              <div id="chatEnd" ref={chatEndRef} />
+            </div>
+            {/* Chatbot typing indicator */}
+            {isTyping && (
+              <div className="flex justify-start ml-2 space-x-3">
+                <img
+                  src="/logo.png"
+                  alt="assistant"
+                  className="w-8 h-8 rounded-full"
+                />
+                <div className="max-w-[80%] p-3 text-sm message bg-[#2A2A40] shadow-md rounded-lg ">
+                  <div className="typing-dots">
+                    <span>.</span>
+                    <span>.</span>
+                    <span>.</span>
+                  </div>
+                </div>
+              </div>
+            )}
+            {/* Input Field */}
+            <form
+              className="flex items-end space-x-2 m-3"
+              onSubmit={handleSendMessage}
+            >
+              <textarea
+                ref={textareaRef}
+                id="text"
+                placeholder="Type your answer here..."
+                className={`flex-grow px-3 py-2 form-control-chat border resize-none chat-area overflow-y-auto ${
+                  isDisabled ? "disabled" : "focused"
+                }`}
+                rows="1"
+                disabled={isDisabled}
+                style={{
+                  minHeight: "40px",
+                  maxHeight: "80px",
+                  height: "auto",
+                }}
+                onInput={(e) => {
+                  e.target.style.height = "auto";
+                  e.target.style.height = `${e.target.scrollHeight}px`;
+                }}
+                onKeyDown={handleKeyDown}
+              />
+              <button
+                type="button"
+                id="send"
+                className="sendMsg-btn px-4 py-2 flex-shrink-0"
+                style={{
+                  height: "100%",
+                }}
+                onClick={(e) => {
+                  e.preventDefault(); // Ensure no page refresh on button click
+                  handleSendMessage(e);
+                }}
+              >
+                <i className="fas fa-paper-plane"></i>
+              </button>
+            </form>
+          </div>
         </div>
       </div>
-    </div>
+    </>
   );
 }

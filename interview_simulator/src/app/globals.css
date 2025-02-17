@@ -35,8 +35,9 @@ body.modal-open {
 /* Apply the animation to the container */
 .page-transition {
 	animation: slideInFromTop 1s ease-out forwards;
-	height: 100vh; 
-}  
+	height: 100vh;
+}
+
 
 header {
 	background: transparent; 
@@ -835,16 +836,8 @@ h4.text-center {
 }
 
 .chat-area {
-	flex-grow: 1; 
-    overflow-y: auto; 
-    min-height: 0; 
     -ms-overflow-style: none; /* Hide scrollbar for Internet Explorer and Edge */
     scrollbar-width: none; /* Hide scrollbar for Firefox */
-}
-.main-layout {
-    display: flex;
-    height: 100vh; /* Take up the full viewport height */
-    flex-direction: column; /* Stack the elements vertically */
 }
 
 .chat-area::-webkit-scrollbar {
