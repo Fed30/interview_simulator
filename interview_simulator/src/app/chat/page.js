@@ -451,16 +451,22 @@ export default function Chat() {
                         alt="assistant"
                         className="w-8 h-8 rounded-full"
                       />
-                      <div className="text-sm message chat-bubble-assistant">
-                        {msg.content || "No content"}
+                      <div className="flex flex-col bg-[#F25E86] p-3 rounded-lg min-w-min max-w-2xl">
+                        <div className="text-sm message text-white">
+                          {msg.content || "No content"}
+                        </div>
                       </div>
                     </>
                   ) : (
-                    <div className="flex flex-col items-end">
-                      <div className="text-sm message chat-bubble-user">
-                        {msg.content || "No content"}
+                    <div>
+                      <div className="flex flex-col bg-[#6D81F2] p-3 rounded-lg min-w-min max-w-2xl">
+                        <div className="text-sm message text-white">
+                          {msg.content || "No content"}
+                        </div>
                       </div>
-                      <span className="text-sm text-gray-500 mt-1">You</span>
+                      <span className="flex flex-row-reverse text-sm w-full text-right text-gray-500 mt-1">
+                        You
+                      </span>
                     </div>
                   )}
                 </div>

@@ -12,12 +12,11 @@ import InsightPanel from "../components/insight_panel";
 import FeedbackPanel from "../components/feedback_panel";
 import { useAuth } from "../context/AuthContext";
 
-const Profile = () => {
+export default function Profile() {
   const [activeTab, setActiveTab] = useState("analyticsContent");
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isResetPwdModalOpen, setIsResetPwdModalOpen] = useState(false);
   const [userName, setUserName] = useState("");
-  const [loading, setLoading] = useState(true); // State to track loading
   const router = useRouter(); // Initialize the router
   const [user, setUser] = useState(null);
   const { userInitials } = useAuth();
@@ -219,6 +218,4 @@ const Profile = () => {
       </div>
     </div>
   );
-};
-
-export default Profile;
+}
