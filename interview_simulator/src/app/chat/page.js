@@ -6,6 +6,7 @@ import { getAuth, onAuthStateChanged } from "firebase/auth";
 import { useLoading } from "../context/LoadingContext";
 import { toast } from "react-toastify";
 import ChatTour from "../components/chatTour";
+import SessionEndModal from "../components/SessionEndModal";
 
 export default function Chat() {
   const [messages, setMessages] = useState([]); // Safe default initialization
@@ -24,16 +25,15 @@ export default function Chat() {
   const [questionFetched, setQuestionFetched] = useState(false);
   const [isDisabled, setIsDisabled] = useState(false);
   const textareaRef = useRef(null);
-  const [pageLoaded, setPageLoaded] = useState(false);
   const [tourCompleted, setTourCompleted] = useState(false);
+  const [sessionEndModal, setSessionEndModal] = useState(false);
 
   useEffect(() => {
     if (typeof window !== "undefined") {
       const completed = localStorage.getItem("chatTourCompleted");
       setTourCompleted(completed === "true");
     }
-    setPageLoaded(true);
-  }, []);
+  }, [tourCompleted]);
 
   useEffect(() => {
     document.body.removeAttribute("data-new-gr-c-s-check-loaded");
@@ -50,50 +50,51 @@ export default function Chat() {
 
   // Function to fetch initial questions
   const fetchInitialQuestion = async (user) => {
-    try {
-      setIsConversationSaved(false);
-      const idToken = await user.getIdToken(true);
-      const response = await fetch("http://127.0.0.1:5000/chat", {
-        method: "GET",
-        credentials: "include",
-        headers: {
-          Authorization: `Bearer ${idToken}`,
-        },
-      });
-
-      const data = await response.json();
-
-      if (data.error) {
-        toast.error("Error: " + data.error);
-        return;
-      }
-
-      console.log("Data: ", data);
-
-      const conversationHistory = data.conversation_history || [];
-      const progressValue = Number(data.progress) || 0;
-      const initialQuestion = data.initial_question;
-      //const nextQuestion = data.next_question;
-      const remainingTime = Math.ceil(Number(data.remaining_time || 60));
-
-      if (isMounted.current) {
-        setMessages(() => {
-          let fullHistory = [...conversationHistory];
-
-          // If there's no history, add the initial question
-          if (fullHistory.length === 0 && initialQuestion) {
-            fullHistory.push({ role: "assistant", content: initialQuestion });
-          }
-
-          return fullHistory;
+    if (user) {
+      try {
+        setIsConversationSaved(false);
+        const idToken = await user.getIdToken(true);
+        const response = await fetch("http://127.0.0.1:5000/chat", {
+          method: "GET",
+          credentials: "include",
+          headers: {
+            Authorization: `Bearer ${idToken}`,
+          },
         });
 
-        setProgress(progressValue);
-        setTimeLeft(remainingTime);
+        const data = await response.json();
+
+        if (data.error) {
+          toast.error("Error: " + data.error);
+          return;
+        }
+
+        console.log("Data: ", data);
+
+        const conversationHistory = data.conversation_history || [];
+        const progressValue = Number(data.progress) || 0;
+        const initialQuestion = data.initial_question;
+        const remainingTime = Math.ceil(Number(data.remaining_time || 60));
+
+        if (isMounted.current) {
+          setMessages(() => {
+            let fullHistory = [...conversationHistory];
+
+            // If there's no history, add the initial question
+            if (fullHistory.length === 0 && initialQuestion) {
+              fullHistory.push({ role: "assistant", content: initialQuestion });
+            }
+
+            return fullHistory;
+          });
+
+          setProgress(progressValue);
+          setTimeLeft(remainingTime);
+        }
+      } catch (error) {
+        toast.error("Failed to load the initial question. Please try again.");
       }
-    } catch (error) {
-      toast.error("Failed to load the initial question. Please try again.");
-    }
+    } else return;
   };
 
   // Function to handle session expiration (triggered only when the timer runs out)
@@ -121,44 +122,40 @@ export default function Chat() {
     router.push("/");
   };
 
-  // Session expiration logic
+  // Fetch initial question after tour completion
   useEffect(() => {
-    setPageLoaded(true);
-    if (!tourCompleted) return; // Only proceed if the tour is completed
-    console.log("Tour Completed State Updated:", tourCompleted);
+    if (!tourCompleted) return;
 
     const auth = getAuth();
     const unsubscribe = onAuthStateChanged(auth, (user) => {
-      if (user) {
-        if (!questionFetched) {
-          // Only fetch if it hasn't been fetched
-          fetchInitialQuestion(user).then(() => {
-            setQuestionFetched(true); // Set to true *only* after fetching is complete
-          });
-        }
-      } else {
+      if (user && !questionFetched) {
+        fetchInitialQuestion(user).then(() => setQuestionFetched(true));
+      } else if (!user) {
         router.push("/");
       }
     });
+
+    return () => unsubscribe();
+  }, [tourCompleted, questionFetched, router]);
+
+  // Handle session expiration
+  useEffect(() => {
+    if (!tourCompleted) return;
+
     const timer = setInterval(() => {
       setTimeLeft((prev) => {
         if (prev <= 1) {
           clearInterval(timer);
-          handleSessionExpiration(); // Handle session expiration when time runs out
+          handleSessionExpiration();
           return 0;
         }
-        // Check if the time left is less than or equal to 2 minutes (120 seconds)
-        if (prev <= 120 && timeLeft > 0) {
-          setTimerStyle("gradient-text");
-        }
+        if (prev <= 120) setTimerStyle("gradient-text");
         return prev - 1;
       });
     }, 1000);
-    return () => {
-      unsubscribe();
-      clearInterval(timer);
-    };
-  }, [router, questionFetched, hasSessionExpired, timerStyle, tourCompleted]);
+
+    return () => clearInterval(timer);
+  }, [tourCompleted, timerStyle]);
 
   // Manage session expiration and loading state
   useLayoutEffect(() => {
@@ -169,9 +166,10 @@ export default function Chat() {
 
   // Scroll to the bottom whenever messages change
   useEffect(() => {
-    if (chatEndRef.current) {
-      chatEndRef.current.scrollIntoView({ behavior: "smooth" });
-    }
+    const timeout = setTimeout(() => {
+      chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    }, 50);
+    return () => clearTimeout(timeout);
   }, [messages, isTyping]);
 
   const sendConversationHistory = async (conversation) => {
@@ -224,7 +222,7 @@ export default function Chat() {
       .padStart(2, "0")}`;
   };
 
-  const handleSendMessage = async (event) => {
+  const handleSendMessage = async () => {
     if (hasSessionExpired || isConversationSaved || saveFlag.current) return; // Prevent saving if conversation is already saved
 
     const userMessage = document.getElementById("text").value.trim();
@@ -311,24 +309,18 @@ export default function Chat() {
 
   return (
     <>
-      {!tourCompleted && (
-        <>
+      <>
+        {!tourCompleted && (
           <ChatTour
             onComplete={() => {
-              setTourCompleted(true);
-              localStorage.setItem("chatTourCompleted", "true");
               window.location.reload();
+              setTourCompleted(true);
             }}
           />
-        </>
-      )}
-
-      <div
-        className={`flex items-center justify-center mt-2 h-screen w-full page-transition ${
-          pageLoaded ? "loaded" : ""
-        }`}
-      >
-        <div className="flex flex-col sm:flex-row w-full h-full shadow-lg  overflow-hidden">
+        )}
+      </>
+      <div className="flex items-center justify-center mt-2 min-h-screen h-screen w-full">
+        <div className="flex flex-col sm:flex-row w-full min-h-screen h-full shadow-lg  overflow-hidden">
           {/* Booklet Section */}
           <div className="w-full sm:w-1/4 booklet_background text-white p-6 flex flex-col justify-between mb-6 sm:mb-0">
             <h2 className="text-2xl font-semibold text-transparent bg-clip-text bg-gradient-to-r from-[#F25E86] to-[#6D81F2] mb-4">
@@ -388,7 +380,7 @@ export default function Chat() {
           </div>
 
           {/* Chat Section */}
-          <div className="w-full sm:w-3/4 flex flex-col h-full">
+          <div className="w-full sm:w-3/4 flex flex-col min-h-screen h-full">
             {/* Chat Header */}
             <div className="chat_container text-white py-4 px-6 flex items-center">
               <img
@@ -533,6 +525,11 @@ export default function Chat() {
             </form>
           </div>
         </div>
+        <SessionEndModal
+          isOpen={sessionEndModal}
+          isConversationSaved={isConversationSaved}
+          onClose={() => setSessionEndModal(false)}
+        />
       </div>
     </>
   );

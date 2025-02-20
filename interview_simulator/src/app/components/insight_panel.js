@@ -122,6 +122,17 @@ export default function InsightPanel({ user }) {
     ],
   };
 
+  const NoDataImage = ({ text }) => (
+    <div className="no-data-container-IP">
+      <img
+        src="/no_data_available.png"
+        alt="No data"
+        className="no-data-image-IP"
+      />
+      <p className="text-white text-xs">{text}</p>
+    </div>
+  );
+
   const LoadingSpinner = () => <div className="analytics-spinner"></div>;
 
   return (
@@ -134,6 +145,8 @@ export default function InsightPanel({ user }) {
           <div className="chart-wrapper">
             {isLoadingCompleted ? (
               <LoadingSpinner />
+            ) : completedSessions === 0 && incompleteSessions === 0 ? (
+              <NoDataImage text="No data available" />
             ) : (
               <Doughnut
                 data={completedData}
@@ -156,6 +169,8 @@ export default function InsightPanel({ user }) {
           <div className="chart-wrapper">
             {isLoadingIncomplete ? (
               <LoadingSpinner />
+            ) : completedSessions === 0 && incompleteSessions === 0 ? (
+              <NoDataImage text="No data available" />
             ) : (
               <Doughnut
                 data={incompleteData}
@@ -178,6 +193,8 @@ export default function InsightPanel({ user }) {
           <div className="chart-wrapper">
             {isLoadingOverall ? (
               <LoadingSpinner />
+            ) : overallScoreSessions === 0 ? (
+              <NoDataImage text="No data available" />
             ) : (
               <Doughnut
                 data={overallScoreData}

@@ -120,7 +120,14 @@ export default function FeedbackPanel({ user }) {
       ) : error ? (
         <p>{error}</p> // Display error if there is an issue fetching data
       ) : filteredSessions.length === 0 ? (
-        <p>No session data available.</p>
+        <div className="no-data-container">
+          <img
+            src="/no_data_available.png"
+            alt="No data"
+            className="no-data-image"
+          />
+          <p>No data available for Sessions Feedback</p>
+        </div>
       ) : (
         <table className="feedback-table">
           <thead>
