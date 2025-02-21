@@ -2,13 +2,12 @@ from flask import Blueprint, request, jsonify, session
 from utils.token_utils import verify_firebase_token
 from config.firebase_config import firestore_db, firebase_db
 from datetime import datetime
-from utils.openai_get_feedback import get_feedback_summary_from_openai
-from utils.openai_get_grade import get_grade_from_openai
 from utils.question_utils import load_dataset
 import os
 from dotenv import load_dotenv
 import threading
 from utils.generate_pdf_report import generate_pdf_report
+from utils.grade_conversation import grade_conversation
 
 save_conversation = Blueprint('save_conversation', __name__)
 
@@ -17,7 +16,7 @@ save_conversation = Blueprint('save_conversation', __name__)
 def save_conversation_route():
     data = request.get_json()
     conversation_history = data.get('conversationHistory')
-    
+
     if not conversation_history:
         return jsonify({"error": "No conversation history provided"}), 400
 
@@ -42,29 +41,10 @@ def save_conversation_route():
 
         graded_conversation = conversation_history.copy()
 
-        # Only grade responses if the session is complete
-        if not is_incomplete:
-            dataset = load_dataset()  # Load dataset once
+        # Load dataset for grading
+        dataset = load_dataset()  # Load dataset once
 
-            for i, msg in enumerate(graded_conversation):
-                if msg.get('role') == 'user':  # Only grade user responses
-                    user_response = msg.get('content')
-                    if user_response:
-                        question = (
-                            graded_conversation[i - 1].get('content')
-                            if i > 0 and graded_conversation[i - 1].get('role') == 'assistant'
-                            else "No question provided"
-                        )
-
-                        # Find the ideal response from the dataset
-                        ideal_response = next(
-                            (item['user_answer'] for item in dataset if item['prompt'] == question), None
-                        )
-
-                        # Skip grading if no ideal response exists
-                        if ideal_response:
-                            msg['grade'] = get_grade_from_openai(user_response, ideal_response, question)
-                            msg['feedback'] = get_feedback_summary_from_openai(user_response, ideal_response, question)
+        
 
         # Save to Firestore
         try:
@@ -93,8 +73,14 @@ def save_conversation_route():
             response = firebase_db.child(f'Users/{user_id}/Sessions').push(session_data)
             firebase_session_id = response.key  
             
-            # Only generate the PDF if the session is complete
+            # Generate the PDF report only after grading is completed
             if status == "Complete":
+                # Start grading the conversation in a separate thread
+                grading_thread = threading.Thread(target=grade_conversation, args=(user_id,graded_conversation, dataset,doc_id, firebase_session_id))
+                grading_thread.start()
+
+                # Wait for grading thread to finish before proceeding to report generation
+                grading_thread.join()
                 thread = threading.Thread(target=generate_pdf_report, args=(user_id, graded_conversation, timestamp, status, doc_id, firebase_session_id))
                 thread.start()
         except Exception as e:
@@ -109,4 +95,3 @@ def save_conversation_route():
         return jsonify({"error": str(e)}), 401
     except Exception as e:
         return jsonify({"error": "Server error: " + str(e)}), 500
-

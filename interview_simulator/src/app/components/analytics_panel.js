@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Line, Bar, Pie } from "react-chartjs-2";
 import { Chart, registerables } from "chart.js";
+import { useAnalyticsPanelData } from "../context/AnalyticsPanelContext";
 
 Chart.register(...registerables);
 
@@ -13,42 +14,26 @@ export default function AnalyticsPanel({ user }) {
   const [totalCompletedSession, setTotalCompletedSession] = useState(0);
   const [totalInCompleteSession, setTotalInCompleteSession] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
+  const { data, refetch } = useAnalyticsPanelData();
 
   useEffect(() => {
-    if (!user) return;
-
-    const fetchData = async () => {
-      try {
-        const idToken = await user.getIdToken();
-        const response = await fetch(
-          "http://127.0.0.1:5000/get_analytics_panel_data",
-          {
-            method: "GET",
-            headers: { Authorization: `Bearer ${idToken}` },
-          }
-        );
-        const data = await response.json();
-        console.log("Fetched insights:", data);
-
-        setSessionGrade(
-          Array.isArray(data.sessionGrade) ? [...data.sessionGrade] : []
-        );
-        setSessionDates(data.sessionDates ?? []);
-        setCategoryGrade(Object.values(data.categoryGrade ?? {}));
-        setSessionDatesCount(Object.values(data.sessionDateCounts ?? {}));
-        setCategories(data.categories ?? []);
-        setTotalCompletedSession(data.totalCompletedSession ?? 0);
-        setTotalInCompleteSession(data.totalInCompleteSession ?? 0);
-        console.log("Fetched Data:", data);
-      } catch (error) {
-        console.error("Error fetching insights:", error);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    fetchData();
-  }, [user]);
+    if (data) {
+      console.log("Fetched Analytics Data:", data);
+      setSessionGrade(
+        Array.isArray(data.sessionGrade) ? [...data.sessionGrade] : []
+      );
+      setSessionDates(data.sessionDates ?? []);
+      setCategoryGrade(Object.values(data.categoryGrade ?? {}));
+      setSessionDatesCount(Object.values(data.sessionDateCounts ?? {}));
+      setCategories(data.categories ?? []);
+      setTotalCompletedSession(data.totalCompletedSession ?? 0);
+      setTotalInCompleteSession(data.totalInCompleteSession ?? 0);
+      setIsLoading(false);
+    } else {
+      // Refetch only when data is missing or needs to be refreshed
+      refetch();
+    }
+  }, [data, refetch]);
 
   // Conditional Check for No Data
   const isEmptyData = (data) => data.length === 0 || data === 0;

@@ -110,16 +110,6 @@ const Header = () => {
     document.body.classList.add("modal-open");
   };
 
-  const handleSwitchTFromForgotPwdToLogin = () => {
-    setIsForgotPwdModalOpen(false);
-    setIsLoginModalOpen(true);
-    document.body.classList.add("modal-open");
-  };
-
-  const handleToggleDropdown = () => {
-    setIsDropdownOpen((prevState) => !prevState);
-  };
-
   const handleLogout = async (e) => {
     e.preventDefault();
     setIsDropdownOpen(false);
@@ -221,7 +211,7 @@ const Header = () => {
           <button
             className="btn login-button rounded"
             id="loginBtn"
-            onClick={() => setIsLoginModalOpen(true)}
+            onClick={() => handleLoginClick()}
           >
             LOGIN
           </button>
@@ -233,16 +223,16 @@ const Header = () => {
         onSwitchToSignUp={handleSwitchToSignUp}
         onSwitchToForgotPwd={handleSwitchToForgotPwd}
         isOpen={isLoginModalOpen}
-        onClose={() => setIsLoginModalOpen(false)}
+        onClose={() => handleCloseLoginModal()}
       />
       <SignUpModal
         onSwitchToLogin={handleSwitchToLogin}
         isOpen={isSignUpModalOpen}
-        onClose={() => setIsSignUpModalOpen(false)}
+        onClose={() => handleCloseSignUpModal()}
       />
       <ForgotPwd
         isOpen={isForgotPwdModalOpen}
-        onClose={() => setIsForgotPwdModalOpen(false)}
+        onClose={() => handleCloseForgotPwdModal()}
       />
     </header>
   );

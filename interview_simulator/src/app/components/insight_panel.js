@@ -1,6 +1,7 @@
 import { Doughnut } from "react-chartjs-2";
 import { Chart, ArcElement, Tooltip, Legend } from "chart.js";
 import { useEffect, useState } from "react";
+import { useInsightPanelData } from "../context/InsightPanelContext";
 
 Chart.register(ArcElement, Tooltip, Legend);
 
@@ -35,6 +36,7 @@ export default function InsightPanel({ user }) {
   const [isLoadingCompleted, setIsLoadingCompleted] = useState(true);
   const [isLoadingIncomplete, setIsLoadingIncomplete] = useState(true);
   const [isLoadingOverall, setIsLoadingOverall] = useState(true);
+  const { data, refetch } = useInsightPanelData();
 
   const maxSessions = 10;
 
@@ -47,37 +49,22 @@ export default function InsightPanel({ user }) {
   console.log("Remaining Score Sessions:", remainingScoreSessions);
 
   useEffect(() => {
-    if (!user) return;
+    if (data) {
+      console.log("Fetched Insights Data: ", data);
+      // Set data only when it's available
+      setCompleted(data.completed_sessions || 0);
+      setIncomplete(data.incomplete_sessions || 0);
+      setScore(data.overall_score || 0);
 
-    const fetchData = async () => {
-      try {
-        const idToken = await user.getIdToken();
-        const response = await fetch(
-          "http://127.0.0.1:5000/get_insight_panel_data",
-          {
-            method: "GET",
-            headers: {
-              Authorization: `Bearer ${idToken}`,
-            },
-          }
-        );
-        const data = await response.json();
-        console.log("Fetched insights:", data);
-
-        setCompleted(data.completed_sessions || 0);
-        setIncomplete(data.incomplete_sessions || 0);
-        setScore(data.overall_score);
-      } catch (error) {
-        console.error("Error fetching insights:", error);
-      } finally {
-        setIsLoadingCompleted(false);
-        setIsLoadingIncomplete(false);
-        setIsLoadingOverall(false);
-      }
-    };
-
-    fetchData();
-  }, [user]);
+      // Update loading states to false once data is fetched
+      setIsLoadingCompleted(false);
+      setIsLoadingIncomplete(false);
+      setIsLoadingOverall(false);
+    } else {
+      // Refetch only when data is missing or needs to be refreshed
+      refetch();
+    }
+  }, [data, refetch]);
 
   // Doughnut Chart Data
   const completedData = {

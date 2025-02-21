@@ -7,6 +7,7 @@ const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [user, setUser] = useState(null); // Store the user object
   const [userInitials, setUserInitials] = useState("");
 
   const triggerLoginAnimation = () => {
@@ -20,25 +21,27 @@ export const AuthProvider = ({ children }) => {
   };
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
-      if (user) {
+    const unsubscribe = onAuthStateChanged(auth, (firebaseUser) => {
+      if (firebaseUser) {
         setIsLoggedIn(true);
+        setUser(firebaseUser); // Store the full user object
 
         // Extract user initials from display name or email
         let initials = "";
-        if (user.displayName) {
-          initials = user.displayName
+        if (firebaseUser.displayName) {
+          initials = firebaseUser.displayName
             .split(" ")
             .map((n) => n[0])
             .join("")
             .toUpperCase();
-        } else if (user.email) {
-          initials = user.email[0].toUpperCase();
+        } else if (firebaseUser.email) {
+          initials = firebaseUser.email[0].toUpperCase();
         }
 
         setUserInitials(initials);
       } else {
         setIsLoggedIn(false);
+        setUser(null); // Clear user object when logged out
         setUserInitials("");
       }
     });
@@ -48,7 +51,13 @@ export const AuthProvider = ({ children }) => {
 
   return (
     <AuthContext.Provider
-      value={{ isLoggedIn, setIsLoggedIn, userInitials, triggerLoginAnimation }}
+      value={{
+        isLoggedIn,
+        user, // Provide the user object
+        setIsLoggedIn,
+        userInitials,
+        triggerLoginAnimation,
+      }}
     >
       {children}
     </AuthContext.Provider>

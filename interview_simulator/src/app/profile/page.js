@@ -5,8 +5,6 @@ import EditProfileModal from "../components/editProfileModal";
 import AnalyticsPanel from "../components/analytics_panel";
 import ResetPasswordModal from "../components/resetPassword";
 import { getDatabase, ref, get } from "firebase/database";
-import { auth } from "../firebase";
-import { onAuthStateChanged } from "firebase/auth";
 import { useRouter } from "next/navigation";
 import InsightPanel from "../components/insight_panel";
 import FeedbackPanel from "../components/feedback_panel";
@@ -18,7 +16,7 @@ export default function Profile() {
   const [isResetPwdModalOpen, setIsResetPwdModalOpen] = useState(false);
   const [userName, setUserName] = useState("");
   const router = useRouter(); // Initialize the router
-  const [user, setUser] = useState(null);
+  const { user } = useAuth();
   const { userInitials } = useAuth();
   const [pageLoaded, setPageLoaded] = useState(false);
 
@@ -43,55 +41,52 @@ export default function Profile() {
   };
 
   const fetchUserData = (user) => {
-    const db = getDatabase();
-    const userRef = ref(db, `Users/${user.uid}`);
-    get(userRef)
-      .then((snapshot) => {
-        if (snapshot.exists()) {
-          const userData = snapshot.val();
-          const firstName = userData.firstName || "N/A";
-          const lastName = userData.lastName || "N/A";
+    if (user) {
+      const db = getDatabase();
+      const userRef = ref(db, `Users/${user.uid}`);
+      get(userRef)
+        .then((snapshot) => {
+          if (snapshot.exists()) {
+            const userData = snapshot.val();
+            const firstName = userData.firstName || "N/A";
+            const lastName = userData.lastName || "N/A";
 
-          const formattedName =
-            firstName.charAt(0).toUpperCase() +
-            firstName.slice(1).toLowerCase() +
-            " " +
-            lastName.charAt(0).toUpperCase() +
-            ".";
+            const formattedName =
+              firstName.charAt(0).toUpperCase() +
+              firstName.slice(1).toLowerCase() +
+              " " +
+              lastName.charAt(0).toUpperCase() +
+              ".";
 
-          setUserName(formattedName);
-        } else {
-          console.log("No user data available");
-        }
-      })
-      .catch((error) => {
-        console.error("Error fetching user data:", error);
-      });
+            setUserName(formattedName);
+          } else {
+            console.log("No user data available");
+          }
+        })
+        .catch((error) => {
+          console.error("Error fetching user data:", error);
+        });
+    } else return;
   };
 
   useEffect(() => {
-    setPageLoaded(true);
-    const unsubscribe = onAuthStateChanged(auth, async (authUser) => {
-      if (authUser) {
-        try {
-          // Refresh token before making authenticated requests
-          const idToken = await authUser.getIdToken(true);
-          console.log("Refreshed Token:", idToken);
-          setTimeout(() => {
-            setUser(authUser); // Store user
-            fetchUserData(authUser);
-          }, 1000);
-        } catch (error) {
-          console.error("Error refreshing token:", error);
-          router.push("/"); // Redirect if token refresh fails
-        }
-      } else {
-        console.log("User is not authenticated");
-        router.push("/"); // Redirect if not authenticated
+    if (user) {
+      setPageLoaded(true);
+      try {
+        // Refresh token before making authenticated requests
+        const idToken = user.getIdToken(true);
+        console.log("Refreshed Token:", idToken);
+        setTimeout(() => {
+          fetchUserData(user);
+        }, 1000);
+      } catch (error) {
+        console.error("Error refreshing token:", error);
+        router.push("/"); // Redirect if token refresh fails
       }
-    });
-
-    return () => unsubscribe();
+    } else {
+      console.log("User is not authenticated");
+      router.push("/"); // Redirect if not authenticated
+    }
   }, [router]);
 
   const handleProfileUpdate = (updatedData) => {
@@ -109,9 +104,7 @@ export default function Profile() {
   };
 
   return (
-    <div
-      className={`profile-page page-transition ${pageLoaded ? "loaded" : ""}`}
-    >
+    <div className={`profile-page ${pageLoaded ? "loaded" : ""}`}>
       <div className="dashboard-container">
         {/* Profile Section on the Left */}
         <div className="profile-wrapper">

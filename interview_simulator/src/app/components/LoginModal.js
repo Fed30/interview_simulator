@@ -139,7 +139,7 @@ const LoginModal = ({
   return (
     <>
       {isOpen && (
-        <div className="fixed inset-0 self-center bg-opacity-50 flex justify-center items-center z-50">
+        <div className="fixed inset-0 bg-opacity-50 flex justify-center items-center w-full h-[100vh]">
           <div className="modal-content p-8 rounded shadow-lg w-auto relative">
             {/* Close Button */}
             <span

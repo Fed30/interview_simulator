@@ -118,7 +118,7 @@ const EditProfileModal = ({ isOpen, onClose, onProfileUpdate }) => {
   return (
     <>
       {isOpen && (
-        <div className="fixed inset-0 self-center bg-opacity-50 flex justify-center items-center z-50">
+        <div className="fixed inset-0 self-center bg-opacity-50 flex justify-center items-center modal-blur">
           <div className="modal-content p-8 rounded shadow-lg relative">
             {/* Close Button */}
             <span

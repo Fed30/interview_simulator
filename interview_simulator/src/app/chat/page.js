@@ -7,6 +7,7 @@ import { useLoading } from "../context/LoadingContext";
 import { toast } from "react-toastify";
 import ChatTour from "../components/chatTour";
 import SessionEndModal from "../components/SessionEndModal";
+import SessionExpiredModal from "../components/SessionExpiredModal";
 
 export default function Chat() {
   const [messages, setMessages] = useState([]); // Safe default initialization
@@ -27,6 +28,7 @@ export default function Chat() {
   const textareaRef = useRef(null);
   const [tourCompleted, setTourCompleted] = useState(false);
   const [sessionEndModal, setSessionEndModal] = useState(false);
+  const [sessionExpiredModal, setSessionExpiredModal] = useState(false);
 
   useEffect(() => {
     if (typeof window !== "undefined") {
@@ -111,15 +113,12 @@ export default function Chat() {
 
       // Call sendConversationHistory with updated messages
       sendConversationHistory(updatedMessages);
+      setSessionExpiredModal(true);
       return updatedMessages; // Ensure state gets updated
     });
 
     setHasSessionExpired(true);
     isMounted.current = false;
-
-    // Notify user and redirect
-    toast.info("Your session has expired. Please start a new Session.");
-    router.push("/");
   };
 
   // Fetch initial question after tour completion
@@ -183,7 +182,6 @@ export default function Chat() {
       return;
     }
     if (!isConversationSaved) {
-      setLoading(true);
       try {
         const idToken = await user.getIdToken(true);
         const response = await fetch(
@@ -201,15 +199,11 @@ export default function Chat() {
         const data = await response.json();
         if (data.success) {
           setIsConversationSaved(true);
-          toast.success("Practice Session saved successfully!");
-          router.push("/");
         } else {
           toast.error("Error saving conversation history.");
         }
       } catch (error) {
         toast.error("Error saving conversation history. Please try again.");
-      } finally {
-        setLoading(false);
       }
     }
   };
@@ -284,7 +278,7 @@ export default function Chat() {
               if (!isConversationSaved && !saveFlag.current) {
                 saveFlag.current = true; // Prevent future saves
                 sendConversationHistory(updatedMessages);
-                setIsConversationSaved(true); // Mark conversation as saved
+                setSessionEndModal(true);
               }
             }, 4000);
           }
@@ -527,8 +521,13 @@ export default function Chat() {
         </div>
         <SessionEndModal
           isOpen={sessionEndModal}
-          isConversationSaved={isConversationSaved}
+          conversationSaved={isConversationSaved}
           onClose={() => setSessionEndModal(false)}
+        />
+        <SessionExpiredModal
+          isOpen={sessionExpiredModal}
+          conversationSaved={isConversationSaved}
+          onClose={() => setSessionExpiredModal(false)}
         />
       </div>
     </>

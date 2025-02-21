@@ -17,7 +17,8 @@ body {
 }
 body.modal-open {
 	overflow: hidden;
-	height: 100vh;
+	height: 100%;
+	width: 100%;
 }
 
 /* Define the animation of page navigation */
@@ -113,8 +114,6 @@ nav a:hover {
 		font-size: 14px;
 	}
 }
-
-
 
 h1, h2, h3, h4  {
     letter-spacing: 1px;
@@ -1066,6 +1065,14 @@ h4.text-center {
     .booklet_background {
         display: none; 
     }
+}
+
+.modal-blur{
+	background-color: rgba(0, 0, 0, 0.6); /* Dark background overlay */
+	backdrop-filter: blur(5px); /* Apply blur effect */
+	height: 100vh;
+	width: 100%;
+	z-index: 1000;
 }
 /*SPINNER*/
 .spinner-container {
