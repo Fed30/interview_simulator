@@ -12,10 +12,12 @@ configure_app(app)
 
 # Initialize session and CORS
 Session(app)
-CORS(app, supports_credentials=True, origins=["http://localhost:3000"],resources={r"/*": {"origins": "*"}})
+#CORS(app, supports_credentials=True, origins=["http://localhost:3000"],resources={r"/*": {"origins": "*"}})
+CORS(app, supports_credentials=True, resources={r"/*": {"origins": ["http://localhost:3000"]}})
+
 
 # Register routes
 register_routes(app)
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(port=5000,debug=True)

@@ -7,8 +7,9 @@ const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [user, setUser] = useState(null); // Store the user object
+  const [user, setUser] = useState(null);
   const [userInitials, setUserInitials] = useState("");
+  const [loading, setLoading] = useState(true); // 🚀 Loading state to block other contexts
 
   const triggerLoginAnimation = () => {
     const loginBtn = document.getElementById("loginBtn");
@@ -24,42 +25,54 @@ export const AuthProvider = ({ children }) => {
     const unsubscribe = onAuthStateChanged(auth, (firebaseUser) => {
       if (firebaseUser) {
         setIsLoggedIn(true);
-        setUser(firebaseUser); // Store the full user object
+        setUser(firebaseUser);
 
-        // Extract user initials from display name or email
-        let initials = "";
-        if (firebaseUser.displayName) {
-          initials = firebaseUser.displayName
-            .split(" ")
-            .map((n) => n[0])
-            .join("")
-            .toUpperCase();
-        } else if (firebaseUser.email) {
-          initials = firebaseUser.email[0].toUpperCase();
-        }
+        // Extract initials from display name or email
+        const initials = firebaseUser.displayName
+          ? firebaseUser.displayName
+              .split(" ")
+              .map((n) => n[0])
+              .join("")
+              .toUpperCase()
+          : firebaseUser.email?.[0].toUpperCase() || "";
 
         setUserInitials(initials);
       } else {
         setIsLoggedIn(false);
-        setUser(null); // Clear user object when logged out
+        setUser(null);
         setUserInitials("");
       }
+      setLoading(false); //Auth state resolved
     });
 
     return () => unsubscribe();
   }, []);
 
+  if (loading) {
+    return (
+      <div className="spinner-container">
+        <div className="spinner">
+          <img
+            src="/logo.png"
+            alt="Interview Simulator"
+            className="logo w-8 h-8 rounded-full"
+          />
+        </div>
+      </div>
+    );
+  }
+
   return (
     <AuthContext.Provider
       value={{
         isLoggedIn,
-        user, // Provide the user object
+        user,
         setIsLoggedIn,
         userInitials,
         triggerLoginAnimation,
       }}
     >
-      {children}
+      {children} {/* Render children only after auth check */}
     </AuthContext.Provider>
   );
 };

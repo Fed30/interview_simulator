@@ -1168,8 +1168,7 @@ h4.text-center {
 .chart-card {
 	width: 100%;
 	height: auto; 
-	background-color: #2A2A40;/*#1e1e2f*/
-	/*border: 2px solid #6D81F2;*/
+	background-color: #2A2A40;
 	border-radius: 5px;
 	display: flex;
 	flex-direction: column; 
@@ -1532,4 +1531,64 @@ h4.text-center {
 		width: 10px;
 		height: 10px;
 	}
+}
+
+
+/*Badges Panel*/
+.badges-container {
+	padding: 20px;
+	text-align: center;
+}
+
+.badges-grid {
+	display: grid;
+	grid-template-columns: repeat(3, 1fr);
+	gap: 20px;
+	margin-top: 20px;
+	justify-content: space-between;
+}
+
+.badge-item {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	padding: 15px;
+	height: 180px;
+	border-radius: 5px;
+	background-color: #2A2A40;
+	transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.badge-item:hover {
+	transform: scale(1.05);
+	box-shadow: 0 6px 10px rgba(0, 0, 0, 0.15);
+}
+
+.badge-name {
+	font-size: 1.1rem;
+	font-weight: 600;
+	margin-bottom: 10px;
+	color: white;
+}
+
+.badge-image {
+	width: 100px;
+	height: 100px;
+	object-fit: contain;
+	border-radius: 8px;
+}
+
+.badge-locked {
+	opacity: 0.4;
+	filter: grayscale(100%);
+}
+
+.loading {
+	font-size: 1.2rem;
+	color: #666;
+}
+
+.error-message {
+	color: #e74c3c;
+	font-weight: 600;
 }

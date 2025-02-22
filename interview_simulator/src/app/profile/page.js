@@ -8,6 +8,7 @@ import { getDatabase, ref, get } from "firebase/database";
 import { useRouter } from "next/navigation";
 import InsightPanel from "../components/insight_panel";
 import FeedbackPanel from "../components/feedback_panel";
+import BadgesPanel from "../components/badges_panel";
 import { useAuth } from "../context/AuthContext";
 
 export default function Profile() {
@@ -202,7 +203,7 @@ export default function Profile() {
                 display: activeTab === "badgesContent" ? "block" : "none",
               }}
             >
-              <p>Badges content goes here...</p>
+              <BadgesPanel user={user} />
             </div>
           </div>
         </div>

@@ -5,6 +5,8 @@ from .edit_profile import edit_profile
 from .insight_panel_routes import insight_panel_data
 from .analytics_routes import analytics_panel_data
 from .feedback_routes import feedback_data
+from .badges_routes import badges_data
+from .badges_awards_routes import badges_awards_data
 
 
 def register_routes(app):
@@ -15,4 +17,6 @@ def register_routes(app):
     app.register_blueprint(insight_panel_data)
     app.register_blueprint(analytics_panel_data)
     app.register_blueprint(feedback_data)
+    app.register_blueprint(badges_data)
+    app.register_blueprint(badges_awards_data)
     
