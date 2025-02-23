@@ -52,7 +52,6 @@ def upload_badge_to_user_storage(user_id, badge_name):
 
 
 @badges_awards_data.route('/get_badges_awards_data', methods=['POST'])
-@cross_origin(origins=["http://localhost:3000"], supports_credentials=True)
 def get_badges_awards_data():
     id_token = request.headers.get('Authorization')
     if not id_token:
@@ -87,7 +86,9 @@ def get_badges_awards_data():
 
     # Award badge based on threshold and if not already awarded
     for badge_name, threshold in BADGE_THRESHOLDS.items():
+        print(f"[INFO] Checking badge: {badge_name}, threshold: {threshold}, sessions_completed: {sessions_completed}")
         if sessions_completed >= threshold and badge_name not in badges:
+            print(f"[INFO] Awarding {badge_name}")
             badge_url, error = upload_badge_to_user_storage(user_id, badge_name)
             if error:
                 return jsonify({"error": error}), 500

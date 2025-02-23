@@ -1,38 +1,37 @@
 "use client";
-import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useBadgeAwardsData } from "../context/BadgeAwardsContext";
-import { useLoading } from "../context/LoadingContext";
 
 const BadgeAwardsModal = () => {
-  const router = useRouter();
-  const { setLoading } = useLoading();
   const { data, refetch } = useBadgeAwardsData();
   const [isOpen, setIsOpen] = useState(false);
 
   useEffect(() => {
+    console.log("New Badge awarded:", data);
     if (data?.new_badge && data?.badge_awarded_at) {
-      setIsOpen(true); // Open modal if a new badge is awarded
+      console.log("Opening modal");
+      setIsOpen(true);
     }
   }, [data?.badge_awarded_at]);
 
   const handleClose = () => {
+    console.log("Closing modal");
     setIsOpen(false);
     refetch(); // Refetch data to clear new badge after closing
   };
 
   const redirect = () => {
-    //setLoading(true);
     handleClose();
-    //router.push("/profile");
-    //setLoading(false);
   };
 
   const handleCloseModal = () => {
     setIsOpen(false);
   };
 
-  if (!isOpen) return null; // Don’t render modal if not open
+  if (!isOpen) {
+    console.log("Modal not open");
+    return null;
+  }
 
   return (
     <div className="fixed inset-0 bg-opacity-50 flex justify-center items-center modal-blur">

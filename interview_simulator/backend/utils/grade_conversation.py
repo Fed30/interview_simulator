@@ -49,7 +49,7 @@ def grade_conversation(user_id, graded_conversation, dataset, doc_id, firebase_s
 
     # Update Firebase Realtime Database with session data
     try:
-        firebase_db.child(f'Users/{user_id}/Sessions/{firebase_session_id}').update({"history": session_data})
+        firebase_db.child(f'Users/{user_id}/Sessions/{firebase_session_id}').update({session_data})
     except Exception as e:
         print(f"Error updating Firebase Realtime Database: {e}")
         return None  # Return None or handle the failure case as needed

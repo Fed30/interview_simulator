@@ -20,6 +20,7 @@
         "skillset",
         "Toastify",
         "unixtime",
-        "urandom"
+        "urandom",
+        "whitesmoke"
     ]
 }

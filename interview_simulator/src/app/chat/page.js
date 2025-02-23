@@ -29,6 +29,9 @@ export default function Chat() {
   const [tourCompleted, setTourCompleted] = useState(false);
   const [sessionEndModal, setSessionEndModal] = useState(false);
   const [sessionExpiredModal, setSessionExpiredModal] = useState(false);
+  const timerRef = useRef(null);
+  const [inputValue, setInputValue] = useState("");
+  const [showError, setShowError] = useState(false);
 
   useEffect(() => {
     if (typeof window !== "undefined") {
@@ -141,7 +144,7 @@ export default function Chat() {
   useEffect(() => {
     if (!tourCompleted) return;
 
-    const timer = setInterval(() => {
+    timerRef.current = setInterval(() => {
       setTimeLeft((prev) => {
         if (prev <= 1) {
           clearInterval(timer);
@@ -153,7 +156,7 @@ export default function Chat() {
       });
     }, 1000);
 
-    return () => clearInterval(timer);
+    return () => clearInterval(timerRef.current);
   }, [tourCompleted, timerStyle]);
 
   // Manage session expiration and loading state
@@ -173,6 +176,7 @@ export default function Chat() {
 
   const sendConversationHistory = async (conversation) => {
     setIsDisabled(true);
+    clearInterval(timerRef.current);
     localStorage.removeItem("chatTourCompleted");
     const auth = getAuth();
     const user = auth.currentUser;
@@ -184,6 +188,7 @@ export default function Chat() {
     if (!isConversationSaved) {
       try {
         const idToken = await user.getIdToken(true);
+        await new Promise((resolve) => setTimeout(resolve, 1000));
         const response = await fetch(
           "http://127.0.0.1:5000/save_conversation",
           {
@@ -218,6 +223,7 @@ export default function Chat() {
 
   const handleSendMessage = async () => {
     if (hasSessionExpired || isConversationSaved || saveFlag.current) return; // Prevent saving if conversation is already saved
+    if (inputValue.trim().length < 40) return;
 
     const userMessage = document.getElementById("text").value.trim();
     if (!userMessage) return;
@@ -226,6 +232,7 @@ export default function Chat() {
       ...prevMessages,
       { role: "user", content: userMessage },
     ]);
+    setInputValue("");
     setIsDisabled(true);
 
     try {
@@ -297,9 +304,13 @@ export default function Chat() {
   const handleKeyDown = (e) => {
     if (e.key === "Enter") {
       e.preventDefault();
-      handleSendMessage();
+      if (inputValue.trim().length >= 40) handleSendMessage(e);
     }
   };
+  // Check character count in real-time
+  useEffect(() => {
+    setShowError(inputValue.trim().length > 0 && inputValue.trim().length < 40);
+  }, [inputValue]);
 
   return (
     <>
@@ -479,43 +490,65 @@ export default function Chat() {
             )}
             {/* Input Field */}
             <form
-              className="flex items-end space-x-2 m-3"
+              className="flex flex-col space-y-1 m-3"
               onSubmit={handleSendMessage}
             >
-              <textarea
-                ref={textareaRef}
-                id="text"
-                placeholder="Type your answer here..."
-                className={`flex-grow px-3 py-2 form-control-chat border resize-none chat-area overflow-y-auto ${
-                  isDisabled ? "disabled" : "focused"
-                }`}
-                rows="1"
-                disabled={isDisabled}
-                style={{
-                  minHeight: "40px",
-                  maxHeight: "80px",
-                  height: "auto",
-                }}
-                onInput={(e) => {
-                  e.target.style.height = "auto";
-                  e.target.style.height = `${e.target.scrollHeight}px`;
-                }}
-                onKeyDown={handleKeyDown}
-              />
-              <button
-                type="button"
-                id="send"
-                className="sendMsg-btn px-4 py-2 flex-shrink-0"
-                style={{
-                  height: "100%",
-                }}
-                onClick={(e) => {
-                  e.preventDefault(); // Ensure no page refresh on button click
-                  handleSendMessage(e);
-                }}
-              >
-                <i className="fas fa-paper-plane"></i>
-              </button>
+              {/* Wrapper for the textarea and error */}
+              <div className="relative">
+                {/* Error message with same width as textarea */}
+                {showError && (
+                  <div className="text-white bg-[#2A2A40] rounded text-xs px-2 py-1 mb-2 w-full">
+                    Minimum 40 characters required.
+                  </div>
+                )}
+
+                {/* Textarea and button aligned horizontally */}
+                <div className="flex items-end space-x-2">
+                  <textarea
+                    ref={textareaRef}
+                    id="text"
+                    value={inputValue}
+                    onChange={(e) => setInputValue(e.target.value)}
+                    placeholder="Type your answer here..."
+                    className={`flex-grow px-3 py-2 form-control-chat border resize-none chat-area overflow-y-auto ${
+                      isDisabled ? "disabled" : "focused"
+                    }`}
+                    rows="1"
+                    disabled={isDisabled}
+                    style={{
+                      minHeight: "40px",
+                      maxHeight: "80px",
+                      height: "auto",
+                    }}
+                    onInput={(e) => {
+                      e.target.style.height = "auto";
+                      e.target.style.height = `${e.target.scrollHeight}px`;
+                    }}
+                    onKeyDown={handleKeyDown}
+                    onCopy={(e) => e.preventDefault()}
+                    onCut={(e) => e.preventDefault()}
+                    onPaste={(e) => e.preventDefault()}
+                  />
+
+                  <button
+                    type="button"
+                    id="send"
+                    disabled={inputValue.trim().length < 40}
+                    className={`sendMsg-btn px-4 py-2 flex-shrink-0 ${
+                      inputValue.trim().length >= 40
+                        ? "sendMsg-btn"
+                        : "cursor-not-allowed"
+                    }`}
+                    style={{ height: "100%" }}
+                    onClick={(e) => {
+                      e.preventDefault(); // Prevent page refresh
+                      handleSendMessage(e);
+                    }}
+                  >
+                    <i className="fas fa-paper-plane"></i>
+                  </button>
+                </div>
+              </div>
             </form>
           </div>
         </div>

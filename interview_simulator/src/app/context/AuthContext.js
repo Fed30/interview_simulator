@@ -9,7 +9,7 @@ export const AuthProvider = ({ children }) => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [user, setUser] = useState(null);
   const [userInitials, setUserInitials] = useState("");
-  const [loading, setLoading] = useState(true); // 🚀 Loading state to block other contexts
+  const [loading, setLoading] = useState(true); // Loading state to block other contexts
 
   const triggerLoginAnimation = () => {
     const loginBtn = document.getElementById("loginBtn");

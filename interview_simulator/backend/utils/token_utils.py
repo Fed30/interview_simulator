@@ -4,7 +4,7 @@ from utils.utc_time_utils import get_current_utc_time_with_ntplib
 def verify_firebase_token(id_token):
     try:
         # Verify the ID token with Firebase
-        decoded_token = auth.verify_id_token(id_token)
+        decoded_token = auth.verify_id_token(id_token,check_revoked=True)
         print(f"Decoded Token: {decoded_token}")
 
         # Get the current UTC time (from API or system fallback)

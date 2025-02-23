@@ -21,6 +21,7 @@ export const FeedbackPanelProvider = ({ children }) => {
       if (!user) throw new Error("User not authenticated");
 
       const token = await user.getIdToken(true);
+      await new Promise((resolve) => setTimeout(resolve, 1000));
       const res = await fetch("http://127.0.0.1:5000/get_feedback_panel_data", {
         method: "GET",
         headers: { Authorization: `Bearer ${token}` },
@@ -31,7 +32,7 @@ export const FeedbackPanelProvider = ({ children }) => {
     },
     {
       enabled: !!user, // Only fetch if user is authenticated
-      refetchInterval: 5000, // Poll every 5 seconds (adjust as needed)
+      refetchInterval: 60000, // Poll every 60 seconds (adjust as needed)
       refetchOnWindowFocus: true, // Re-fetch when window is focused
     }
   );

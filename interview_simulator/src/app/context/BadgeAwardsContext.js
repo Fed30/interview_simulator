@@ -21,7 +21,7 @@ export const BadgesAwardsProvider = ({ children }) => {
       if (!user) throw new Error("User not authenticated");
 
       const token = await user.getIdToken(true);
-      //console.log("User ID context: ", token);
+      await new Promise((resolve) => setTimeout(resolve, 1000));
       const res = await fetch("http://127.0.0.1:5000/get_badges_awards_data", {
         method: "POST",
         headers: { Authorization: `Bearer ${token}` },
@@ -32,13 +32,14 @@ export const BadgesAwardsProvider = ({ children }) => {
     },
     {
       enabled: !!user, // Only fetch if user is authenticated
-      refetchInterval: 5000, // Poll every 5 seconds (adjust as needed)
+      refetchInterval: 150000, // Poll every 200 seconds (adjust as needed)
       refetchOnWindowFocus: true, // Re-fetch when window is focused
     }
   );
 
   useEffect(() => {
     if (fetchedData) setData(fetchedData); // Update state with fetched data
+    console.log("Fetched Award:", fetchedData);
   }, [fetchedData]);
 
   useEffect(() => {

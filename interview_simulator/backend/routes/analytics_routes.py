@@ -58,7 +58,6 @@ def get_analytics_panel_data():
         })
 
     session_grades = []  # List of session-specific averages
-    #session_full_dates = []  # Keep track of session dates
     session_date_set = set() 
 
     for session_id, session_info in sessions.items():

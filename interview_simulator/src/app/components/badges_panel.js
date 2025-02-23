@@ -1,10 +1,22 @@
 import React, { useEffect, useState } from "react";
 import { useBadgesPanelData } from "../context/BadgesPanelContext";
+import BadgeDetailsModal from "../components/BadgeDetailModal";
 
 export default function BadgesPanel({ user }) {
   const [error, setError] = useState(null);
   const { data, refetch } = useBadgesPanelData();
   const [isLoadingCompleted, setIsLoadingCompleted] = useState(true);
+  const [selectedBadge, setSelectedBadge] = useState(null);
+
+  // Badge explanations mapping
+  const badgeExplanations = {
+    "Bronze Badge":
+      "You have been awarded the Bronze Badge because you have completed two practice sessions.",
+    "Silver Badge":
+      "You have been awarded the Silver Badge for completing four practice sessions.",
+    "Gold Badge":
+      "You have been awarded the Gold Badge for completing six practice sessions.",
+  };
 
   useEffect(() => {
     const fetchData = async () => {
@@ -27,10 +39,21 @@ export default function BadgesPanel({ user }) {
     fetchData();
   }, [user, data, refetch]);
 
+  const handleBadgeClick = (badge) => {
+    const explanation =
+      badgeExplanations[badge.name] ||
+      "No explanation available for this badge.";
+    setSelectedBadge({ ...badge, explanation });
+  };
+
   const renderBadge = (badge) => {
     console.log(badge.badge_link); // Log the badge link to verify it's correct
     return (
-      <div key={badge.name} className="badge-item earned">
+      <div
+        key={badge.name}
+        className="badge-item earned"
+        onClick={() => handleBadgeClick(badge)}
+      >
         <h3 className="badge-name">{badge.name}</h3>
         <img src={badge.badge_link} alt={badge.name} className="badge-image" />
       </div>
@@ -59,6 +82,13 @@ export default function BadgesPanel({ user }) {
         <div className="badges-grid">{data.Badges.map(renderBadge)}</div>
       ) : (
         <NoDataImage text="No Badges Rewarded available" />
+      )}
+
+      {selectedBadge && (
+        <BadgeDetailsModal
+          badge={selectedBadge}
+          onClose={() => setSelectedBadge(null)}
+        />
       )}
     </div>
   );

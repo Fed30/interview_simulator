@@ -21,6 +21,7 @@ export const AnalyticsPanelProvider = ({ children }) => {
       if (!user) throw new Error("User not authenticated");
 
       const token = await user.getIdToken(true);
+      await new Promise((resolve) => setTimeout(resolve, 1000));
       const res = await fetch(
         "http://127.0.0.1:5000/get_analytics_panel_data",
         {
@@ -34,7 +35,7 @@ export const AnalyticsPanelProvider = ({ children }) => {
     },
     {
       enabled: !!user, // Only fetch if user is authenticated
-      refetchInterval: 5000, // Poll every 5 seconds (adjust as needed)
+      refetchInterval: 60000, // Poll every 60 seconds (adjust as needed)
       refetchOnWindowFocus: true, // Re-fetch when window is focused
     }
   );
