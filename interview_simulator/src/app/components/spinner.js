@@ -1,6 +1,7 @@
-"use client"
-import React from 'react';
-import { useLoading } from '../context/LoadingContext'; // Import the useLoading hook
+"use client";
+import React from "react";
+import { useLoading } from "../context/LoadingContext"; // Import the useLoading hook
+import Image from "next/image";
 
 const Spinner = () => {
   const { loading } = useLoading(); // Get loading state from context
@@ -10,9 +11,11 @@ const Spinner = () => {
   return (
     <div className="spinner-container">
       <div className="spinner">
-        <img
-          src='/logo.png'
+        <Image
+          src="/logo.png"
           alt="Chatbot"
+          width={32}
+          height={32}
           className="logo w-8 h-8 rounded-full"
         />
       </div>

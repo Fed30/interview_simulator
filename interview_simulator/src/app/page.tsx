@@ -5,6 +5,8 @@ import { auth } from "./firebase";
 import { useAuth } from "./context/AuthContext";
 import { toast } from 'react-toastify';
 import { useLoading } from './context/LoadingContext';
+import Image from "next/image";
+
 
 const Home = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -78,8 +80,10 @@ const Home = () => {
 
         <div className="max-w-6xl mx-auto flex flex-col sm:flex-row items-center justify-between relative z-10 px-4">
           {/* Left Side: Image */}
-          <img
+          <Image
             src="/practice_questions.png"
+            layout="fill" 
+            objectFit="cover"
             alt="Practice questions"
             className="w-full sm:w-1/2 h-full object-cover image-hover mb-8 sm:mb-0"
           />
@@ -152,8 +156,10 @@ const Home = () => {
           </div>
 
           {/* Right Side: Image */}
-          <img
+          <Image
             src="/feedback.png"
+            layout="fill" 
+            objectFit="cover"
             alt="Feedback"
             className="w-full sm:w-1/2 h-full object-cover image-hover"
           />
@@ -198,8 +204,10 @@ const Home = () => {
 
         <div className="max-w-6xl mx-auto flex flex-col sm:flex-row items-center justify-between relative z-10 px-4">
           {/* Left Side: Image */}
-          <img
+          <Image
             src="/star_method.png"
+            layout="fill" 
+            objectFit="cover"
             alt="STAR Method"
             className="w-full sm:w-1/2 h-full object-cover image-hover mb-8 sm:mb-0"
           />

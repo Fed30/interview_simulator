@@ -2,6 +2,7 @@
 import React, { createContext, useState, useEffect } from "react";
 import { auth } from "../firebase";
 import { onAuthStateChanged } from "firebase/auth";
+import Image from "next/image";
 
 const AuthContext = createContext();
 
@@ -52,9 +53,11 @@ export const AuthProvider = ({ children }) => {
     return (
       <div className="spinner-container">
         <div className="spinner">
-          <img
+          <Image
             src="/logo.png"
-            alt="Interview Simulator"
+            alt="Chatbot"
+            width={32}
+            height={32}
             className="logo w-8 h-8 rounded-full"
           />
         </div>
