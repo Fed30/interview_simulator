@@ -1,5 +1,11 @@
 "use client";
-import React, { useState, useEffect, useLayoutEffect, useRef } from "react";
+import React, {
+  useState,
+  useEffect,
+  useLayoutEffect,
+  useRef,
+  useCallback,
+} from "react";
 import "@fortawesome/fontawesome-free/css/all.min.css";
 import { useRouter } from "next/navigation";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
@@ -9,7 +15,6 @@ import ChatTour from "../components/chatTour";
 import SessionEndModal from "../components/SessionEndModal";
 import SessionExpiredModal from "../components/SessionExpiredModal";
 import Image from "next/image";
-import { useCallback } from "react";
 
 export default function Chat() {
   const [messages, setMessages] = useState([]); // Safe default initialization
@@ -40,7 +45,7 @@ export default function Chat() {
       const completed = localStorage.getItem("chatTourCompleted");
       setTourCompleted(completed === "true");
     }
-  }, []); //tourCompleted
+  }, [tourCompleted]); //tourCompleted
 
   useEffect(() => {
     document.body.removeAttribute("data-new-gr-c-s-check-loaded");

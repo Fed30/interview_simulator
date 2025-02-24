@@ -6,22 +6,18 @@ import React, {
   startTransition,
 } from "react";
 import Joyride from "react-joyride";
-import { useAuth } from "../context/AuthContext";
+//import { useAuth } from "../context/AuthContext";
 
 const ChatTour = ({ onComplete }) => {
   const [runTour, setRunTour] = useState(false);
   const [isClient, setIsClient] = useState(false);
-  const { user } = useAuth();
+  //const { user } = useAuth();
 
   useEffect(() => {
-    if (!user) {
-      return;
-    } else {
-      setIsClient(true);
-      const hasCompletedTour = localStorage.getItem("chatTourCompleted");
-      if (!hasCompletedTour) setRunTour(true);
-    }
-  }, [user]);
+    setIsClient(true);
+    const hasCompletedTour = localStorage.getItem("chatTourCompleted");
+    if (!hasCompletedTour) setRunTour(true);
+  }, []);
 
   const handleComplete = useCallback(
     (data) => {
