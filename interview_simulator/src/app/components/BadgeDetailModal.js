@@ -10,7 +10,7 @@ const BadgeDetailsModal = ({ badge, onClose }) => {
           className="close cursor-pointer text-2xl absolute top-2 right-2"
           onClick={onClose}
         >
-          &times;
+          x
         </span>
         <h4 className="text-center text-2xl font-semibold leading-tight text-shadow-lg text-white">
           {badge.name}

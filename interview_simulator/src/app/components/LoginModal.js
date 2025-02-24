@@ -149,7 +149,7 @@ const LoginModal = ({
               className="close cursor-pointer text-2xl absolute top-2 right-2"
               onClick={handleCloseModal} // Use the new close handler
             >
-              &times;
+              x
             </span>
             <h4 className="text-center text-2xl font-semibold leading-tight text-shadow-lg">
               LOGIN
