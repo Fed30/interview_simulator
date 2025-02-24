@@ -10,6 +10,7 @@ import { toast } from "react-toastify";
 import { useRouter } from "next/navigation";
 import "@fortawesome/fontawesome-free/css/all.min.css";
 import { useLoading } from "../context/LoadingContext";
+import Image from "next/image";
 
 const Header = () => {
   const { isLoggedIn, setIsLoggedIn } = useAuth();
@@ -142,8 +143,10 @@ const Header = () => {
       {/* Logo + Navigation Links */}
       <div className="flex items-center space-x-8">
         <Link href="/">
-          <img
+          <Image
             src="/logo.png"
+            width={32}
+            height={32}
             className="rounded w-7 h-7 transition duration-300 hover:scale-110"
             alt="Logo"
           />

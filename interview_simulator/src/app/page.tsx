@@ -83,6 +83,8 @@ const Home = () => {
           <Image
             src="/practice_questions.png"
             alt="Practice questions"
+            width={400} 
+            height={400}
             className="w-full sm:w-1/2 h-full object-cover image-hover mb-8 sm:mb-0"
           />
 
@@ -157,6 +159,8 @@ const Home = () => {
           <Image
             src="/feedback.png"
             alt="Feedback"
+            width={400} 
+            height={400}
             className="w-full sm:w-1/2 h-full object-cover image-hover"
           />
         </div>
@@ -203,6 +207,8 @@ const Home = () => {
           <Image
             src="/star_method.png"
             alt="STAR Method"
+            width={400} 
+            height={400}
             className="w-full sm:w-1/2 h-full object-cover image-hover mb-8 sm:mb-0"
           />
 

@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Line, Bar, Pie } from "react-chartjs-2";
 import { Chart, registerables } from "chart.js";
 import { useAnalyticsPanelData } from "../context/AnalyticsPanelContext";
+import Image from "next/image";
 
 Chart.register(...registerables);
 
@@ -203,8 +204,10 @@ export default function AnalyticsPanel({ user }) {
 
   const NoDataImage = ({ text }) => (
     <div className="no-data-container">
-      <img
+      <Image
         src="/no_data_available.png"
+        width={32}
+        height={32}
         alt="No data"
         className="no-data-image"
       />

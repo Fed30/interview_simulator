@@ -10,7 +10,7 @@ const BadgeDetailsModal = ({ badge, onClose }) => {
           className="close cursor-pointer text-2xl absolute top-2 right-2"
           onClick={onClose}
         >
-          &quot;x&quot;
+          x
         </span>
         <h4 className="text-center text-2xl font-semibold leading-tight text-shadow-lg text-white">
           {badge.name}
@@ -19,6 +19,8 @@ const BadgeDetailsModal = ({ badge, onClose }) => {
         <div className="flex justify-center mb-4">
           <Image
             src={badge.badge_link}
+            width={200}
+            height={200}
             alt={badge.name}
             className="max-w-full max-h-40 transition duration-300 hover:scale-110"
           />

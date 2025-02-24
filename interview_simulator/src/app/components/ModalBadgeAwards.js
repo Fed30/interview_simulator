@@ -1,6 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
 import { useBadgeAwardsData } from "../context/BadgeAwardsContext";
+import Image from "next/image";
 
 const BadgeAwardsModal = () => {
   const { data, refetch } = useBadgeAwardsData();
@@ -41,7 +42,7 @@ const BadgeAwardsModal = () => {
           className="close cursor-pointer text-2xl absolute top-2 right-2"
           onClick={handleCloseModal}
         >
-          &quot;x&quot;
+          x
         </span>
         <h4 className="text-center text-2xl font-semibold leading-tight text-shadow-lg text-white">
           🎉 Hurray!!! 🎉
@@ -50,8 +51,10 @@ const BadgeAwardsModal = () => {
           You&apos;ve earned the <strong>{data?.new_badge}</strong> !
         </p>
         <div className="flex justify-center mb-4">
-          <img
+          <Image
             src={data.badge_link}
+            width={200}
+            height={200}
             alt={data?.new_badge ?? "Badge"}
             className="max-w-full max-h-40 transition duration-300 hover:scale-110"
           />

@@ -2,6 +2,7 @@ import { Doughnut } from "react-chartjs-2";
 import { Chart, ArcElement, Tooltip, Legend } from "chart.js";
 import { useEffect, useState } from "react";
 import { useInsightPanelData } from "../context/InsightPanelContext";
+import Image from "next/image";
 
 Chart.register(ArcElement, Tooltip, Legend);
 
@@ -111,8 +112,10 @@ export default function InsightPanel({ user }) {
 
   const NoDataImage = ({ text }) => (
     <div className="no-data-container-IP">
-      <img
+      <Image
         src="/no_data_available.png"
+        width={32}
+        height={32}
         alt="No data"
         className="no-data-image-IP"
       />

@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useBadgesPanelData } from "../context/BadgesPanelContext";
 import BadgeDetailsModal from "../components/BadgeDetailModal";
+import Image from "next/image";
 
 export default function BadgesPanel({ user }) {
   const [error, setError] = useState(null);
@@ -61,8 +62,10 @@ export default function BadgesPanel({ user }) {
   };
   const NoDataImage = ({ text }) => (
     <div className="no-data-container">
-      <img
+      <Image
         src="/no_data_available.png"
+        width={32}
+        height={32}
         alt="No data"
         className="no-data-image"
       />

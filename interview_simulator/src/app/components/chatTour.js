@@ -21,7 +21,7 @@ const ChatTour = ({ onComplete }) => {
       const hasCompletedTour = localStorage.getItem("chatTourCompleted");
       if (!hasCompletedTour) setRunTour(true);
     }
-  }, []);
+  }, [user]);
 
   const handleComplete = useCallback(
     (data) => {

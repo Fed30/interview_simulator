@@ -1,6 +1,7 @@
 "use client";
 import { useRouter } from "next/navigation";
 import { useLoading } from "../context/LoadingContext";
+import Image from "next/image";
 
 const SessionEndModal = ({ isOpen, onClose, conversationSaved }) => {
   const router = useRouter();
@@ -27,8 +28,10 @@ const SessionEndModal = ({ isOpen, onClose, conversationSaved }) => {
               WELL DONE!
             </h4>
             <div className="flex justify-center mb-4">
-              <img
+              <Image
                 src="/practice_questions.png"
+                width={200}
+                height={200}
                 alt="No data"
                 className="no-data-image max-w-full max-h-64" // Ensure image doesn't stretch
               />

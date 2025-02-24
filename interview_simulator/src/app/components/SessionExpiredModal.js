@@ -1,6 +1,7 @@
 "use client";
 import { useRouter } from "next/navigation";
 import { useLoading } from "../context/LoadingContext";
+import Image from "next/image";
 
 const SessionExpiredModal = ({ isOpen, onClose, conversationSaved }) => {
   const router = useRouter();
@@ -27,8 +28,10 @@ const SessionExpiredModal = ({ isOpen, onClose, conversationSaved }) => {
               SESSION TIMED OUT!
             </h4>
             <div className="flex justify-center mb-4">
-              <img
+              <Image
                 src="/challenges.png"
+                width={200}
+                height={200}
                 alt="No data"
                 className="no-data-image max-w-full max-h-64"
               />

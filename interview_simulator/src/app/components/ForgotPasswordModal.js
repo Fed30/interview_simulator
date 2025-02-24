@@ -57,7 +57,7 @@ const ForgotPasswordModal = ({ isOpen, onClose, onSwitchToLogin }) => {
               className="close cursor-pointer text-2xl absolute top-2 right-2"
               onClick={handleClose} // Use handleClose to clear inputs and close the modal
             >
-              &quot;x&quot;
+              x
             </span>
             <h4 className="text-center text-2xl font-semibold leading-tight text-shadow-lg">
               FORGOT PASSWORD

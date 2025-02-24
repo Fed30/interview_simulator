@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useFeedbackPanelData } from "../context/FeedbackPanelContext";
+import Image from "next/image";
 
 export default function FeedbackPanel({ user }) {
   const [sessions, setSessions] = useState([]);
@@ -107,8 +108,10 @@ export default function FeedbackPanel({ user }) {
         <p className="error-message">{error}</p>
       ) : filteredSessions.length === 0 ? (
         <div className="no-data-container">
-          <img
+          <Image
             src="/no_data_available.png"
+            width={32}
+            height={32}
             alt="No data"
             className="no-data-image"
           />
