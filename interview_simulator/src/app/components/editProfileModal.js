@@ -91,7 +91,7 @@ const EditProfileModal = ({ isOpen, onClose, onProfileUpdate }) => {
       };
 
       const response = await fetch(
-        "https://interview-simulator-iy3l.onrender.com/update_profile",
+        "https://interview-simulator-ruddy.vercel.app/update_profile",
         {
           method: "POST",
           headers: {

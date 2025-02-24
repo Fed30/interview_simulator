@@ -108,7 +108,7 @@ const SignUpModal = ({ isOpen, onClose, onSwitchToLogin }) => {
 
       // Send the ID token to the Flask backend
       const response = await fetch(
-        "https://interview-simulator-iy3l.onrender.com/verify_token",
+        "https://interview-simulator-ruddy.vercel.app/verify_token",
         {
           method: "POST",
           headers: {

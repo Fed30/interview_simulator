@@ -23,7 +23,7 @@ export const BadgesAwardsProvider = ({ children }) => {
       const token = await user.getIdToken(true);
       await new Promise((resolve) => setTimeout(resolve, 1000));
       const res = await fetch(
-        "https://interview-simulator-iy3l.onrender.com/get_badges_awards_data",
+        "https://interview-simulator-ruddy.vercel.app/get_badges_awards_data",
         {
           method: "POST",
           headers: { Authorization: `Bearer ${token}` },
