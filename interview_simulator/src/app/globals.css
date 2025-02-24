@@ -185,18 +185,17 @@ p, span, button {
 
 @media (max-width: 768px) {
     .start-btn {
-        font-size: 1.5rem; /* Smaller font size on mobile */
-        padding: 8px 16px; /* Adjust padding on smaller screens */
+        font-size: 1.5rem; 
+        padding: 8px 16px; 
     }
 }
 
 @media (max-width: 480px) {
     .start-btn {
-        font-size: 1.2rem; /* Further reduce font size on very small screens */
-        padding: 6px 12px; /* Reduce padding even more */
+        font-size: 1.2rem; 
+        padding: 6px 12px; 
     }
 }
-
 
 /* Login button styling */
 .login-button {
@@ -352,14 +351,14 @@ p, span, button {
 }
 
 .resetModal-btn:hover {
-	background: linear-gradient(145deg, #fc5c7d, #6a82fb); /* Reverse the gradient */
-	transform: scale(1.05); /* Slightly increase size */
-	box-shadow: 0 8px 12px rgba(0, 0, 0, 0.2); /* More prominent shadow */
+	background: linear-gradient(145deg, #fc5c7d, #6a82fb); 
+	transform: scale(1.05); 
+	box-shadow: 0 8px 12px rgba(0, 0, 0, 0.2); 
 }
 
 .resetModal-btn:active {
-	transform: scale(0.97); /* Slight shrink on click */
-	box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Reduced shadow */
+	transform: scale(0.97); 
+	box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); 
 }
 .close {
 	color: white;
@@ -381,8 +380,6 @@ p, span, button {
 
  /* HEADER DROPDOWN */
 .dropdown-menu {
-    /*background: radial-gradient(circle, rgba(30, 30, 47, 1) 6%, rgba(53, 102, 184, 1) 78%);*/
-	/*background: linear-gradient(145deg, #1e1e2f, #6a82fb);*/
 	background-color: #252940;
 	box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
     transition: opacity 0.3s ease, transform 0.3s ease;
@@ -406,9 +403,9 @@ p, span, button {
 
 /* Hover effect */
 .dropdown-menu button:hover {
-    border-left-color: #F25E86; /* Visible on hover */
-    color: #f1f1f1; /* Slightly lighter text color */
-	/*transition: border-color 0.3s ease-in-out, color 0.3s ease-in-out;*/
+    border-left-color: #F25E86; 
+    color: #f1f1f1; 
+	
 	}
 
 /* INPUT FIELDS STYLES */
@@ -537,7 +534,6 @@ h4.text-center {
 .nav-tabs {
 	display: flex;
 	justify-content: flex-start;
-	/*border-bottom: 2px solid #6D81F2; 	*/
 }
 
 .nav-item {
@@ -557,15 +553,12 @@ h4.text-center {
 
 .nav-link:hover {
 	color: white; 
-	/*background-color: rgba(242, 94, 134, 0.1); */
 	border-bottom: 3px solid rgba(242, 94, 134, 0.5); 
 }
 
 .nav-link.active {
 	color: white;
-	/*background-color: rgba(242, 94, 134, 0.2); */
 	border-bottom: 3px solid #F25E86; 
-	/* font-weight: bold; */
 }
 
 
@@ -578,9 +571,8 @@ h4.text-center {
 	display: block;
 }
 
-
 .scrollable-content:active, .scrollable-content:hover {
-	overflow-y: auto; /* Makes the scrollbar visible when the content is active or hovered */
+	overflow-y: auto; 
 }
 /* Apply styles to the scrollbar */
 .scrollable-content {
@@ -592,29 +584,28 @@ h4.text-center {
 
 /* Style the scrollbar itself */
 .scrollable-content::-webkit-scrollbar {
-	width: 6px; /* Set the width of the scrollbar */
-	height: 12px; /* Set the height of the scrollbar for horizontal scrolling */
+	width: 6px; 
+	height: 12px; 
 }
 
 /* Style the track (background) of the scrollbar */
 .scrollable-content::-webkit-scrollbar-track {
-	background: #1e1e2f; /* Dark background color for the track */
+	background: #1e1e2f;
 	border-radius: 5px;
 	border: 1px solid #6D81F2;
 }
 
-/* Style the thumb (draggable part) of the scrollbar */
+/* Style the thumb  of the scrollbar */
 .scrollable-content::-webkit-scrollbar-thumb {
-	background-color: #6D81F2; /* Color of the thumb */
+	background-color: #6D81F2; 
 	border-radius: 5px;
 }
 
 /* Hover effect on the scrollbar thumb */
 .scrollable-content::-webkit-scrollbar-thumb:hover {
-	background-color: #F25E86; /* Darker color when hovered */
+	background-color: #F25E86; 
 }
 
-/* Optional: style the scrollbar corner (where horizontal and vertical scrollbars meet) */
 .scrollable-content::-webkit-scrollbar-corner {
 	background: #6D81F2;
 }
@@ -644,7 +635,6 @@ h4.text-center {
 	border:none;
 	box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); 
 }
-
 
 .resetPwd-btn {
 	color: white;
@@ -707,10 +697,9 @@ h4.text-center {
 		display: flex;
 		justify-content: center;
 		width: 100%; 
-		margin-top: 10px; 
+		margin-top: 50px; 
 	}
 	
-
 	.profile-info h3 {
 		font-size: 0.9rem;
 	}
@@ -740,7 +729,7 @@ h4.text-center {
 	}
 
 	.profile-info h3 {
-		font-size: 0.85rem;
+		font-size: 0.75rem;
 	}
 
 	.nav-tabs {
@@ -753,14 +742,14 @@ h4.text-center {
 	}
 
 	.editProfile-btn, .resetPwd-btn {
-		font-size: 0.8rem;
+		font-size: 0.7rem;
 		padding: 7px 14px;
 		width: auto;
 		margin-left: auto;
 	}
 	.button-wrapper {
-		flex-direction: column; /* Stacks buttons vertically */
-		align-items: center; /* Centers buttons */
+		flex-direction: column; 
+		align-items: end; 
 	}
 }
 
@@ -789,7 +778,7 @@ h4.text-center {
 /* Chat Header Image */
 .chat_container img {
 	border-radius: 50%;
-	box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15); /* Shadow for the image */
+	box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15); 
 }
 
 /* Header Title and Subtext */
@@ -815,12 +804,12 @@ h4.text-center {
 }
 
 .chat-area {
-    -ms-overflow-style: none; /* Hide scrollbar for Internet Explorer and Edge */
-    scrollbar-width: none; /* Hide scrollbar for Firefox */
+    -ms-overflow-style: none; 
+    scrollbar-width: none; 
 }
 
 .chat-area::-webkit-scrollbar {
-    display: none; /* Hide scrollbar for Chrome, Safari, and Edge */
+    display: none; 
 }
 .profile_chat_icon {
 	font-size: 2rem;
@@ -828,25 +817,25 @@ h4.text-center {
 }
 
 .gradient-text {
-	background: linear-gradient(145deg, rgba(106, 130, 251, 1), rgba(252, 92, 125, 1)); /* Gradient colors */
-	-webkit-background-clip: text; /* Clips the gradient to the text */
-	-webkit-text-fill-color: transparent; /* Makes the text transparent to show the gradient */
-	animation: pulse_timer 3s ease-in-out infinite, flicker 3s ease-in-out infinite; /* Pulse and flicker effect */
-	font-size: 1.25rem; /* Slightly larger font size */
-	font-weight: 600; /* Bold text */
-	transform: scale(1.1); /* Slight scaling effect */
-	transition: all 0.5s ease-out; /* Smooth transitions */
+	background: linear-gradient(145deg, rgba(106, 130, 251, 1), rgba(252, 92, 125, 1)); 
+	-webkit-background-clip: text; 
+	-webkit-text-fill-color: transparent; 
+	animation: pulse_timer 3s ease-in-out infinite, flicker 3s ease-in-out infinite; 
+	font-size: 1.25rem; 
+	font-weight: 600; 
+	transform: scale(1.1); 
+	transition: all 0.5s ease-out; 
 }
 
 @keyframes pulse_timer {
 	0% {
-	  transform: scale(1); /* Normal size */
+		transform: scale(1); 
 	}
 	50% {
-	  transform: scale(1.1); /* Slightly enlarged */
+		transform: scale(1.1); 
 	}
 	100% {
-	  transform: scale(1); /* Back to normal size */
+		transform: scale(1); 
 	}
 }
 
@@ -875,52 +864,51 @@ h4.text-center {
 
 
 .sendMsg-btn {
-	background: linear-gradient(145deg, #6a82fb, #fc5c7d); /* Gradient from light green to darker green */
+	background: linear-gradient(145deg, #6a82fb, #fc5c7d); 
 	color: white;
 	font-size: 1rem;
 	border: none;
 	border-radius: 5px;
 	cursor: pointer;
-	transition: all 0.3s ease; /* Smooth transition for all properties */
-	box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+	transition: all 0.3s ease; 
+	box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); 
 }
 
 .sendMsg-btn:hover {
-	background: linear-gradient(145deg, #fc5c7d, #6a82fb); /* Reverse the gradient */
-	transform: scale(1.05); /* Slightly increase size */
-	box-shadow: 0 8px 12px rgba(0, 0, 0, 0.2); /* More prominent shadow */
+	background: linear-gradient(145deg, #fc5c7d, #6a82fb); 
+	transform: scale(1.05); 
+	box-shadow: 0 8px 12px rgba(0, 0, 0, 0.2); 
 }
 
 .sendMsg-btn:active {
-	transform: scale(0.97); /* Slight shrink on click */
-	box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Reduced shadow */
+	transform: scale(0.97); 
+	box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); 
 }
 
 /* Parent container for the progress bar */
-/* Progress Bar Track */
 .progress-bar {
-	background: linear-gradient(to right, #2A2A40, #2A2A40); /* Dark track with a single solid color */
+	background: linear-gradient(to right, #2A2A40, #2A2A40); 
 	height: 1rem;
 	border-radius: 10px;
 	position: relative;
 	overflow: hidden;
-	box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.2); /* Light inner shadow for depth */
+	box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.2); 
 }
 
 /* Inner Progress Indicator */
 .progress {
-	background: linear-gradient(145deg, #2A2A40, #ffffff); /* Progress bar with gradient from dark to white */
-	transition: width 0.3s ease-in-out; /* Smooth transition for progress updates */
+	background: linear-gradient(145deg, #2A2A40, #ffffff); 
+	transition: width 0.3s ease-in-out; 
 	box-shadow: 0 0 10px rgba(255, 255, 255, 0.6), 
-				0 0 20px rgba(255, 255, 255, 0.3); /* Subtle glow effect */
+				0 0 20px rgba(255, 255, 255, 0.3); 
 	display: flex;
 	align-items: center;
-	justify-content: center; /* Center the percentage text */
-	color: #2A2A40; /* Dark text color */
+	justify-content: center; 
+	color: #2A2A40; 
 	font-weight: bold;
-	text-shadow: 0 0 3px rgba(0, 0, 0, 0.7); /* Adding text shadow for better contrast */
+	text-shadow: 0 0 3px rgba(0, 0, 0, 0.7); 
 	padding-left: 10px;
-	padding-right: 10px; /* Add some space around the text */
+	padding-right: 10px; 
 }
 
 /* Shimmer Effect for the Progress Bar Background */
@@ -937,9 +925,8 @@ h4.text-center {
 		rgba(255, 255, 255, 0)
 	);
 	animation: shimmer 2s infinite;
-	pointer-events: none; /* Prevent the shimmer from interfering with the progress */
+	pointer-events: none; 
 }
-
 
 /* Shimmer animation keyframes */
 @keyframes shimmer {
@@ -975,10 +962,10 @@ h4.text-center {
 
 /* Disable Effect for Input Fields */
 .form-control-chat.disabled {
-	background-color: transparent;  /* Light grey background when disabled */
-	border: 2px solid #6D81F2;  /* Light grey border */
-	color: whitesmoke;  /* Dim the text color */
-	cursor: not-allowed;  /* Show the 'not-allowed' cursor */
+	background-color: transparent;  
+	border: 2px solid #6D81F2; 
+	color: whitesmoke;  
+	cursor: not-allowed;  
 }
 
 /* When textarea is enabled and focused */
@@ -1022,7 +1009,6 @@ h4.text-center {
 		opacity: 1;
 	}
 }
-
 
 /* chat page mobile responsive */
 @media (max-width: 768px) {
@@ -1068,22 +1054,22 @@ h4.text-center {
 }
 
 .modal-blur{
-	background-color: rgba(0, 0, 0, 0.6); /* Dark background overlay */
-	backdrop-filter: blur(5px); /* Apply blur effect */
+	background-color: rgba(0, 0, 0, 0.6); 
+	backdrop-filter: blur(5px); 
 	height: 100vh;
 	width: 100%;
 	z-index: 1000;
 }
 /*SPINNER*/
 .spinner-container {
-	position: fixed; /* Fixed position to cover the entire screen */
+	position: fixed; 
 	top: 0;
 	left: 0;
 	width: 100%;
 	height: 100%;
-	background-color: rgba(0, 0, 0, 0.6); /* Dark background overlay */
-	backdrop-filter: blur(5px); /* Apply blur effect */
-	z-index: 9999; /* Ensure it is on top of all content */
+	background-color: rgba(0, 0, 0, 0.6); 
+	backdrop-filter: blur(5px); 
+	z-index: 9999; 
 	display: flex;
 	justify-content: center;
 	align-items: center;
@@ -1100,7 +1086,7 @@ h4.text-center {
 	animation: spin 1s linear infinite; 
 }
 
-/* Logo inside the spinner (fixed in center) */
+/* Logo inside the spinner */
 .spinner .logo {
 	position: absolute;
 	top: 50%;
@@ -1124,14 +1110,13 @@ h4.text-center {
 	filter: blur(5px);  
 }
 
-
 .sidebar-blur {
 	filter: blur(5px);
 }
 
 .modal-blur{
-	background-color: rgba(0, 0, 0, 0.6); /* Dark background overlay */
-	backdrop-filter: blur(5px); /* Apply blur effect */
+	background-color: rgba(0, 0, 0, 0.6); 
+	backdrop-filter: blur(5px); 
 }
 /* Styling for Insight panel Charts */
 .profile-page{
@@ -1214,7 +1199,7 @@ h4.text-center {
 
 .charts-grid {
 	display: grid;
-	grid-template-columns: repeat(2, 1fr); /* Two columns per row */
+	grid-template-columns: repeat(2, 1fr); 
 	gap: 15px;
 	
 }
@@ -1222,8 +1207,7 @@ h4.text-center {
 .chart-box {
 	padding: 20px;
 	border-radius: 5px;
-	background-color: #2A2A40;/*#1e1e2f*/
-	/*border: 2px solid #6D81F2;*/
+	background-color: #2A2A40;
 	box-shadow: 0 1px 5px rgba(0, 0, 0, 0.1);
 	text-align: center;
 	height: 270px; 
@@ -1264,7 +1248,7 @@ h4.text-center {
 	display: block;
 	width: 40px;
 	height: 40px;
-	border: 8px solid #1a2b4c; /* Dark Blue */
+	border: 8px solid #1a2b4c; 
 	border-top: 8px solid #F25E86;  
 	border-radius: 50%;
 	animation: spin 1s linear infinite; 
@@ -1326,7 +1310,6 @@ h4.text-center {
 
 /* Table Header */
 .table-header {
-	/*background-color: #6D81F2; */
 	color: white;
 	font-size: 1rem;
 	font-weight: bold;
@@ -1448,7 +1431,7 @@ h4.text-center {
 /* Adjust dashboard layout for smaller screens */
 @media (max-width: 768px) {
 	.dashboard-container {
-		flex-direction: column; /* Stack elements vertically */
+		flex-direction: column; 
 		height: auto;
 		padding: 5px;
 	}
@@ -1460,15 +1443,15 @@ h4.text-center {
 	}
 
 	.chart-card {
-		width: 100%; /* Full width */
+		width: 100%; 
 	}
 
 	.charts-grid {
-		grid-template-columns: 1fr; /* Show one chart per row */
+		grid-template-columns: 1fr; 
 	}
 }
 
-/* Further adjust layout for very small screens (phones) */
+/* Further adjust layout for very small screens */
 @media (max-width: 480px) {
 	.chart-wrapper {
 		width: 100px;
@@ -1488,7 +1471,7 @@ h4.text-center {
 	.feedback-table th,
 	.feedback-table td {
 		padding: 8px;
-		font-size: 0.7rem; /* Reduce text size */
+		font-size: 0.7rem; 
 	}
 
 	.no-data-container {
@@ -1520,7 +1503,7 @@ h4.text-center {
 	}
 
 	.filter-container {
-		flex-wrap: wrap; /* Allow filters to wrap */
+		flex-wrap: wrap; 
 		gap: 10px;
 	}
 
