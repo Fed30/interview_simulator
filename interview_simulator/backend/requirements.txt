@@ -5,3 +5,5 @@ firebase-admin
 python-dotenv
 gunicorn==23.0.0
 openai
+ntplib
+
