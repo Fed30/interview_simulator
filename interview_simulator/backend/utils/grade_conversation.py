@@ -1,4 +1,4 @@
-from config.firebase_config import firestore_db, firebase_db
+from firebase_config import firestore_db, firebase_db
 from utils.openai_get_feedback import get_feedback_summary_from_openai
 from utils.openai_get_grade import get_grade_from_openai
 import os

@@ -1,6 +1,6 @@
 from flask import Blueprint, request, jsonify, session
 from utils.token_utils import verify_firebase_token
-from config.firebase_config import firestore_db, firebase_db
+from firebase_config import firestore_db, firebase_db
 from datetime import datetime
 from utils.question_utils import load_dataset
 import os

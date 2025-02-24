@@ -1,7 +1,7 @@
 from flask import Blueprint, request, jsonify, session
 from utils.question_utils import load_dataset, organize_questions, select_random_questions
 from utils.session_utils import check_existing_session, initialize_session
-from config.openai_config import openai
+from openai_config import openai
 from datetime import datetime
 
 chat_routes = Blueprint('chat_routes', __name__)

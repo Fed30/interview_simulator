@@ -1,5 +1,4 @@
-from config.openai_config import openai
-
+from openai_config import openai
 def get_feedback_summary_from_openai(response,ideal_response, question):
     try:
         messages = [

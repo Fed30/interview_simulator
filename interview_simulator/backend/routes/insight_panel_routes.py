@@ -1,5 +1,5 @@
 from flask import Blueprint, jsonify, request
-from config.firebase_config import firebase_db, firestore_db  # Ensure Firestore is properly initialized
+from firebase_config import firebase_db, firestore_db  # Ensure Firestore is properly initialized
 from utils.token_utils import verify_firebase_token
 import re
 

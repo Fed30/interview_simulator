@@ -2,7 +2,7 @@ import firebase_admin
 from flask import Blueprint, request, jsonify
 from firebase_admin import auth
 import re
-from config.firebase_config import  firebase_db
+from firebase_config import  firebase_db
 
 edit_profile = Blueprint('edit_profile', __name__)
 

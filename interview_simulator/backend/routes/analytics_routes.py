@@ -1,5 +1,5 @@
 from flask import Blueprint, jsonify, request
-from config.firebase_config import firebase_db, firestore_db
+from firebase_config import firebase_db, firestore_db
 from utils.token_utils import verify_firebase_token
 from utils.parse_timestamp import parse_timestamp
 from utils.match_content_with_grade import match_and_extract_grade

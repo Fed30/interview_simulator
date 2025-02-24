@@ -1,7 +1,7 @@
 from fpdf import FPDF
 import os
 from collections import defaultdict
-from config.firebase_config import storage_bucket, firestore_db, firebase_db
+from firebase_config import storage_bucket, firestore_db, firebase_db
 from utils.clean_text import clean_text
 
 def add_background(pdf):
