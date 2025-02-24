@@ -13,7 +13,7 @@ const BadgeAwardsModal = () => {
       console.log("Opening modal");
       setIsOpen(true);
     }
-  }, [data?.badge_awarded_at]);
+  }, [data, data?.new_badge, data?.badge_awarded_at]);
 
   const handleClose = () => {
     console.log("Closing modal");

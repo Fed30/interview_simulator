@@ -56,7 +56,13 @@ export default function BadgesPanel({ user }) {
         onClick={() => handleBadgeClick(badge)}
       >
         <h3 className="badge-name">{badge.name}</h3>
-        <img src={badge.badge_link} alt={badge.name} className="badge-image" />
+        <Image
+          src={badge.badge_link}
+          alt={badge.name}
+          width={200}
+          height={200}
+          className="badge-image"
+        />
       </div>
     );
   };
