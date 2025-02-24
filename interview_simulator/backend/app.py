@@ -12,7 +12,7 @@ configure_app(app)
 
 # Initialize session and CORS
 Session(app)
-CORS(app, supports_credentials=True, resources={r"/*": {"origins": ["https://interview-simulator-3pxgiadhb-federicos-projects-6af4c6f1.vercel.app"]}})
+CORS(app, supports_credentials=True, resources={r"/*": {"origins": ["https://interview-simulator-ruddy.vercel.app/","https://interview-simulator-git-main-federicos-projects-6af4c6f1.vercel.app/","https://interview-simulator-b9lpvvn3n-federicos-projects-6af4c6f1.vercel.app/"]}})
 
 
 # Register routes
