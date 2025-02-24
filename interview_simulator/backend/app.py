@@ -18,5 +18,9 @@ CORS(app, supports_credentials=True, resources={r"/*": {"origins": ["http://loca
 # Register routes
 register_routes(app)
 
+@app.route("/", methods=["GET"])
+def home():
+    return {"message": "Interview Simulator API is running!"}, 200
+
 if __name__ == "__main__":
     app.run(port=5000,debug=True)
