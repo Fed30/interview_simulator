@@ -1,7 +1,7 @@
 from flask import Flask
 from flask_session import Session
 from flask_cors import CORS
-from .config.app_config import configure_app
+from config.app_config import configure_app
 from routes import register_routes
 
 # Initialize the Flask app

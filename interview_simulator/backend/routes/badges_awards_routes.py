@@ -3,7 +3,6 @@ from config.firebase_config import firebase_db, storage_bucket
 from utils.token_utils import verify_firebase_token
 from urllib.parse import quote_plus
 from utils.utc_time_utils import get_current_utc_time_with_ntplib
-from flask_cors import cross_origin
 
 
 badges_awards_data = Blueprint('badges_awards_data', __name__)
