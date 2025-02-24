@@ -82,8 +82,6 @@ const Home = () => {
           {/* Left Side: Image */}
           <Image
             src="/practice_questions.png"
-            width={32}
-            height={32}
             alt="Practice questions"
             className="w-full sm:w-1/2 h-full object-cover image-hover mb-8 sm:mb-0"
           />
@@ -158,8 +156,6 @@ const Home = () => {
           {/* Right Side: Image */}
           <Image
             src="/feedback.png"
-            width={32}
-            height={32}
             alt="Feedback"
             className="w-full sm:w-1/2 h-full object-cover image-hover"
           />
@@ -206,8 +202,6 @@ const Home = () => {
           {/* Left Side: Image */}
           <Image
             src="/star_method.png"
-            width={32}
-            height={32}
             alt="STAR Method"
             className="w-full sm:w-1/2 h-full object-cover image-hover mb-8 sm:mb-0"
           />
