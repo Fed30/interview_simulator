@@ -3,4 +3,4 @@ flask-session
 flask-cors
 firebase-admin
 python-dotenv
-gunicorn==20.1.0
+gunicorn==23.0.0
