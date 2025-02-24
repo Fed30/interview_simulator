@@ -88,7 +88,7 @@ export default function Profile() {
       console.log("User is not authenticated");
       router.push("/"); // Redirect if not authenticated
     }
-  }, [router]);
+  }, [router, user]);
 
   const handleProfileUpdate = (updatedData) => {
     const firstName = updatedData.firstName || "N/A";
