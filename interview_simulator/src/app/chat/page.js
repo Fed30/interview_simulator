@@ -59,13 +59,16 @@ export default function Chat() {
       try {
         setIsConversationSaved(false);
         const idToken = await user.getIdToken(true);
-        const response = await fetch("http://127.0.0.1:5000/chat", {
-          method: "GET",
-          credentials: "include",
-          headers: {
-            Authorization: `Bearer ${idToken}`,
-          },
-        });
+        const response = await fetch(
+          "https://interview-simulator-iy3l.onrender.com/chat",
+          {
+            method: "GET",
+            credentials: "include",
+            headers: {
+              Authorization: `Bearer ${idToken}`,
+            },
+          }
+        );
 
         const data = await response.json();
 
@@ -190,7 +193,7 @@ export default function Chat() {
         const idToken = await user.getIdToken(true);
         await new Promise((resolve) => setTimeout(resolve, 1000));
         const response = await fetch(
-          "http://127.0.0.1:5000/save_conversation",
+          "https://interview-simulator-iy3l.onrender.com/save_conversation",
           {
             method: "POST",
             credentials: "include",
@@ -236,12 +239,15 @@ export default function Chat() {
     setIsDisabled(true);
 
     try {
-      const response = await fetch("http://127.0.0.1:5000/chat", {
-        method: "POST",
-        credentials: "include",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ message: userMessage }),
-      });
+      const response = await fetch(
+        "https://interview-simulator-iy3l.onrender.com/chat",
+        {
+          method: "POST",
+          credentials: "include",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ message: userMessage }),
+        }
+      );
 
       const data = await response.json();
       if (data.error) {

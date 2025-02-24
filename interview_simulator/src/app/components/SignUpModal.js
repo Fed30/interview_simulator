@@ -107,13 +107,16 @@ const SignUpModal = ({ isOpen, onClose, onSwitchToLogin }) => {
       const idToken = await userCredential.user.getIdToken(); // Get ID token
 
       // Send the ID token to the Flask backend
-      const response = await fetch("http://localhost:5000/verify_token", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ idToken }),
-      });
+      const response = await fetch(
+        "https://interview-simulator-iy3l.onrender.com/verify_token",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ idToken }),
+        }
+      );
 
       const data = await response.json();
 

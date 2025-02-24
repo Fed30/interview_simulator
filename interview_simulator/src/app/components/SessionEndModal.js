@@ -34,9 +34,9 @@ const SessionEndModal = ({ isOpen, onClose, conversationSaved }) => {
               />
             </div>
             <p className="text-white text-base text-center break-normal mb-2">
-              Great job! You've successfully completed your practice session.
-              Your effort and dedication are truly commendable. Keep up the
-              excellent work! We are saving the session, and your feedback
+              Great job! You&apos;ve successfully completed your practice
+              session. Your effort and dedication are truly commendable. Keep up
+              the excellent work! We are saving the session, and your feedback
               report will be available shortly on your profile, so be sure to
               check it out!
             </p>

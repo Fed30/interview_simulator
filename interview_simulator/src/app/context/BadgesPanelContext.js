@@ -22,10 +22,13 @@ export const BadgesPanelProvider = ({ children }) => {
 
       const token = await user.getIdToken(true);
       await new Promise((resolve) => setTimeout(resolve, 1000));
-      const res = await fetch("http://127.0.0.1:5000/get_badges_panel_data", {
-        method: "GET",
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      const res = await fetch(
+        "https://interview-simulator-iy3l.onrender.com/get_badges_panel_data",
+        {
+          method: "GET",
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
 
       if (!res.ok) throw new Error("Failed to fetch badges data");
       return await res.json();

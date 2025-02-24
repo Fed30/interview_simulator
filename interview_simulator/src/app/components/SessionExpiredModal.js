@@ -34,10 +34,10 @@ const SessionExpiredModal = ({ isOpen, onClose, conversationSaved }) => {
               />
             </div>
             <p className="text-white text-base text-center break-normal mb-2">
-              Oops! Your session has expired due to inactivity. Don't worry—your
-              hard work has been saved! You can review your analytics on your
-              profile shortly. To continue practicing and improving, please
-              start a new session. Keep up the great work!
+              Oops! Your session has expired due to inactivity. Don&apos;t
+              worry—your hard work has been saved! You can review your analytics
+              on your profile shortly. To continue practicing and improving,
+              please start a new session. Keep up the great work!
             </p>
 
             {/* Dynamic Saving Status */}

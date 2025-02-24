@@ -90,14 +90,17 @@ const EditProfileModal = ({ isOpen, onClose, onProfileUpdate }) => {
         email: email,
       };
 
-      const response = await fetch("http://localhost:5000/update_profile", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${idToken}`,
-        },
-        body: JSON.stringify(updates),
-      });
+      const response = await fetch(
+        "https://interview-simulator-iy3l.onrender.com/update_profile",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${idToken}`,
+          },
+          body: JSON.stringify(updates),
+        }
+      );
 
       const result = await response.json();
       if (response.ok) {

@@ -47,7 +47,7 @@ const BadgeAwardsModal = () => {
           🎉 Hurray!!! 🎉
         </h4>
         <p className="text-white text-lg text-center mb-4">
-          You've earned the <strong>{data?.new_badge}</strong> !
+          You&apos;ve earned the <strong>{data?.new_badge}</strong> !
         </p>
         <div className="flex justify-center mb-4">
           <img

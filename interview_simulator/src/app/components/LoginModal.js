@@ -61,15 +61,18 @@ const LoginModal = ({
       const idToken = await userCredential.user.getIdToken(true); // Get ID Token
 
       // Send the ID token to the Flask backend for verification
-      const response = await fetch("http://localhost:5000/verify_token", {
-        method: "POST",
-        credentials: "include",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${idToken}`, // Pass the ID token
-        },
-        body: JSON.stringify({ idToken }),
-      });
+      const response = await fetch(
+        "https://interview-simulator-iy3l.onrender.com/verify_token",
+        {
+          method: "POST",
+          credentials: "include",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${idToken}`, // Pass the ID token
+          },
+          body: JSON.stringify({ idToken }),
+        }
+      );
 
       const data = await response.json();
 
@@ -231,7 +234,7 @@ const LoginModal = ({
             {/* Switch to Sign Up link */}
             <div className="form-group mt-3 text-center">
               <p>
-                Don't have an account?{" "}
+                Don&apos;t have an account?{" "}
                 <span
                   className="links cursor-pointer"
                   onClick={handleSignUpClick} // Switch to Sign Up modal
