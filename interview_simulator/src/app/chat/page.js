@@ -1,11 +1,5 @@
 "use client";
-import React, {
-  useState,
-  useEffect,
-  useLayoutEffect,
-  useRef,
-  useCallback,
-} from "react";
+import React, { useState, useEffect, useLayoutEffect, useRef } from "react";
 import "@fortawesome/fontawesome-free/css/all.min.css";
 import { useRouter } from "next/navigation";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
@@ -45,7 +39,7 @@ export default function Chat() {
       const completed = localStorage.getItem("chatTourCompleted");
       setTourCompleted(completed === "true");
     }
-  }, [tourCompleted]);
+  }, []); //tourCompleted
 
   useEffect(() => {
     document.body.removeAttribute("data-new-gr-c-s-check-loaded");
