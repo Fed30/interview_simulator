@@ -10,6 +10,7 @@
         "extralight",
         "firestore",
         "fontawesome",
+        "fpdf",
         "gunicorn",
         "hackathon",
         "jsonify",
