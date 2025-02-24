@@ -27,7 +27,7 @@ const BadgeDetailsModal = ({ badge, onClose }) => {
           {badge.explanation}
         </p>
         <p className="text-white text-lg text-center mt-4 font-semibold">
-          {"Keep pushing forward, greatness awaits!"}
+          Keep pushing forward, greatness awaits!
         </p>
       </div>
     </div>
