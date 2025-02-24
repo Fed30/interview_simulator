@@ -45,7 +45,7 @@ export default function Chat() {
       const completed = localStorage.getItem("chatTourCompleted");
       setTourCompleted(completed === "true");
     }
-  }, [tourCompleted]); //tourCompleted
+  }, [tourCompleted]);
 
   useEffect(() => {
     document.body.removeAttribute("data-new-gr-c-s-check-loaded");
@@ -113,7 +113,7 @@ export default function Chat() {
   };
 
   // Function to handle session expiration (triggered only when the timer runs out)
-  const handleSessionExpiration = useCallback(async () => {
+  const handleSessionExpiration = async () => {
     if (hasSessionExpired || saveFlag.current || isConversationSaved) return; // Prevent duplicate saves
 
     saveFlag.current = true; // Prevent further saves
@@ -132,12 +132,7 @@ export default function Chat() {
 
     setHasSessionExpired(true);
     isMounted.current = false;
-  }, [
-    hasSessionExpired,
-    saveFlag,
-    isConversationSaved,
-    sendConversationHistory,
-  ]);
+  };
 
   // Fetch initial question after tour completion
   useEffect(() => {
@@ -153,7 +148,7 @@ export default function Chat() {
     });
 
     return () => unsubscribe();
-  }, [setQuestionFetched, tourCompleted, questionFetched, router]);
+  }, [tourCompleted, questionFetched, router]);
 
   // Handle session expiration
   useEffect(() => {
@@ -172,7 +167,7 @@ export default function Chat() {
     }, 1000);
 
     return () => clearInterval(timerRef.current);
-  }, [tourCompleted, timerStyle, handleSessionExpiration]);
+  }, [tourCompleted, timerStyle]);
 
   // Manage session expiration and loading state
   useLayoutEffect(() => {
@@ -189,47 +184,44 @@ export default function Chat() {
     return () => clearTimeout(timeout);
   }, [messages, isTyping]);
 
-  const sendConversationHistory = useCallback(
-    async (conversation) => {
-      setIsDisabled(true);
-      clearInterval(timerRef.current);
-      localStorage.removeItem("chatTourCompleted");
-      const auth = getAuth();
-      const user = auth.currentUser;
-      console.log("CONVERSATION: ", conversation);
-      if (!user || !conversation || conversation.length === 0) {
-        toast.error("No conversation history to save.");
-        return;
-      }
-      if (!isConversationSaved) {
-        try {
-          const idToken = await user.getIdToken(true);
-          await new Promise((resolve) => setTimeout(resolve, 1000));
-          const response = await fetch(
-            "https://interview-simulator-ruddy.vercel.app/save_conversation",
-            {
-              method: "POST",
-              credentials: "include",
-              headers: {
-                "Content-Type": "application/json",
-                Authorization: `Bearer ${idToken}`,
-              },
-              body: JSON.stringify({ conversationHistory: conversation }),
-            }
-          );
-          const data = await response.json();
-          if (data.success) {
-            setIsConversationSaved(true);
-          } else {
-            toast.error("Error saving conversation history.");
+  const sendConversationHistory = async (conversation) => {
+    setIsDisabled(true);
+    clearInterval(timerRef.current);
+    localStorage.removeItem("chatTourCompleted");
+    const auth = getAuth();
+    const user = auth.currentUser;
+    console.log("CONVERSATION: ", conversation);
+    if (!user || !conversation || conversation.length === 0) {
+      toast.error("No conversation history to save.");
+      return;
+    }
+    if (!isConversationSaved) {
+      try {
+        const idToken = await user.getIdToken(true);
+        await new Promise((resolve) => setTimeout(resolve, 1000));
+        const response = await fetch(
+          "https://interview-simulator-ruddy.vercel.app/save_conversation",
+          {
+            method: "POST",
+            credentials: "include",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${idToken}`,
+            },
+            body: JSON.stringify({ conversationHistory: conversation }),
           }
-        } catch (error) {
-          toast.error("Error saving conversation history. Please try again.");
+        );
+        const data = await response.json();
+        if (data.success) {
+          setIsConversationSaved(true);
+        } else {
+          toast.error("Error saving conversation history.");
         }
+      } catch (error) {
+        toast.error("Error saving conversation history. Please try again.");
       }
-    },
-    [isConversationSaved]
-  );
+    }
+  };
 
   const formatTime = (timeInSeconds) => {
     const minutes = Math.floor(timeInSeconds / 60);
