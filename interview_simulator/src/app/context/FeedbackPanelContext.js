@@ -23,7 +23,7 @@ export const FeedbackPanelProvider = ({ children }) => {
       const token = await user.getIdToken(true);
       await new Promise((resolve) => setTimeout(resolve, 1000));
       const res = await fetch(
-        "https://interview-simulator-nu.vercel.app/get_feedback_panel_data",
+        "https://interview-simulator-iy3l.onrender.com/get_feedback_panel_data",
         {
           method: "GET",
           headers: { Authorization: `Bearer ${token}` },

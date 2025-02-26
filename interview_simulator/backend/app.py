@@ -33,4 +33,4 @@ def home():
     return {"message": "Interview Simulator API is running!"}, 200
 
 if __name__ == "__main__":
-    app.run(port=5000, debug=True)
+    app.run(debug=True)

@@ -62,7 +62,7 @@ const LoginModal = ({
 
       // Send the ID token to the Flask backend for verification
       const response = await fetch(
-        "https://interview-simulator-nu.vercel.app/verify_token",
+        "https://interview-simulator-iy3l.onrender.com/verify_token",
         {
           method: "POST",
           credentials: "include",
