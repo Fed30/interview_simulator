@@ -14,9 +14,9 @@ configure_app(app)
 CORS(app, 
      supports_credentials=True, 
      resources={r"/*": {"origins": [
-         "https://interview-simulator-nu.vercel.app/",
-         "https://interview-simulator-git-main-federicos-projects-6af4c6f1.vercel.app/",
-         "https://interview-simulator-lroniium7-federicos-projects-6af4c6f1.vercel.app/"
+         "https://interview-simulator-nu.vercel.app",
+         "https://interview-simulator-git-main-federicos-projects-6af4c6f1.vercel.app",
+         "https://interview-simulator-lroniium7-federicos-projects-6af4c6f1.vercel.app"
      ]}},
      methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
      allow_headers=["Content-Type", "Authorization", "Access-Control-Allow-Credentials"]
