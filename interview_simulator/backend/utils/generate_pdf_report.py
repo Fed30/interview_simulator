@@ -3,7 +3,6 @@ import os
 from collections import defaultdict
 from firebase_config import storage_bucket, firestore_db, firebase_db
 from utils.clean_text import clean_text
-from io import BytesIO
 
 def add_background(pdf):
     """Function to add a background color to every page."""
@@ -12,16 +11,13 @@ def add_background(pdf):
 
 def generate_pdf_report(user_id, history, timestamp, status, session_id, firebase_session_id):
     # Build an absolute path to the assets folder
-    current_dir = os.path.dirname(__file__)  # Path to the current file (utils folder)
-    assets_dir = os.path.abspath(os.path.join(current_dir, '..', 'assets'))
+    base_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'assets'))
+    font_path = os.path.join(base_dir, 'dejavu-sans.extralight.ttf')
+    font_bold_path = os.path.join(base_dir, 'dejavu-sans.bold.ttf')
 
-    # Paths to the font files
-    font_path = os.path.join(assets_dir, 'dejavu-sans.extralight.ttf')
-    font_bold_path = os.path.join(assets_dir, 'dejavu-sans.bold.ttf')
-
-    # Debug: Print the paths to verify
-    print("Font path:", font_path)
-    print("Bold font path:", font_bold_path)
+    # Debugging: Check if files exist
+    print("Font exists:", os.path.exists(font_path))
+    print("Bold font exists:", os.path.exists(font_bold_path))
 
 
     try:
@@ -196,9 +192,7 @@ Please note, this report is not an indication of outcome but rather an opportuni
         try:
             
             # Save PDF to memory (in-memory buffer)
-            #pdf_output = BytesIO()
-            #pdf.output(pdf_output)
-            #pdf_output.seek(0)  # Reset the pointer to the beginning of the PDF
+            
             pdf_path = f"{session_id}.pdf"
             pdf.output(pdf_path)
 
