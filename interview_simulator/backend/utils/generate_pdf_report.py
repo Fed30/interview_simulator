@@ -18,12 +18,15 @@ def generate_pdf_report(user_id, history, timestamp, status, session_id, firebas
     try:
         # Fetch user details from Firebase Realtime Database
         user_data = firebase_db.child(f'Users/{user_id}').get()
+        print(f"User data type: {type(user_data)}")
+        print(f"User data content: {user_data}")
 
-        if user_data is not None and isinstance(user_data, dict):  # Ensure it's a dictionary
+        if user_data and isinstance(user_data, dict):  # Ensure it's a dictionary
             first_name = user_data.get("firstName", "Unknown")
             last_name = user_data.get("lastName", "User")
             full_name = f"{first_name} {last_name}"
         else:
+            print("Error: user_data is not a valid dictionary or is None.")
             full_name = "Unknown User"  # Default fallback
     
         # Initialize PDF
