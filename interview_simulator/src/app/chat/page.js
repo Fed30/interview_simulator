@@ -39,7 +39,7 @@ export default function Chat() {
       const completed = localStorage.getItem("chatTourCompleted");
       setTourCompleted(completed === "true");
     }
-  }, [tourCompleted]);
+  }, []); //tourCompleted
 
   useEffect(() => {
     if (!isDisabled) {
@@ -75,10 +75,10 @@ export default function Chat() {
 
         console.log("Data: ", data);
 
-        const conversationHistory = data.conversation_history || [];
-        const progressValue = Number(data.progress) || 0;
-        const initialQuestion = data.initial_question;
-        const remainingTime = Math.ceil(Number(data.remaining_time || 60));
+        const conversationHistory = data?.conversation_history || [];
+        const progressValue = Number(data?.progress) || 0;
+        const initialQuestion = data?.initial_question;
+        const remainingTime = Math.ceil(Number(data?.remaining_time || 60));
 
         if (isMounted.current) {
           setMessages(() => {
@@ -103,7 +103,13 @@ export default function Chat() {
 
   // Function to handle session expiration (triggered only when the timer runs out)
   const handleSessionExpiration = async () => {
-    if (hasSessionExpired || saveFlag.current || isConversationSaved) return; // Prevent duplicate saves
+    if (
+      hasSessionExpired ||
+      saveFlag.current ||
+      isConversationSaved ||
+      !isMounted.current
+    )
+      return; // Prevent duplicate saves
 
     saveFlag.current = true; // Prevent further saves
 
