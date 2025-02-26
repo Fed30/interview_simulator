@@ -39,7 +39,7 @@ export default function Chat() {
       const completed = localStorage.getItem("chatTourCompleted");
       setTourCompleted(completed === "true");
     }
-  }, []); //tourCompleted
+  }, [tourCompleted]); //tourCompleted
 
   useEffect(() => {
     if (!isDisabled) {
