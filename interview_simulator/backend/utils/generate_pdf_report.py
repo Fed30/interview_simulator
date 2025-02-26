@@ -185,6 +185,7 @@ Please note, this report is not an indication of outcome but rather an opportuni
         pdf.image(footer_image_path, x=0, w=image_width, h=image_height)  
         
         try:
+            
             # Save PDF to memory (in-memory buffer)
             pdf_output = BytesIO()
             pdf.output(pdf_output)
@@ -203,15 +204,21 @@ Please note, this report is not an indication of outcome but rather an opportuni
             print(f"PDF URL: {pdf_url}")
 
             # Update Firestore with the PDF URL
-            firestore_db.collection("Sessions").document(session_id).update({
+            #firestore_db.collection("Sessions").document(session_id).update({
+                #"report_link": pdf_url
+            #})
+            firestore_db.collection("Sessions").document(session_id).set({
                 "report_link": pdf_url
-            })
+            }, merge=True)
 
-            # Update Firebase Realtime Database with the PDF URL
-            firebase_db.child(f'Users/{user_id}/Sessions/{firebase_session_id}').update({
-                "report_link": pdf_url
-            })
-            
+            if isinstance(pdf_url, str):
+                # Update Firebase Realtime Database with the PDF URL
+                firebase_db.child(f'Users/{user_id}/Sessions/{firebase_session_id}').update({
+                    "report_link": pdf_url
+                })
+            else:
+                print(f"Invalid PDF URL: {type(pdf_url)}")
+                
             print(f"PDF Report generated and uploaded: {pdf_url}")
             return pdf_url
 
