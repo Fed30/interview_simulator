@@ -11,8 +11,9 @@ def add_background(pdf):
     pdf.rect(0, 0, pdf.w, pdf.h, 'F')  # Draw the background rectangle
 
 def generate_pdf_report(user_id, history, timestamp, status, session_id, firebase_session_id):
-    font_path = os.path.join(os.path.dirname(__file__), '..', 'assets', 'dejavu-sans.extralight.ttf')
-    font_bold_path = os.path.join(os.path.dirname(__file__), '..', 'assets', 'dejavu-sans.bold.ttf')
+    font_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'assets', 'dejavu-sans.extralight.ttf'))
+    font_bold_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'assets', 'dejavu-sans.bold.ttf'))
+
 
     try:
         # Fetch user details from Firebase Realtime Database
