@@ -16,18 +16,24 @@ def generate_pdf_report(user_id, history, timestamp, status, session_id, firebas
 
 
     try:
-        # Fetch user details from Firebase Realtime Database
-        user_data = firebase_db.child(f'Users/{user_id}').get()
-        print(f"User data type: {type(user_data)}")
-        print(f"User data content: {user_data}")
+        try:
+            # Fetch user details from Firebase Realtime Database
+            user_data = firebase_db.child(f'Users/{user_id}').get()
+            print(f"User data type: {type(user_data)}")
+            print(f"User data content: {user_data}")
 
-        if user_data and isinstance(user_data, dict):  # Ensure it's a dictionary
-            first_name = user_data.get("firstName", "Unknown")
-            last_name = user_data.get("lastName", "User")
-            full_name = f"{first_name} {last_name}"
-        else:
-            print("Error: user_data is not a valid dictionary or is None.")
-            full_name = "Unknown User"  # Default fallback
+            if user_data and isinstance(user_data, dict):  # Ensure it's a dictionary
+                # Extract first name and last name from the user data
+                first_name = user_data.get("firstName", "Unknown")
+                last_name = user_data.get("lastName", "User")
+                full_name = f"{first_name} {last_name}"
+                print(f"Full name: {full_name}")  # Check the constructed full name
+            else:
+                print("Error: user_data is not a valid dictionary or is None.")
+                full_name = "Unknown User"  # Default fallback
+
+        except Exception as e:
+            print(f"Error fetching user data: {str(e)}")
     
         # Initialize PDF
         pdf = FPDF()
@@ -186,7 +192,7 @@ Please note, this report is not an indication of outcome but rather an opportuni
 
             #  Upload PDF to Firebase Storage
             storage_path = f"Users/{user_id}/Reports/{session_id}.pdf"
-            blob = storage_bucket.bucket().blob(storage_path)
+            blob = storage_bucket.blob(storage_path)
             blob.upload_from_file(pdf_output, content_type='application/pdf')
             blob.make_public()  # Make the PDF publicly accessible
             
@@ -205,12 +211,13 @@ Please note, this report is not an indication of outcome but rather an opportuni
             firebase_db.child(f'Users/{user_id}/Sessions/{firebase_session_id}').update({
                 "report_link": pdf_url
             })
+            
+            print(f"PDF Report generated and uploaded: {pdf_url}")
+            return pdf_url
 
         except Exception as e:
             print(f"Error uploading PDF or updating Firestore: {str(e)}")
 
-            print(f"PDF Report generated and uploaded: {pdf_url}")
-            return pdf_url
 
     except Exception as e:
         print(f"Error generating PDF report: {str(e)}")
