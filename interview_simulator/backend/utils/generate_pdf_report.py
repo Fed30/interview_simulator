@@ -11,13 +11,13 @@ def add_background(pdf):
 
 def generate_pdf_report(user_id, history, timestamp, status, session_id, firebase_session_id):
     # Build an absolute path to the assets folder
-    #base_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'assets'))
-    #font_path = os.path.join(base_dir, 'dejavu-sans.extralight.ttf')
-    #font_bold_path = os.path.join(base_dir, 'dejavu-sans.bold.ttf')
+    base_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..', 'assets'))
+    font_path = os.path.join(base_dir, 'dejavu-sans.extralight.ttf')
+    font_bold_path = os.path.join(base_dir, 'dejavu-sans.bold.ttf')
 
     # Debugging: Check if files exist
-    #print("Font exists:", os.path.exists(font_path))
-    #print("Bold font exists:", os.path.exists(font_bold_path))
+    print("Font exists:", os.path.exists(font_path))
+    print("Bold font exists:", os.path.exists(font_bold_path))
 
 
     try:
@@ -46,24 +46,24 @@ def generate_pdf_report(user_id, history, timestamp, status, session_id, firebas
         add_background(pdf)
 
         # Add Font
-        #pdf.add_font('DejaVu', '', font_path, uni=True)
-        #pdf.add_font('DejaVu_bold', '', font_bold_path, uni=True)
-        #pdf.set_font('DejaVu', size=12)
-        pdf.set_font('Arial', size=12)
+        pdf.add_font('DejaVu', '', font_path, uni=True)
+        pdf.add_font('DejaVu_bold', '', font_bold_path, uni=True)
+        pdf.set_font('DejaVu', size=12)
+        
 
         # Add Logo
-        logo_path = os.path.join(os.path.dirname(__file__), '..', 'assets', 'logo.png')
+        logo_path = os.path.join(os.path.dirname(__file__), '..','..', 'assets', 'logo.png')
         pdf.image(logo_path, x=(pdf.w - 20) / 2, y=5, w=20, h=20)
         pdf.ln(20)
 
         # Title
         pdf.set_text_color(109, 129, 242)
-        #pdf.set_font('DejaVu_bold', size=20)
+        pdf.set_font('DejaVu_bold', size=20)
         pdf.cell(0, 10, "Interview Simulator Feedback Report", ln=True, align='C')
         pdf.ln(10)
         
         # Add second image 
-        second_image_path = os.path.join(os.path.dirname(__file__), '..', 'assets', 'feedback.png')  
+        second_image_path = os.path.join(os.path.dirname(__file__), '..','..', 'assets', 'feedback.png')  
         image_height = 120  
         image_width = pdf.w  
         pdf.ln(10)  
@@ -71,7 +71,7 @@ def generate_pdf_report(user_id, history, timestamp, status, session_id, firebas
 
         # Session Details
         pdf.ln(10)  
-        #pdf.set_font('DejaVu_bold', size=18)
+        pdf.set_font('DejaVu_bold', size=18)
         pdf.set_text_color(255, 255, 255)
         pdf.cell(200, 10, txt=f"User: {full_name}", ln=True, fill=True)
         pdf.cell(200, 10, txt=f"Date: {timestamp}", ln=True, fill=True)
@@ -81,11 +81,11 @@ def generate_pdf_report(user_id, history, timestamp, status, session_id, firebas
         # Introduction
         pdf.add_page()
         add_background(pdf)
-        #pdf.set_font('DejaVu_bold', size=14)
+        pdf.set_font('DejaVu_bold', size=14)
         pdf.set_text_color(109, 129, 242)
         pdf.cell(200, 10, "Introduction", ln=True, align='L')
         pdf.ln(5)
-        #pdf.set_font('DejaVu', '', 12)
+        pdf.set_font('DejaVu', '', 12)
         pdf.set_text_color(255, 255, 255)
         intro_text = """Thank you for completing the Interview Simulator online assessment. 
 We hope you enjoyed it and learnt a bit more about what it's like to be answering interview questions. 
@@ -123,14 +123,14 @@ Please note, this report is not an indication of outcome but rather an opportuni
                         "feedback": feedback
                     })
         # Dictionary mapping each category to its corresponding image file path
-        one_image_path = os.path.join(os.path.dirname(__file__), '..', 'assets', 'welcome.png') 
-        two_image_path = os.path.join(os.path.dirname(__file__), '..', 'assets', 'feedback.png') 
-        three_image_path = os.path.join(os.path.dirname(__file__), '..', 'assets', 'collaboration.png') 
-        four_image_path = os.path.join(os.path.dirname(__file__), '..', 'assets', 'learning.png') 
-        five_image_path = os.path.join(os.path.dirname(__file__), '..', 'assets', 'feedback.png') 
-        six_image_path = os.path.join(os.path.dirname(__file__), '..', 'assets', 'star_method.png') 
-        seven_image_path = os.path.join(os.path.dirname(__file__), '..', 'assets', 'challenges.png') 
-        eight_image_path = os.path.join(os.path.dirname(__file__), '..', 'assets', 'collaboration.png')
+        one_image_path = os.path.join(os.path.dirname(__file__), '..','..', 'assets', 'welcome.png') 
+        two_image_path = os.path.join(os.path.dirname(__file__), '..','..', 'assets', 'feedback.png') 
+        three_image_path = os.path.join(os.path.dirname(__file__), '..','..', 'assets', 'collaboration.png') 
+        four_image_path = os.path.join(os.path.dirname(__file__), '..','..', 'assets', 'learning.png') 
+        five_image_path = os.path.join(os.path.dirname(__file__), '..','..', 'assets', 'feedback.png') 
+        six_image_path = os.path.join(os.path.dirname(__file__), '..','..', 'assets', 'star_method.png') 
+        seven_image_path = os.path.join(os.path.dirname(__file__), '..','..', 'assets', 'challenges.png') 
+        eight_image_path = os.path.join(os.path.dirname(__file__), '..','..', 'assets', 'collaboration.png')
         
         category_images = {
             "Ice Breaking": one_image_path,
@@ -146,18 +146,18 @@ Please note, this report is not an indication of outcome but rather an opportuni
         # Generate Report
         pdf.set_text_color(0, 0, 0)
         for category, questions in categorized_questions.items():
-            #pdf.set_font('DejaVu_bold', size=14)
+            pdf.set_font('DejaVu_bold', size=14)
             pdf.set_text_color(109, 129, 242)
             pdf.cell(0, 10, category, ln=True)
             pdf.ln(5)
 
-            #pdf.set_font('DejaVu', '', 12)
+            pdf.set_font('DejaVu', '', 12)
             pdf.set_text_color(255, 255, 255)
             for q in questions:
                 pdf.multi_cell(0, 5, f"Question: {q['question']}")
                 pdf.ln(2)
 
-                #pdf.set_font('DejaVu', '', 12)
+                pdf.set_font('DejaVu', '', 12)
                 pdf.multi_cell(0, 5, f"Your Answer: {q['user_answer']}")
                 pdf.ln(1)
                 pdf.multi_cell(0, 5, f"Grade: {q['grade']}/10")
@@ -172,18 +172,18 @@ Please note, this report is not an indication of outcome but rather an opportuni
             add_background(pdf)
         
         # Conclusion
-        #pdf.set_font('DejaVu_bold', size=20)
+        pdf.set_font('DejaVu_bold', size=20)
         pdf.set_text_color(109, 129, 242)
         pdf.cell(200, 10, "Thank you", ln=True, align='L')
         pdf.ln(5)
-        #pdf.set_font('DejaVu', size=12)
+        pdf.set_font('DejaVu', size=12)
         pdf.set_text_color(255, 255, 255)
         intro_text = """We hope that you found this report interesting, and that it provides you with useful insights to help you grow and develop. Whatever happens next, we’d like to thank you once again for taking the time to complete our Practice Session and wish you every success for the future."""
         pdf.multi_cell(0, 5, intro_text)
         pdf.ln(10)
         
         # Add Footer image 
-        footer_image_path = os.path.join(os.path.dirname(__file__), '..', 'assets', 'practice_questions.png')  
+        footer_image_path = os.path.join(os.path.dirname(__file__), '..','..', 'assets', 'practice_questions.png')  
         image_height = 120  
         image_width = pdf.w  
         pdf.ln(10)  
