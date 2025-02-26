@@ -187,14 +187,16 @@ Please note, this report is not an indication of outcome but rather an opportuni
         try:
             
             # Save PDF to memory (in-memory buffer)
-            pdf_output = BytesIO()
-            pdf.output(pdf_output)
-            pdf_output.seek(0)  # Reset the pointer to the beginning of the PDF
+            #pdf_output = BytesIO()
+            #pdf.output(pdf_output)
+            #pdf_output.seek(0)  # Reset the pointer to the beginning of the PDF
+            pdf_path = f"{session_id}.pdf"
+            pdf.output(pdf_path)
 
             #  Upload PDF to Firebase Storage
             storage_path = f"Users/{user_id}/Reports/{session_id}.pdf"
             blob = storage_bucket.blob(storage_path)
-            blob.upload_from_file(pdf_output, content_type='application/pdf')
+            blob.upload_from_file(pdf_path, content_type='application/pdf')
             blob.make_public()  # Make the PDF publicly accessible
             
             # Get the public URL of the PDF
@@ -204,12 +206,9 @@ Please note, this report is not an indication of outcome but rather an opportuni
             print(f"PDF URL: {pdf_url}")
 
             # Update Firestore with the PDF URL
-            #firestore_db.collection("Sessions").document(session_id).update({
-                #"report_link": pdf_url
-            #})
-            firestore_db.collection("Sessions").document(session_id).set({
+            firestore_db.collection("Sessions").document(session_id).update({
                 "report_link": pdf_url
-            }, merge=True)
+            })
 
             if isinstance(pdf_url, str):
                 # Update Firebase Realtime Database with the PDF URL
@@ -220,6 +219,7 @@ Please note, this report is not an indication of outcome but rather an opportuni
                 print(f"Invalid PDF URL: {type(pdf_url)}")
                 
             print(f"PDF Report generated and uploaded: {pdf_url}")
+            os.remove(pdf_path)
             return pdf_url
 
         except Exception as e:
