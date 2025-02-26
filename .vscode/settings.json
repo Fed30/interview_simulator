@@ -9,6 +9,7 @@
         "dejavu",
         "dotenv",
         "extralight",
+        "federicos",
         "firestore",
         "fontawesome",
         "fpdf",
@@ -24,6 +25,7 @@
         "Toastify",
         "unixtime",
         "urandom",
+        "vercel",
         "whitesmoke"
     ]
 }

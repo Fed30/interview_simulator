@@ -23,7 +23,7 @@ export const BadgesPanelProvider = ({ children }) => {
       const token = await user.getIdToken(true);
       await new Promise((resolve) => setTimeout(resolve, 1000));
       const res = await fetch(
-        "https://interview-simulator-ruddy.vercel.app/get_badges_panel_data",
+        "https://interview-simulator-nu.vercel.app/get_badges_panel_data",
         {
           method: "GET",
           headers: { Authorization: `Bearer ${token}` },

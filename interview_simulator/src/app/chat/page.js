@@ -56,7 +56,7 @@ export default function Chat() {
         setIsConversationSaved(false);
         const idToken = await user.getIdToken(true);
         const response = await fetch(
-          "https://interview-simulator-ruddy.vercel.app/chat",
+          "https://interview-simulator-nu.vercel.app//chat",
           {
             method: "GET",
             credentials: "include",
@@ -200,7 +200,7 @@ export default function Chat() {
         const idToken = await user.getIdToken(true);
         await new Promise((resolve) => setTimeout(resolve, 1000));
         const response = await fetch(
-          "https://interview-simulator-ruddy.vercel.app/save_conversation",
+          "https://interview-simulator-nu.vercel.app//save_conversation",
           {
             method: "POST",
             credentials: "include",
@@ -247,7 +247,7 @@ export default function Chat() {
 
     try {
       const response = await fetch(
-        "https://interview-simulator-ruddy.vercel.app/chat",
+        "https://interview-simulator-nu.vercel.app//chat",
         {
           method: "POST",
           credentials: "include",
