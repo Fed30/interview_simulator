@@ -11,8 +11,17 @@ def add_background(pdf):
     pdf.rect(0, 0, pdf.w, pdf.h, 'F')  # Draw the background rectangle
 
 def generate_pdf_report(user_id, history, timestamp, status, session_id, firebase_session_id):
-    font_path = os.path.join(os.path.dirname(__file__), '..', '..', 'assets', 'dejavu-sans.extralight.ttf')
-    font_bold_path = os.path.join(os.path.dirname(__file__), '..', '..', 'assets', 'dejavu-sans.bold.ttf')
+    # Build an absolute path to the assets folder
+    current_dir = os.path.dirname(__file__)  # Path to the current file (utils folder)
+    assets_dir = os.path.abspath(os.path.join(current_dir, '..', 'assets'))
+
+    # Paths to the font files
+    font_path = os.path.join(assets_dir, 'dejavu-sans.extralight.ttf')
+    font_bold_path = os.path.join(assets_dir, 'dejavu-sans.bold.ttf')
+
+    # Debug: Print the paths to verify
+    print("Font path:", font_path)
+    print("Bold font path:", font_bold_path)
 
 
     try:
