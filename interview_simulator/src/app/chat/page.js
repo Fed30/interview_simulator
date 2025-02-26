@@ -43,15 +43,15 @@ export default function Chat() {
     };
 
     checkTourCompletion();
-  }, []); // Runs once on mount
+  }, [tourCompleted]);
 
   useEffect(() => {
     if (!isDisabled) {
       setTimeout(() => {
         textareaRef.current?.focus();
-      }, 100); // Small delay to ensure state updates
+      }, 100);
     }
-  }, [isDisabled]); // Depend on `isDisabled`
+  }, [isDisabled]);
 
   // Function to fetch initial questions
   const fetchInitialQuestion = async (user) => {
@@ -152,7 +152,7 @@ export default function Chat() {
     });
 
     return () => unsubscribe();
-  }, [router, questionFetched]); //tourCompleted,
+  }, [router, questionFetched, tourCompleted]);
 
   // Handle session expiration
   useEffect(() => {
@@ -171,7 +171,7 @@ export default function Chat() {
     }, 1000);
 
     return () => clearInterval(timerRef.current);
-  }, [timerStyle]); //tourCompleted,
+  }, [timerStyle, tourCompleted]);
 
   // Manage session expiration and loading state
   useLayoutEffect(() => {
@@ -236,7 +236,7 @@ export default function Chat() {
   };
 
   const handleSendMessage = async () => {
-    if (hasSessionExpired || isConversationSaved || saveFlag.current) return; // Prevent saving if conversation is already saved
+    if (hasSessionExpired || isConversationSaved || saveFlag.current) return;
     if (inputValue.trim().length < 40) return;
 
     const userMessage = document.getElementById("text").value.trim();
