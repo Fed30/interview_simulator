@@ -131,6 +131,11 @@ export default function Chat() {
 
   // Fetch initial question after tour completion
   useEffect(() => {
+    console.log("isMounted:", isMounted.current);
+    console.log("saveFlag:", saveFlag.current);
+    console.log("questionFetched:", questionFetched);
+    console.log("tourCompleted:", tourCompleted);
+
     if (!tourCompleted) return;
 
     const auth = getAuth();
@@ -143,7 +148,7 @@ export default function Chat() {
     });
 
     return () => unsubscribe();
-  }, [tourCompleted, router]); //questionFetched
+  }, [tourCompleted, router, questionFetched]);
 
   // Handle session expiration
   useEffect(() => {
