@@ -39,12 +39,7 @@ export default function Chat() {
       const completed = localStorage.getItem("chatTourCompleted");
       setTourCompleted(completed === "true");
     }
-  }, []); //tourCompleted
-
-  useEffect(() => {
-    document.body.removeAttribute("data-new-gr-c-s-check-loaded");
-    document.body.removeAttribute("data-gr-ext-installed");
-  }, []);
+  }, [tourCompleted]);
 
   useEffect(() => {
     if (!isDisabled) {
@@ -151,7 +146,7 @@ export default function Chat() {
     timerRef.current = setInterval(() => {
       setTimeLeft((prev) => {
         if (prev <= 1) {
-          clearInterval(timer);
+          clearInterval(timerRef.current); //timer
           handleSessionExpiration();
           return 0;
         }

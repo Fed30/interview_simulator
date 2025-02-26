@@ -206,8 +206,8 @@ export default function AnalyticsPanel({ user }) {
     <div className="no-data-container">
       <Image
         src="/no_data_available.png"
-        width={32}
-        height={32}
+        width={80}
+        height={80}
         alt="No data"
         className="no-data-image"
       />

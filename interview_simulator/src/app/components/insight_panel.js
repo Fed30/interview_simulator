@@ -114,8 +114,8 @@ export default function InsightPanel({ user }) {
     <div className="no-data-container-IP">
       <Image
         src="/no_data_available.png"
-        width={32}
-        height={32}
+        width={50}
+        height={50}
         alt="No data"
         className="no-data-image-IP"
       />

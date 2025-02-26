@@ -1290,8 +1290,8 @@ h4.text-center {
 }
 
 .no-data-image-IP {
-	width: 50px; 
-	height: 50px; 
+	/*width: 50px; 
+	height: 50px; */
 	object-fit: contain;
 	margin-bottom: 10px; 
 }
@@ -1479,8 +1479,8 @@ h4.text-center {
 	}
 
 	.no-data-image {
-		width: 80px;
-		height: 80px;
+		/*width: 80px;
+		height: 80px;*/
 	}
 }
 @media (max-width: 768px) {
