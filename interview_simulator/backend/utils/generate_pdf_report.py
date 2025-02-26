@@ -175,34 +175,39 @@ Please note, this report is not an indication of outcome but rather an opportuni
         pdf.ln(10)  
         pdf.image(footer_image_path, x=0, w=image_width, h=image_height)  
         
-        # Save PDF to memory (in-memory buffer)
-        pdf_output = BytesIO()
-        pdf.output(pdf_output)
-        pdf_output.seek(0)  # Reset the pointer to the beginning of the PDF
+        try:
+            # Save PDF to memory (in-memory buffer)
+            pdf_output = BytesIO()
+            pdf.output(pdf_output)
+            pdf_output.seek(0)  # Reset the pointer to the beginning of the PDF
 
-        #  Upload PDF to Firebase Storage
-        storage_path = f"Users/{user_id}/Reports/{session_id}.pdf"
-        blob = storage_bucket.bucket().blob(storage_path)
-        blob.upload_from_file(pdf_output, content_type='application/pdf')
-        blob.make_public()  # Make the PDF publicly accessible
-        
-        # Get the public URL of the PDF
-        pdf_url = blob.public_url
+            #  Upload PDF to Firebase Storage
+            storage_path = f"Users/{user_id}/Reports/{session_id}.pdf"
+            blob = storage_bucket.bucket().blob(storage_path)
+            blob.upload_from_file(pdf_output, content_type='application/pdf')
+            blob.make_public()  # Make the PDF publicly accessible
+            
+            # Get the public URL of the PDF
+            pdf_url = blob.public_url
+            
+            print(f"PDF URL type: {type(pdf_url)}")
+            print(f"PDF URL: {pdf_url}")
 
-        # Update Firestore with the PDF URL
-        firestore_db.collection("Sessions").document(session_id).update({
-            "report_link": pdf_url
-        })
+            # Update Firestore with the PDF URL
+            firestore_db.collection("Sessions").document(session_id).update({
+                "report_link": pdf_url
+            })
 
-        # Update Firebase Realtime Database with the PDF URL
-        firebase_db.child(f'Users/{user_id}/Sessions/{firebase_session_id}').update({
-            "report_link": pdf_url
-        })
+            # Update Firebase Realtime Database with the PDF URL
+            firebase_db.child(f'Users/{user_id}/Sessions/{firebase_session_id}').update({
+                "report_link": pdf_url
+            })
 
-        
+        except Exception as e:
+            print(f"Error uploading PDF or updating Firestore: {str(e)}")
 
-        print(f"PDF Report generated and uploaded: {pdf_url}")
-        return pdf_url
+            print(f"PDF Report generated and uploaded: {pdf_url}")
+            return pdf_url
 
     except Exception as e:
         print(f"Error generating PDF report: {str(e)}")
