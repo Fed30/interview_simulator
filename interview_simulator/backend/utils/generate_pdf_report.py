@@ -175,21 +175,29 @@ Please note, this report is not an indication of outcome but rather an opportuni
         pdf.ln(10)  
         pdf.image(footer_image_path, x=0, w=image_width, h=image_height)  
         
-        # Save PDF to memory (in-memory buffer)
+        # Step 1: Save PDF to memory (in-memory buffer)
         pdf_output = BytesIO()
         pdf.output(pdf_output)
-        pdf_output.seek(0)
+        pdf_output.seek(0)  # Reset the pointer to the beginning of the PDF
 
-        # Upload to Firebase Storage
+        # Step 2: Upload PDF to Firebase Storage
         storage_path = f"Users/{user_id}/Reports/{session_id}.pdf"
-        blob = storage_bucket.blob(storage_path)
+        blob = storage_bucket.bucket().blob(storage_path)
         blob.upload_from_file(pdf_output, content_type='application/pdf')
-        blob.make_public()
+        blob.make_public()  # Make the PDF publicly accessible
+        
+        # Get the public URL of the PDF
         pdf_url = blob.public_url
 
-        # Update Firestore and Realtime Database
-        firestore_db.collection("Sessions").document(session_id).update({"report_link": pdf_url})
-        firebase_db.child(f'Users/{user_id}/Sessions/{firebase_session_id}').update({"report_link": pdf_url})
+        # Step 3: Update Firestore with the PDF URL
+        firestore_db.collection("Sessions").document(session_id).update({
+            "report_link": pdf_url
+        })
+
+        # Step 4: Update Firebase Realtime Database with the PDF URL
+        firebase_db.child(f'Users/{user_id}/Sessions/{firebase_session_id}').update({
+            "report_link": pdf_url
+        })
 
         
 
