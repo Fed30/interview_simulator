@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 import { useLoading } from "../context/LoadingContext";
 import { toast } from "react-toastify";
-//import ChatTour from "../components/chatTour";
+import ChatTour from "../components/chatTour";
 import SessionEndModal from "../components/SessionEndModal";
 import SessionExpiredModal from "../components/SessionExpiredModal";
 import Image from "next/image";
@@ -27,19 +27,23 @@ export default function Chat() {
   const [questionFetched, setQuestionFetched] = useState(false);
   const [isDisabled, setIsDisabled] = useState(false);
   const textareaRef = useRef(null);
-  //const [tourCompleted, setTourCompleted] = useState(false);
+  const [tourCompleted, setTourCompleted] = useState(false);
   const [sessionEndModal, setSessionEndModal] = useState(false);
   const [sessionExpiredModal, setSessionExpiredModal] = useState(false);
   const timerRef = useRef(null);
   const [inputValue, setInputValue] = useState("");
   const [showError, setShowError] = useState(false);
 
-  //useEffect(() => {
-  //if (typeof window !== "undefined") {
-  //const completed = localStorage.getItem("chatTourCompleted");
-  //setTourCompleted(completed === "true");
-  //}
-  //}, []); //tourCompleted
+  useEffect(() => {
+    const checkTourCompletion = () => {
+      if (typeof window !== "undefined") {
+        const completed = localStorage.getItem("chatTourCompleted");
+        setTourCompleted(completed === "true");
+      }
+    };
+
+    checkTourCompletion();
+  }, []); // Runs once on mount
 
   useEffect(() => {
     if (!isDisabled) {
@@ -136,7 +140,7 @@ export default function Chat() {
     console.log("questionFetched:", questionFetched);
     console.log("tourCompleted:", tourCompleted);
 
-    //if (!tourCompleted) return;
+    if (!tourCompleted) return;
 
     const auth = getAuth();
     const unsubscribe = onAuthStateChanged(auth, (user) => {
@@ -152,7 +156,7 @@ export default function Chat() {
 
   // Handle session expiration
   useEffect(() => {
-    //if (!tourCompleted) return;
+    if (!tourCompleted) return;
 
     timerRef.current = setInterval(() => {
       setTimeLeft((prev) => {
@@ -327,7 +331,7 @@ export default function Chat() {
 
   return (
     <>
-      {/*<>
+      <>
         {!tourCompleted && (
           <ChatTour
             onComplete={() => {
@@ -337,7 +341,6 @@ export default function Chat() {
           />
         )}
       </>
-      */}
       <div className="flex items-center justify-center mt-2 min-h-screen h-screen w-full">
         <div className="flex flex-col sm:flex-row w-full min-h-screen h-full shadow-lg  overflow-hidden">
           {/* Booklet Section */}
