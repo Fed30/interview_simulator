@@ -201,11 +201,10 @@ Please note, this report is not an indication of outcome but rather an opportuni
         
         try:
             
-            # Save PDF to memory (in-memory buffer)
-            
             # Generate PDF in memory
             pdf_output = BytesIO()
-            pdf.output(pdf_output)  # Write PDF content to BytesIO
+            pdf_content = pdf.output(dest="S").encode("latin1")  # Get PDF content as bytes
+            pdf_output.write(pdf_content)
             pdf_output.seek(0)  # Move to the beginning of the stream
 
             #  Upload PDF to Firebase Storage
