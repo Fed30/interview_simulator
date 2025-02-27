@@ -496,13 +496,13 @@ export default function Chat() {
             </div>
             {/* Chatbot typing indicator */}
             {isTyping && (
-              <div className="flex justify-start ml-2 space-x-3">
+              <div className="flex justify-start ml-3 space-x-3">
                 <Image
                   src="/logo.png"
                   width={32}
                   height={32}
                   alt="assistant"
-                  className="w-8 h-8 rounded-full"
+                  className="rounded-full"
                 />
                 <div className="max-w-[80%] p-3 text-sm message bg-[#2A2A40] shadow-md rounded-lg ">
                   <div className="typing-dots">
@@ -523,7 +523,7 @@ export default function Chat() {
                 {/* Error message with same width as textarea */}
                 {showError && (
                   <div className="text-white bg-[#2A2A40] rounded text-xs px-2 py-1 mb-2 w-full">
-                    Minimum 40 characters required.
+                    Your response should be at least 40 characters long
                   </div>
                 )}
 

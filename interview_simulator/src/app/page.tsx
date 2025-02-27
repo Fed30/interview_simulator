@@ -58,7 +58,7 @@ const Home = () => {
 
         {/* Content */}
         <div className="max-w-4xl mx-auto text-center relative z-10 px-4">
-          <h1 className="text-4xl sm:text-3xl font-extrabold leading-tight text-shadow-lg text-animated">
+          <h1 className="text-4xl sm:text-3xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-[#F25E86] to-[#6D81F2] leading-tight text-shadow-lg text-animated">
             WELCOME TO THE INTERVIEW SIMULATOR
           </h1>
           <p className="text-lg mt-4 opacity-90 text-shadow-md text-animated animate__animated animate__fadeIn animate__delay-1s">
