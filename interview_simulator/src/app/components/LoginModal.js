@@ -146,7 +146,7 @@ const LoginModal = ({
           <div className="modal-content p-8 rounded shadow-lg w-auto relative">
             {/* Close Button */}
             <button
-              className="absolute top-3 right-3 bg-gray-700 hover:bg-[#F25E86] text-white rounded-full p-2 transition-transform transform hover:scale-110"
+              className="absolute top-3 right-3 hover:text-[#F25E86] text-white rounded-full p-2 transition-transform transform hover:scale-110"
               onClick={handleCloseModal}
             >
               ✖
