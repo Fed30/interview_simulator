@@ -55,7 +55,7 @@ export default function BadgesPanel({ user }) {
         className="badge-item earned"
         onClick={() => handleBadgeClick(badge)}
       >
-        <h3 className="badge-name">{badge.name}</h3>
+        <h3 className="sm:text:sm badge-name">{badge.name}</h3>
         <Image
           src={badge.badge_link}
           alt={badge.name}
