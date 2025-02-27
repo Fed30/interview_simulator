@@ -40,7 +40,7 @@ def upload_badge_to_user_storage(user_id, badge_name):
         encoded_path = quote_plus(user_badge_path)
 
         # Generate the public URL (no expiration)
-        badge_url = f"https://firebasestorage.googleapis.com/v0/b/{storage_bucket}/o/{encoded_path}?alt=media"
+        badge_url = f"https://firebasestorage.googleapis.com/v0/b/{storage_bucket.name}/o/{encoded_path}?alt=media"
         print(f"[INFO] Badge URL generated: {badge_url}")
 
         return badge_url, None
