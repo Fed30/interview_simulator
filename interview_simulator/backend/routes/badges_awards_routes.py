@@ -9,9 +9,9 @@ badges_awards_data = Blueprint('badges_awards_data', __name__)
 
 # Update thresholds with corresponding badge names
 BADGE_THRESHOLDS = {
-    "bronze_badge": 2,
-    "silver_badge": 4,
-    "gold_badge": 6
+    "bronze_badge": 1,
+    "silver_badge": 2,
+    "gold_badge": 3
 }
 
 def format_badge_name(badge_name):
@@ -37,11 +37,10 @@ def upload_badge_to_user_storage(user_id, badge_name):
         print(f"[SUCCESS] Badge uploaded to: {user_badge_path}")
 
         # URL encode the user_badge_path
-        #encoded_path = quote_plus(user_badge_path, safe="")
+        encoded_path = quote_plus(user_badge_path, safe="")
 
         # Generate the public URL (no expiration)
-        #badge_url = f"https://firebasestorage.googleapis.com/v0/b/{storage_bucket.name}/o/{encoded_path}?alt=media"
-        badge_url = user_badge_blob.public_url
+        badge_url = f"https://firebasestorage.googleapis.com/v0/b/{storage_bucket.name}/o/{encoded_path}?alt=media"
         print(f"[INFO] Badge URL generated: {badge_url}")
 
         return badge_url, None

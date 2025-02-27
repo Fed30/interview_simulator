@@ -35,7 +35,7 @@ export const BadgesAwardsProvider = ({ children }) => {
     },
     {
       enabled: !!user, // Only fetch if user is authenticated
-      refetchInterval: 150000, // Poll every 200 seconds (adjust as needed)
+      refetchInterval: 100000, // Poll every 200 seconds (adjust as needed)
       refetchOnWindowFocus: true, // Re-fetch when window is focused
     }
   );
