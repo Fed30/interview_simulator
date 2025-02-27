@@ -139,7 +139,12 @@ export default function FeedbackPanel({ user }) {
                   ) : (
                     <a
                       href={session.feedbackLink}
-                      className="feedback-link"
+                      className={`px-4 py-2 rounded ${
+                        session.feedback_link
+                          ? "feedback_link"
+                          : "bg-gray-400 cursor-not-allowed"
+                      }`}
+                      disabled={!session.feedback_link}
                       target="_blank"
                       rel="noopener noreferrer"
                     >
