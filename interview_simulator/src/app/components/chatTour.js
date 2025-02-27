@@ -96,7 +96,7 @@ const ChatTour = ({ onComplete }) => {
       scrollToFirstStep={false}
       styles={{
         options: {
-          arrowColor: "rgba(24, 29, 41, 0.8)",
+          arrowColor: "#1E2A3A",
           backgroundColor: "#1E2A3A",
           spotlightShadow: "0 0 15px rgba(0, 0, 0, 0.5)",
           overlayColor: "rgba(24, 29, 41, 0.8)",
