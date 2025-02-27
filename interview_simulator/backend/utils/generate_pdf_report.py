@@ -10,10 +10,18 @@ def add_background(pdf):
     pdf.rect(0, 0, pdf.w, pdf.h, 'F')  # Draw the background rectangle
 
 def generate_pdf_report(user_id, history, timestamp, status, session_id, firebase_session_id):
-    # Build an absolute path to the assets folder
-    base_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..', 'assets'))
-    font_path = os.path.join(base_dir, 'dejavu-sans.extralight.ttf')
-    font_bold_path = os.path.join(base_dir, 'dejavu-sans.bold.ttf')
+    # Get the absolute path of the directory containing the script
+    script_dir = os.path.dirname(os.path.abspath(__file__))
+
+    # Navigate up one level to `backend`
+    backend_dir = os.path.dirname(script_dir)
+
+    # Define the absolute path to the `assets` folder
+    assets_dir = os.path.join(backend_dir, 'assets')
+
+    # Define font paths
+    font_path = os.path.join(assets_dir, 'dejavu_sans.extralight.ttf')
+    font_bold_path = os.path.join(assets_dir, 'dejavu_sans.bold.ttf')
 
     # Debugging: Check if files exist
     print("Font exists:", os.path.exists(font_path))
@@ -52,7 +60,7 @@ def generate_pdf_report(user_id, history, timestamp, status, session_id, firebas
         
 
         # Add Logo
-        logo_path = os.path.join(os.path.dirname(__file__), '..','..', 'assets', 'logo.png')
+        logo_path = os.path.join(os.path.dirname(__file__), '..', 'assets', 'logo.png')
         pdf.image(logo_path, x=(pdf.w - 20) / 2, y=5, w=20, h=20)
         pdf.ln(20)
 
@@ -63,7 +71,7 @@ def generate_pdf_report(user_id, history, timestamp, status, session_id, firebas
         pdf.ln(10)
         
         # Add second image 
-        second_image_path = os.path.join(os.path.dirname(__file__), '..','..', 'assets', 'feedback.png')  
+        second_image_path = os.path.join(os.path.dirname(__file__), '..', 'assets', 'feedback.png')  
         image_height = 120  
         image_width = pdf.w  
         pdf.ln(10)  
@@ -123,14 +131,14 @@ Please note, this report is not an indication of outcome but rather an opportuni
                         "feedback": feedback
                     })
         # Dictionary mapping each category to its corresponding image file path
-        one_image_path = os.path.join(os.path.dirname(__file__), '..','..', 'assets', 'welcome.png') 
-        two_image_path = os.path.join(os.path.dirname(__file__), '..','..', 'assets', 'feedback.png') 
-        three_image_path = os.path.join(os.path.dirname(__file__), '..','..', 'assets', 'collaboration.png') 
-        four_image_path = os.path.join(os.path.dirname(__file__), '..','..', 'assets', 'learning.png') 
-        five_image_path = os.path.join(os.path.dirname(__file__), '..','..', 'assets', 'feedback.png') 
-        six_image_path = os.path.join(os.path.dirname(__file__), '..','..', 'assets', 'star_method.png') 
-        seven_image_path = os.path.join(os.path.dirname(__file__), '..','..', 'assets', 'challenges.png') 
-        eight_image_path = os.path.join(os.path.dirname(__file__), '..','..', 'assets', 'collaboration.png')
+        one_image_path = os.path.join(os.path.dirname(__file__), '..', 'assets', 'welcome.png') 
+        two_image_path = os.path.join(os.path.dirname(__file__), '..', 'assets', 'feedback.png') 
+        three_image_path = os.path.join(os.path.dirname(__file__), '..', 'assets', 'collaboration.png') 
+        four_image_path = os.path.join(os.path.dirname(__file__), '..', 'assets', 'learning.png') 
+        five_image_path = os.path.join(os.path.dirname(__file__), '..', 'assets', 'feedback.png') 
+        six_image_path = os.path.join(os.path.dirname(__file__), '..', 'assets', 'star_method.png') 
+        seven_image_path = os.path.join(os.path.dirname(__file__), '..', 'assets', 'challenges.png') 
+        eight_image_path = os.path.join(os.path.dirname(__file__), '..', 'assets', 'collaboration.png')
         
         category_images = {
             "Ice Breaking": one_image_path,
@@ -183,7 +191,7 @@ Please note, this report is not an indication of outcome but rather an opportuni
         pdf.ln(10)
         
         # Add Footer image 
-        footer_image_path = os.path.join(os.path.dirname(__file__), '..','..', 'assets', 'practice_questions.png')  
+        footer_image_path = os.path.join(os.path.dirname(__file__), '..', 'assets', 'practice_questions.png')  
         image_height = 120  
         image_width = pdf.w  
         pdf.ln(10)  
