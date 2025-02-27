@@ -113,7 +113,6 @@ export default function FeedbackPanel({ user }) {
             width={80}
             height={80}
             alt="No data"
-            className="no-data-image"
           />
           <p>No data available for Sessions Feedback</p>
         </div>

@@ -209,7 +209,6 @@ export default function AnalyticsPanel({ user }) {
         width={80}
         height={80}
         alt="No data"
-        className="no-data-image"
       />
       <p>{text}</p>
     </div>

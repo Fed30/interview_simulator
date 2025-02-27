@@ -73,7 +73,6 @@ export default function BadgesPanel({ user }) {
         width={80}
         height={80}
         alt="No data"
-        className="no-data-image"
       />
       <p>{text}</p>
     </div>
