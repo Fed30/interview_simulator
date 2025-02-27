@@ -50,29 +50,19 @@ export default function BadgesPanel({ user }) {
   const renderBadge = (badge) => {
     console.log(badge.badge_link); // Log the badge link to verify it's correct
     return (
-      <div key={badge.name} className="flip-card">
-        <div className="flip-card-inner">
-          {/* Front Side */}
-          <div
-            className="flip-card-front"
-            onClick={() => handleBadgeClick(badge)}
-          >
-            <h3 className="sm:text:sm badge-name">{badge.name}</h3>
-            <Image
-              src={badge.badge_link}
-              alt={badge.name}
-              width={200}
-              height={200}
-              className="badge-image"
-            />
-          </div>
-
-          {/* Back Side */}
-          <div className="flip-card-back">
-            <h3 className="badge-name">{badge.name}</h3>
-            <p className="badge-description">{explanation}</p>
-          </div>
-        </div>
+      <div
+        key={badge.name}
+        className="badge-item earned"
+        onClick={() => handleBadgeClick(badge)}
+      >
+        <h3 className="sm:text:sm badge-name">{badge.name}</h3>
+        <Image
+          src={badge.badge_link}
+          alt={badge.name}
+          width={200}
+          height={200}
+          className="badge-image"
+        />
       </div>
     );
   };
