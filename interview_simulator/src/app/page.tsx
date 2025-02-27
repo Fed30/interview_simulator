@@ -58,8 +58,8 @@ const Home = () => {
 
         {/* Content */}
         <div className="max-w-4xl mx-auto text-center relative z-10 px-4">
-          <h1 className="lg:text-6xl text-2xl font-semibold text-transparent bg-clip-text bg-gradient-to-r from-[#1e1e2f] to-[#6D81F2] leading-tight drop-shadow-lg text-animated">
-            Welcome to the Interview Simulator
+          <h1 className="text-4xl sm:text-3xl font-extrabold text-shadow-lg text-animated">
+            WELCOME TO THE INTERVIEW SIMULATOR
           </h1>
           <p className="text-lg mt-4 opacity-90 text-shadow-md text-animated animate__animated animate__fadeIn animate__delay-1s">
             Start practicing for your interview with our AI-powered simulator. Get ready to ace your behavioral interviews with personalized feedback.

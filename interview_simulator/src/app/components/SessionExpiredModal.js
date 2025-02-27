@@ -33,7 +33,7 @@ const SessionExpiredModal = ({ isOpen, onClose, conversationSaved }) => {
                 width={200}
                 height={200}
                 alt="No data"
-                className="no-data-image max-w-full max-h-64"
+                className="transition duration-300 hover:scale-110"
               />
             </div>
             <p className="text-white text-base text-center break-normal mb-2">
