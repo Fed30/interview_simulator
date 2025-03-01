@@ -1593,6 +1593,7 @@ h4.text-center {
 /*404 Page*/
 .not-found-container {
 	text-align: center;
+	justify-items: center;
 	margin-top: 50px;
 }
 
