@@ -1596,6 +1596,7 @@ h4.text-center {
 	justify-items: center;
 	margin-top: 50px;
 	max-height: 300px;
+	min-height: 300px;
 }
 
 .home-link {
