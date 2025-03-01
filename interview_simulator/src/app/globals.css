@@ -1158,10 +1158,11 @@ h4.text-center {
 	display: flex;
 	flex-direction: column; 
 	align-items: center;
-	justify-content: center;
+	justify-content: center; /* Centers the content */
 	font-size: 1.1rem;
 	padding: 10px;
 	font-weight: bold;
+	position: relative; /* Ensure it works well with absolute children */
 }
 .chart-wrapper {
 	position: relative; 
