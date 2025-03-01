@@ -1192,17 +1192,17 @@ h4.text-center {
 .analytics-container {
 	display: flex;
 	flex-direction: column;
-	max-height: 800px;
 	gap: auto;
 	border-radius: 5px;
+	min-height: 100vh;
 
 }
 
 .charts-grid {
 	display: grid;
 	grid-template-columns: repeat(2, 1fr); 
-	max-height: 800px;
 	gap: 15px;
+	min-height: 800px;
 	
 }
 
@@ -1212,7 +1212,8 @@ h4.text-center {
 	background-color: #2A2A40;
 	box-shadow: 0 1px 5px rgba(0, 0, 0, 0.1);
 	text-align: center;
-	height: 600px; 
+	height: 800px !important; 
+	flex-grow: 1;
 	width: 100%;
 	display: flex;
 	flex-direction: column;
