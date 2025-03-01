@@ -1201,7 +1201,7 @@ h4.text-center {
 .charts-grid {
 	display: grid;
 	grid-template-columns: repeat(2, 1fr); 
-	gap: 15px;
+	gap: auto;
 	min-height: 800px;
 	
 }
