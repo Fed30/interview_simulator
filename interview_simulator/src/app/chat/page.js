@@ -135,11 +135,6 @@ export default function Chat() {
 
   // Fetch initial question after tour completion
   useEffect(() => {
-    console.log("isMounted:", isMounted.current);
-    console.log("saveFlag:", saveFlag.current);
-    console.log("questionFetched:", questionFetched);
-    console.log("tourCompleted:", tourCompleted);
-
     if (!tourCompleted) return;
 
     const auth = getAuth();

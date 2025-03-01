@@ -35,7 +35,7 @@ const Home = () => {
     } else {
       setLoading(false)
       triggerLoginAnimation();
-      toast.info("Please Login to Start Practising");
+      toast.info("Please Login to Start Practicing");
     }
   };
 
