@@ -81,7 +81,7 @@ export default function BadgesPanel({ user }) {
   const LoadingSpinner = () => <div className="analytics-spinner"></div>;
 
   return (
-    <div className="badges-container">
+    <div className="badges-container mt-4">
       {isLoadingCompleted ? (
         <LoadingSpinner />
       ) : error ? (

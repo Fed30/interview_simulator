@@ -215,7 +215,7 @@ export default function AnalyticsPanel({ user }) {
   );
 
   return (
-    <div className="analytics-container">
+    <div className="analytics-container mt-4">
       <div className="charts-grid">
         <div className="chart-box">
           <h4>Users Growth</h4>
