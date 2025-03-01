@@ -110,8 +110,8 @@ export default function FeedbackPanel({ user }) {
         <div className="no-data-container">
           <Image
             src="/no_data_available.png"
-            width={100}
-            height={100}
+            width={200}
+            height={200}
             alt="No data"
           />
           <p>No data available for Sessions Feedback</p>

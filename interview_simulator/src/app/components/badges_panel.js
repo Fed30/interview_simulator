@@ -70,11 +70,11 @@ export default function BadgesPanel({ user }) {
     <div className="no-data-container">
       <Image
         src="/no_data_available.png"
-        width={80}
-        height={80}
+        width={200}
+        height={200}
         alt="No data"
       />
-      <p>{text}</p>
+      <p className="no-data-text">{text}</p>
     </div>
   );
 
