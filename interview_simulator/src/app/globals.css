@@ -578,12 +578,12 @@ h4.text-center {
 }
 
 .scrollable-content:active, .scrollable-content:hover {
-	overflow-y: auto; 
+	/*overflow-y: auto; */
 }
 /* Apply styles to the scrollbar */
 .scrollable-content {
 	background-color: #1e1e2f;
-	overflow-y: auto;
+	/*overflow-y: auto;*/
 	/*max-height: calc(100vh - 100px);*/
 }
 
