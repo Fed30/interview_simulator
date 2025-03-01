@@ -42,8 +42,7 @@ const Home = () => {
 
 
   return (
-    <div className="page-transition">
-    <div className={`${pageLoaded ? 'loaded' : ''}`} >
+    <div className={`page-transition ${pageLoaded ? 'loaded' : ''}`} >
       {/* Section 1: Main Section */}
       <section
         className="relative py-24 text-white h-screen flex items-center justify-center"
@@ -52,6 +51,7 @@ const Home = () => {
           backgroundRepeat: "no-repeat",
           backgroundPosition: "center center",
           backgroundAttachment: 'fixed',
+          zIndex:-1,
         }}
       >
         {/* Overlay */}
@@ -237,8 +237,7 @@ const Home = () => {
           </div>
         </div>
       </section>
-      </div>
-      </div>
+    </div>
 
   );
 };
