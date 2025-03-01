@@ -131,7 +131,7 @@ export default function InsightPanel({ user }) {
         <h3>Insights Panel</h3>
         <div className="chart-card">
           <h4>Completed Sessions</h4>
-          <h6>vs incomplete sessions</h6>
+          <a className="subtitle">vs incomplete sessions</a>
           <div className="chart-wrapper">
             {isLoadingCompleted ? (
               <LoadingSpinner />
@@ -155,7 +155,7 @@ export default function InsightPanel({ user }) {
 
         <div className="chart-card">
           <h4>Incomplete Sessions</h4>
-          <h6>vs completed sessions</h6>
+          <a className="subtitle">vs completed sessions</a>
           <div className="chart-wrapper">
             {isLoadingIncomplete ? (
               <LoadingSpinner />
@@ -179,7 +179,7 @@ export default function InsightPanel({ user }) {
 
         <div className="chart-card">
           <h4>Overall Score</h4>
-          <h6>total session average</h6>
+          <a className="subtitle">total session average</a>
           <div className="chart-wrapper">
             {isLoadingOverall ? (
               <LoadingSpinner />

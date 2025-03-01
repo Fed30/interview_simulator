@@ -584,7 +584,7 @@ h4.text-center {
 .scrollable-content {
 	background-color: #1e1e2f;
 	overflow-y: auto;
-	max-height: calc(100vh - 130px);
+	max-height: calc(100vh - 100px);
 }
 
 /* Style the scrollbar itself */
@@ -1183,9 +1183,9 @@ h4.text-center {
 	font-weight: 500;
 	color: white; 
 }
-.chart-card h6 {
+.subtitle {
 	text-align: center;
-	font-size: 0.4;
+	font-size: 0.3;
 	margin-bottom: 2px;
 	font-weight: 300;
 	color: white; 
