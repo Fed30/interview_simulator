@@ -11,11 +11,11 @@ export default function NotFound() {
         404 - Page Not Found
       </h1>
       <Image
-        src="/no_found.png"
+        src="/400.png"
         width={100}
         height={100}
         alt="Page not found"
-        className="sm:w-2/3 image-hover"
+        className="w-3/4 sm:w-2/3 h-auto object-contain image-hover"
       />
       <p className="text-lg mt-4 text-white opacity-90 text-shadow-md text-animated animate__animated animate__fadeIn animate__delay-1s">
         Oops! The page you are looking for does not exist.
