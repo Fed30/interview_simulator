@@ -12,8 +12,8 @@ export default function NotFound() {
       </h1>
       <Image
         src="/404.png"
-        width={150}
-        height={150}
+        width={80}
+        height={80}
         alt="Page not found"
         className="sm:w-2/3 image-hover"
       />
