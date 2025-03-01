@@ -9,6 +9,7 @@ import ChatTour from "../components/chatTour";
 import SessionEndModal from "../components/SessionEndModal";
 import SessionExpiredModal from "../components/SessionExpiredModal";
 import Image from "next/image";
+import { useAuth } from "../context/AuthContext";
 
 export default function Chat() {
   const [messages, setMessages] = useState([]); // Safe default initialization
@@ -33,6 +34,13 @@ export default function Chat() {
   const timerRef = useRef(null);
   const [inputValue, setInputValue] = useState("");
   const [showError, setShowError] = useState(false);
+  const { user } = useAuth();
+
+  useEffect(() => {
+    if (!user) {
+      router.push("/");
+    }
+  }, [user]);
 
   useEffect(() => {
     const checkTourCompletion = () => {
