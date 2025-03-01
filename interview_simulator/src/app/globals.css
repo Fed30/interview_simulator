@@ -483,6 +483,8 @@ h4.text-center {
 .insight-panel {
 	width: 20%;
 	padding: 10px;
+	margin-top: 20px;
+	min-height: 100vh;
 }
 
 .insight-panel h4{
