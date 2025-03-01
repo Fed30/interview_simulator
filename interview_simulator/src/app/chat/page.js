@@ -350,7 +350,7 @@ export default function Chat() {
           <div className="w-full sm:w-1/4 booklet_background text-white p-6 flex flex-col justify-between mb-6 sm:mb-0">
             <button
               onClick={() => router.push("/")}
-              className="flex items-left text-[#6D81F2] mb-2 hover:text-[#F25E86]"
+              className="flex items-left text-[#6D81F2] mb-1 hover:text-[#F25E86]"
             >
               <i className="fas fa-arrow-left w-8 l-8 transition duration-300 hover:scale-110"></i>
             </button>

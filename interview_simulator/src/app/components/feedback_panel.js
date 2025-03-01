@@ -137,6 +137,8 @@ export default function FeedbackPanel({ user }) {
                 <td>
                   {session.status === "Incomplete" ? (
                     "--"
+                  ) : !session.feedbackLink || session.feedbackLink === "#" ? (
+                    <span className="disabled-feedback">Pending</span>
                   ) : (
                     <a
                       href={session.feedbackLink}

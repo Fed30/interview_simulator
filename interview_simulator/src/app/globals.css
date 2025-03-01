@@ -612,6 +612,12 @@ h4.text-center {
 	background: #6D81F2;
 }
 
+.disabled-feedback {
+	color: gray;
+	cursor: not-allowed;
+	opacity: 0.6;
+}
+
 
 .editProfile-btn {
 	color: white;
