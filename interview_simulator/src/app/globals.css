@@ -21,23 +21,6 @@ body.modal-open {
 	width: 100%;
 }
 
-/* Define the animation of page navigation */
-@keyframes slideInFromTop {
-	0% {
-		transform: translateY(-100%);
-		opacity: 0;
-	}
-	100% {
-		transform: translateY(0);
-		opacity: 1;
-	}
-}
-
-/* Apply the animation to the container */
-.page-transition {
-	animation: slideInFromTop 1s ease-out forwards;
-	height: 100vh;
-}
 
 
 header {
