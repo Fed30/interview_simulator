@@ -678,7 +678,7 @@ h4.text-center {
 	}
 
 	.button-wrapper {
-		justify-content: center;
+		justify-content: end;
 	}
 }
 
@@ -697,7 +697,7 @@ h4.text-center {
 
 	.button-wrapper {
 		display: flex;
-		justify-content: center;
+		justify-content: end;
 		width: 100%; 
 		margin-top: 50px; 
 	}
@@ -1178,7 +1178,7 @@ h4.text-center {
 .chart-card h4 {
 	text-align: center;
 	font-size: 0.8rem;
-	margin-top: 5px;
+	margin-top: 6px;
 	font-weight: 500;
 	color: white; 
 }

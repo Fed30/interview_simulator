@@ -340,6 +340,12 @@ export default function Chat() {
         <div className="flex flex-col sm:flex-row w-full min-h-screen h-full shadow-lg  overflow-hidden">
           {/* Booklet Section */}
           <div className="w-full sm:w-1/4 booklet_background text-white p-6 flex flex-col justify-between mb-6 sm:mb-0">
+            <button
+              onClick={() => router.push("/")}
+              className="flex items-left text-[#6D81F2] mb-4 hover:text-[#F25E86]"
+            >
+              <i className="fas fa-arrow-left w-8 l-8 ml-2"></i>
+            </button>
             <h2 className="text-2xl font-semibold text-transparent bg-clip-text bg-gradient-to-r from-[#F25E86] to-[#6D81F2] mb-4">
               STAR Method
             </h2>
