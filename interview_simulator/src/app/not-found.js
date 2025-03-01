@@ -11,7 +11,7 @@ export default function NotFound() {
         404 - Page Not Found
       </h1>
       <Image
-        src="/400.png"
+        src="/404.png"
         width={150}
         height={150}
         alt="Page not found"
