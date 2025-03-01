@@ -1201,8 +1201,8 @@ h4.text-center {
 .charts-grid {
 	display: grid;
 	grid-template-columns: repeat(2, 1fr); 
-	gap: auto;
-	min-height: 800px;
+	gap: 15px;
+	min-height: 500px;
 	
 }
 
@@ -1213,7 +1213,6 @@ h4.text-center {
 	box-shadow: 0 1px 5px rgba(0, 0, 0, 0.1);
 	text-align: center;
 	height: 300px !important; 
-	flex-grow: 1;
 	width: 100%;
 	display: flex;
 	flex-direction: column;
