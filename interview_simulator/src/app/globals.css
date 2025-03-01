@@ -1162,17 +1162,17 @@ h4.text-center {
 	font-size: 1.1rem;
 	padding: 10px;
 	font-weight: bold;
-	position: relative; /* Ensure it works well with absolute children */
+	position: relative;
 }
 
 .chart-wrapper {
 	position: relative; 
 	width: 100%; 
 	height: 150px; 
-	display: flex;  /* Enable flexbox */
-	align-items: center; /* Center vertically */
-	justify-content: center; /* Center horizontally */
-	margin: 2px;
+	display: flex;  
+	align-items: center; 
+	justify-content: center; 
+	margin: 10px 5px 10px 5px;
 }
 
 .chart-card h4 {
@@ -1185,7 +1185,7 @@ h4.text-center {
 .subtitle {
 	text-align: center;
 	font-size: 0.6rem;
-	margin-bottom: 1px;
+	margin-bottom: 3px;
 	font-weight: 300;
 	color: white; 
 }
