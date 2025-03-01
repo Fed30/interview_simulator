@@ -1212,7 +1212,7 @@ h4.text-center {
 	background-color: #2A2A40;
 	box-shadow: 0 1px 5px rgba(0, 0, 0, 0.1);
 	text-align: center;
-	height: 800px !important; 
+	height: 400px !important; 
 	flex-grow: 1;
 	width: 100%;
 	display: flex;
