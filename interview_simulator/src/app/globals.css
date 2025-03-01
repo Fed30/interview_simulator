@@ -1592,11 +1592,13 @@ h4.text-center {
 
 /*404 Page*/
 .not-found-container {
+	display: flex;
+	flex-direction: column;
+	justify-content: center; 
+	align-items: center;
+	height: 100vh; 
 	text-align: center;
-	justify-items: center;
 	margin-top: 50px;
-	max-height: 300px;
-	min-height: 300px;
 }
 
 .home-link {

@@ -20,7 +20,7 @@ export default function NotFound() {
       <p className="text-lg mt-4 text-white opacity-90 text-shadow-md text-animated animate__animated animate__fadeIn animate__delay-1s">
         Oops! The page you are looking for does not exist.
       </p>
-      <Link href="/" className="home-link mt-4">
+      <Link href="/" className="home-link mt-6">
         Go back home
       </Link>
     </div>
