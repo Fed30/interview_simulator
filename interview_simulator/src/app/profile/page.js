@@ -182,7 +182,7 @@ export default function Profile() {
           </div>
 
           {/* Tab Content */}
-          <div className="">
+          <div className="h-full">
             {/*scrollable-content mt-4 */}
             {/* Always render all tab content, but show the active one */}
             <div
