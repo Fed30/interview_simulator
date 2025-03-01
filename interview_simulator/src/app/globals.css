@@ -1177,7 +1177,7 @@ h4.text-center {
 .chart-card h4 {
 	text-align: center;
 	font-size: 0.8rem;
-	margin: 1px;
+	margin-top: 3px;
 	font-weight: 500;
 	color: white; 
 }
@@ -1213,7 +1213,7 @@ h4.text-center {
 	background-color: #2A2A40;
 	box-shadow: 0 1px 5px rgba(0, 0, 0, 0.1);
 	text-align: center;
-	height: 300px !important; 
+	height: 350px !important; 
 	width: 100%;
 	display: flex;
 	flex-direction: column;
