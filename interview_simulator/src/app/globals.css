@@ -583,7 +583,7 @@ h4.text-center {
 /* Apply styles to the scrollbar */
 .scrollable-content {
 	background-color: #1e1e2f;
-	max-height: 100vh;
+	max-height: 600px;
 }
 
 /* Style the scrollbar itself */
