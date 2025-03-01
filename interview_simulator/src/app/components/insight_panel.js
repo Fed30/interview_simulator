@@ -119,7 +119,7 @@ export default function InsightPanel({ user }) {
         alt="No data"
         className="no-data-image-IP"
       />
-      <p className="text-white text-xs">{text}</p>
+      <p className="no-data-text">{text}</p>
     </div>
   );
 
