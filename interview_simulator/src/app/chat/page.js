@@ -347,10 +347,10 @@ export default function Chat() {
       <div className="flex items-center justify-center mt-2 min-h-screen h-screen w-full">
         <div className="flex flex-col sm:flex-row w-full min-h-screen h-full shadow-lg  overflow-hidden">
           {/* Booklet Section */}
-          <div className="w-full sm:w-1/4 booklet_background text-white p-6 flex flex-col justify-between mb-6 sm:mb-0">
+          <div className="w-full sm:w-1/4 booklet_background text-white p-6 flex flex-col justify-between sm:mb-0">
             <button
               onClick={() => router.push("/")}
-              className="flex items-left text-[#6D81F2] mb-1 hover:text-[#F25E86]"
+              className="flex items-left text-[#6D81F2] hover:text-[#F25E86]"
             >
               <i className="fas fa-arrow-left w-8 l-8 transition duration-300 hover:scale-110"></i>
             </button>
