@@ -1136,7 +1136,7 @@ h4.text-center {
 	justify-content: space-between;
 	align-items: stretch;
 	width: 100%;
-	height: 100vh;
+	height: 100%;
 	padding: 10px;
 	background-color: #1e1e2f;
 }
