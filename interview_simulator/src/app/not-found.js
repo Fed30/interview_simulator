@@ -7,13 +7,13 @@ import Link from "next/link";
 export default function NotFound() {
   return (
     <div className="not-found-container">
-      <h1 className="lg:text-3xl text-2xl font-semibold text-transparent bg-clip-text bg-gradient-to-r from-[#F25E86] to-[#6D81F2] relative mt-9">
+      <h1 className="lg:text-3xl text-2xl font-semibold text-transparent bg-clip-text bg-gradient-to-r from-[#F25E86] to-[#6D81F2] relative mt-11">
         404 - Page Not Found
       </h1>
       <Image
         src="/404.png"
-        width={200}
-        height={200}
+        width={100}
+        height={100}
         alt="Page not found"
         className="w-3/4 sm:w-2/3 object-contain"
       />
