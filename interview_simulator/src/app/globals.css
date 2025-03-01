@@ -579,40 +579,36 @@ h4.text-center {
 	display: block;
 }
 
-.scrollable-content:active, .scrollable-content:hover {
+.feedback-container:active, .scrollable-content:hover {
 	overflow-y: auto; 
 }
-/* Apply styles to the scrollbar */
-.scrollable-content {
-	background-color: #1e1e2f;
-	max-height: 600px;
-}
+
 
 /* Style the scrollbar itself */
-.scrollable-content::-webkit-scrollbar {
+.feedback-container::-webkit-scrollbar {
 	width: 6px; 
 	height: 12px; 
 }
 
 /* Style the track (background) of the scrollbar */
-.scrollable-content::-webkit-scrollbar-track {
+.feedback-container::-webkit-scrollbar-track {
 	background: #1e1e2f;
 	border-radius: 5px;
 	border: 1px solid #6D81F2;
 }
 
 /* Style the thumb  of the scrollbar */
-.scrollable-content::-webkit-scrollbar-thumb {
+.feedback-container::-webkit-scrollbar-thumb {
 	background-color: #6D81F2; 
 	border-radius: 5px;
 }
 
 /* Hover effect on the scrollbar thumb */
-.scrollable-content::-webkit-scrollbar-thumb:hover {
+.feedback-container::-webkit-scrollbar-thumb:hover {
 	background-color: #F25E86; 
 }
 
-.scrollable-content::-webkit-scrollbar-corner {
+.feedback-container::-webkit-scrollbar-corner {
 	background: #6D81F2;
 }
 
@@ -1196,9 +1192,15 @@ h4.text-center {
 	gap: auto;
 	border-radius: 5px;
 	min-height: 100vh;
-
 }
 
+.feedback-container {
+	display: flex;
+	flex-direction: column;
+	gap: auto;
+	border-radius: 5px;
+	min-height: 100vh;
+}
 .charts-grid {
 	display: grid;
 	grid-template-columns: repeat(2, 1fr); 
@@ -1463,7 +1465,7 @@ h4.text-center {
 @media (max-width: 480px) {
 	.chart-wrapper {
 		width: 100px;
-		height: 100px;
+		height: 150px;
 	}
 }
 	.chart-card {
@@ -1487,15 +1489,7 @@ h4.text-center {
 	}
 
 
-@media (max-width: 768px) {
-	.cancel-account-btn {
-		padding: 8px 15px;
-		font-size: 0.9rem;
-		margin: 10px auto;
-		display: block;
-		text-align: center;
-	}
-}
+
 @media (max-width: 480px) {
 	.profile-page {
 		padding: 5px;

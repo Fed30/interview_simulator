@@ -83,7 +83,7 @@ export default function FeedbackPanel({ user }) {
   };
 
   return (
-    <div className="analytics-container mt-4">
+    <div className="feedback-container mt-4">
       {/* Filter Section */}
       <div className="filter-container">
         {["All", "Complete", "Incomplete"].map((status) => (
