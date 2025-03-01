@@ -578,13 +578,13 @@ h4.text-center {
 }
 
 .scrollable-content:active, .scrollable-content:hover {
-	/*overflow-y: auto; */
+	overflow-y: auto; 
 }
 /* Apply styles to the scrollbar */
 .scrollable-content {
 	background-color: #1e1e2f;
-	/*overflow-y: auto;*/
-	/*max-height: calc(100vh - 100px);*/
+	overflow-y: auto;
+	max-height: calc(100vh - 130px);
 }
 
 /* Style the scrollbar itself */
@@ -1185,9 +1185,9 @@ h4.text-center {
 }
 .chart-card h6 {
 	text-align: center;
-	font-size: 0.6;
+	font-size: 0.4;
 	margin-bottom: 2px;
-	font-weight: 400;
+	font-weight: 300;
 	color: white; 
 }
 
@@ -1199,7 +1199,7 @@ h4.text-center {
 	border-radius: 5px;
 	flex: 1; 
 	min-height: 0;
-	overflow-y: auto;
+	/*overflow-y: auto;*/
 }
 
 .charts-grid {
@@ -1215,7 +1215,7 @@ h4.text-center {
 	background-color: #2A2A40;
 	box-shadow: 0 1px 5px rgba(0, 0, 0, 0.1);
 	text-align: center;
-	height: 270px; 
+	height: 300px; 
 	width: 100%;
 	display: flex;
 	flex-direction: column;
