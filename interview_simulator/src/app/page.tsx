@@ -42,7 +42,8 @@ const Home = () => {
 
 
   return (
-    <div className={`page-transition ${pageLoaded ? 'loaded' : ''}`} >
+    <div className="page-transition">
+    <div className={`${pageLoaded ? 'loaded' : ''}`} >
       {/* Section 1: Main Section */}
       <section
         className="relative py-24 text-white h-screen flex items-center justify-center"
@@ -236,7 +237,8 @@ const Home = () => {
           </div>
         </div>
       </section>
-    </div>
+      </div>
+      </div>
 
   );
 };
