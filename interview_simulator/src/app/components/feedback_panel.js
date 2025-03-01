@@ -114,7 +114,9 @@ export default function FeedbackPanel({ user }) {
             height={200}
             alt="No data"
           />
-          <p>No data available for Sessions Feedback</p>
+          <p className="no-data-text">
+            No data available for Sessions Feedback
+          </p>
         </div>
       ) : (
         <table className="feedback-table">
