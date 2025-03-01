@@ -1164,13 +1164,14 @@ h4.text-center {
 	font-weight: bold;
 	position: relative; /* Ensure it works well with absolute children */
 }
+
 .chart-wrapper {
 	position: relative; 
 	width: 100%; 
 	height: 180px; 
 	padding: 10px;
 	align-items: center; 
-	justify-content: center; /
+	justify-content: center; 
 }
 
 .chart-card h4 {
