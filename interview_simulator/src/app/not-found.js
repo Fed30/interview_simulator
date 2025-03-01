@@ -15,7 +15,7 @@ export default function NotFound() {
         width={80}
         height={80}
         alt="Page not found"
-        className="sm:w-2/3 image-hover"
+        className="sm:w-2/3 object-contain image-hover"
       />
       <p className="text-lg mt-4 text-white opacity-90 text-shadow-md text-animated animate__animated animate__fadeIn animate__delay-1s">
         Oops! The page you are looking for does not exist.
