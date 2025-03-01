@@ -51,7 +51,6 @@ const Home = () => {
           backgroundRepeat: "no-repeat",
           backgroundPosition: "center center",
           backgroundAttachment: 'fixed',
-          zIndex:-1,
         }}
       >
         {/* Overlay */}
