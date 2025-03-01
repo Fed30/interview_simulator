@@ -1166,6 +1166,7 @@ h4.text-center {
 .chart-wrapper {
 	position: relative; 
 	width: 100%; 
+	justify-self: center;
 	height: 180px; 
 	padding: 10px;
 }
