@@ -422,7 +422,7 @@ input[type="password"]::-webkit-credentials-auto-fill-button {
 
 /* Hover Effect for Input Fields */
 .form-control:hover {
-	border: 1px solid #6D81F2;
+	border: 1px solid #F25E86;
 	background-color: transparent !important; 
 }
 
