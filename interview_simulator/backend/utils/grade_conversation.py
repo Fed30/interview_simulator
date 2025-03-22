@@ -10,7 +10,9 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
 from textblob import TextBlob
 
-BIAS_LOG_FILE = "bias_log.json"
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+BIAS_LOG_FILE = os.path.join(BASE_DIR, "bias_log.json")
+CSV_FILE = os.path.join(BASE_DIR, "grading_results.csv")
 
 # Load NLP model
 try:
@@ -21,7 +23,7 @@ except OSError:
     nlp = spacy.load("en_core_web_sm")
     
     
-CSV_FILE = "grading_results.csv"
+
 
 # Ensure CSV file exists and has a header
 if not os.path.exists(CSV_FILE):
