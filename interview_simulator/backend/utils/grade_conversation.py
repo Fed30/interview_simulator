@@ -70,7 +70,7 @@ def log_to_csv(question, user_response, ideal_response, semantic_score, keyword_
         csv_data.seek(0)
 
         # Upload updated CSV back to Firebase Storage
-        csv_blob.upload_from_file(csv_data, content_type="text/csv")
+        csv_blob.upload_from_string(csv_data.getvalue(), content_type="text/csv")
         print(f"Logged to CSV in Firebase Storage: {CSV_FILE_PATH}")
     except Exception as e:
         print(f"Error logging to Firebase Storage CSV: {e}")
@@ -95,15 +95,15 @@ def log_bias(case):
         # Convert the updated bias data into a JSON string
         json_data = json.dumps(current_bias, indent=4)
         
-        # Convert the JSON string to bytes
-        byte_data = io.BytesIO(json_data.encode('utf-8'))
-        byte_data.seek(0)
+        # Convert the JSON string to a StringIO object
+        json_data_io = io.StringIO(json_data)
 
-        # Upload the byte data to Firebase Storage
-        bias_blob.upload_from_file(byte_data, content_type="application/json")
+        # Upload the StringIO object to Firebase Storage as a string
+        bias_blob.upload_from_file(json_data_io, content_type="application/json")
         print(f"Logged bias case to Firebase Storage: {BIAS_LOG_FILE_PATH}")
     except Exception as e:
         print(f"Error logging bias to Firebase Storage: {e}")
+
 
 
 
