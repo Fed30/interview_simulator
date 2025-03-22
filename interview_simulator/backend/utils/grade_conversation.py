@@ -25,8 +25,6 @@ except OSError:
     subprocess.run(["python", "-m", "spacy", "download", "en_core_web_sm"], check=True)
     nlp = spacy.load("en_core_web_sm")
     
-    
-
 
 # Ensure CSV file exists and has a header
 if not os.path.exists(CSV_FILE):
@@ -41,6 +39,10 @@ def log_to_csv(user_response, ideal_response, semantic_score, keyword_score, sen
             writer = csv.writer(f)
             writer.writerow([user_response, ideal_response, semantic_score, keyword_score, sentiment_match, ai_score, rule_score, result])
         print(f"Logged to CSV: {CSV_FILE}")
+        
+        # Debug: Read the file to see if data was written
+        with open(CSV_FILE, "r") as f:
+            print(f.read())
     except Exception as e:
         print(f"Error logging to CSV: {e}")
 
@@ -50,8 +52,13 @@ def log_bias(case):
         with open(BIAS_LOG_FILE, "a") as f:
             f.write(json.dumps(case) + "\n")
         print(f"Logged bias case to {BIAS_LOG_FILE}")
+        
+        # Debug: Read the file to see if data was written
+        with open(BIAS_LOG_FILE, "r") as f:
+            print(f.read())
     except Exception as e:
         print(f"Error logging bias: {e}")
+
 
 def keyword_match_score(user_response, ideal_response):
     """
