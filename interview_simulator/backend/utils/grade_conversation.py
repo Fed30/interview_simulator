@@ -4,6 +4,7 @@ from utils.openai_get_grade import get_grade_from_openai
 import os
 import json
 import spacy
+import csv
 import subprocess
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
@@ -18,6 +19,21 @@ except OSError:
     print("Model 'en_core_web_sm' not found, attempting to download...")
     subprocess.run(["python", "-m", "spacy", "download", "en_core_web_sm"], check=True)
     nlp = spacy.load("en_core_web_sm")
+    
+    
+CSV_FILE = "grading_results.csv"
+
+# Ensure CSV file exists and has a header
+if not os.path.exists(CSV_FILE):
+    with open(CSV_FILE, "w", newline="") as f:
+        writer = csv.writer(f)
+        writer.writerow(["User Response", "Ideal Response", "Semantic Score", "Keyword Score", "Sentiment Match", "AI Score", "Rule Score", "Result"])
+
+def log_to_csv(user_response, ideal_response, semantic_score, keyword_score, sentiment_match, ai_score, rule_score, result):
+    """Logs all grading results to a CSV file."""
+    with open(CSV_FILE, "a", newline="") as f:
+        writer = csv.writer(f)
+        writer.writerow([user_response, ideal_response, semantic_score, keyword_score, sentiment_match, ai_score, rule_score, result])
 
 def log_bias(case):
     """Logs cases where AI feedback or scores seem inconsistent."""
@@ -117,6 +133,16 @@ def grade_conversation(user_id, graded_conversation, dataset, doc_id, firebase_s
                             msg['grade'] = ai_grade
 
                         msg['feedback'] = ai_feedback
+                        
+                        # Determine pass/fail
+                        result = "Pass" if not validate_ai_score(ai_grade, rule_based_score) else "FLAGGED"
+
+                        # Convert sentiment match to readable format
+                        sentiment_match_display = "Match" if sentiment_match_result else "Mismatch"
+
+                        # Log into CSV
+                        log_to_csv(user_response, ideal_response, semantic_score, keyword_score, sentiment_match_display, ai_grade, rule_based_score, result)
+
 
                     except Exception as e:
                         print(f"Error grading message {i}: {e}")
