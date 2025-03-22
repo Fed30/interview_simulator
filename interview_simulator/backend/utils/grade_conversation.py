@@ -58,7 +58,15 @@ def validate_ai_score(ai_score, rule_based_score):
     Validates AI-generated score against rule-based score.
     Flags cases where the AI score deviates significantly.
     """
-    return abs(ai_score - rule_based_score) >= 2  # Flag if the scores differ by 2 or more
+    try:
+        # Ensure both scores are numbers (either int or float)
+        ai_score = float(ai_score)  # Convert to float
+        rule_based_score = float(rule_based_score)  # Convert to float
+
+        return abs(ai_score - rule_based_score) >= 2  # Flag if the scores differ by 2 or more
+    except (ValueError, TypeError) as e:
+        print(f"Error validating AI score: {e}")
+        return False  # If there was an error in conversion, do not flag it
 
 def grade_conversation(user_id, graded_conversation, dataset, doc_id, firebase_session_id):
     for i, msg in enumerate(graded_conversation):
@@ -81,6 +89,9 @@ def grade_conversation(user_id, graded_conversation, dataset, doc_id, firebase_s
                         # Fetch AI-generated grade and feedback
                         ai_grade = get_grade_from_openai(user_response, ideal_response, question)
                         ai_feedback = get_feedback_summary_from_openai(user_response, ideal_response, question)
+
+                        # Ensure ai_grade is a valid number
+                        ai_grade = float(ai_grade) if isinstance(ai_grade, (int, float)) else 0  # Default to 0 if invalid
 
                         # NLP-based rule-based grading
                         keyword_score = keyword_match_score(user_response, ideal_response)
