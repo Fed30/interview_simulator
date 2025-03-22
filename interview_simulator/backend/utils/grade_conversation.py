@@ -4,6 +4,7 @@ from utils.openai_get_grade import get_grade_from_openai
 import os
 import json
 import spacy
+import subprocess
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
 from textblob import TextBlob
@@ -11,7 +12,12 @@ from textblob import TextBlob
 BIAS_LOG_FILE = "bias_log.json"
 
 # Load NLP model
-nlp = spacy.load("en_core_web_sm")
+try:
+    nlp = spacy.load("en_core_web_sm")
+except OSError:
+    print("Model 'en_core_web_sm' not found, attempting to download...")
+    subprocess.run(["python", "-m", "spacy", "download", "en_core_web_sm"], check=True)
+    nlp = spacy.load("en_core_web_sm")
 
 def log_bias(case):
     """Logs cases where AI feedback or scores seem inconsistent."""
