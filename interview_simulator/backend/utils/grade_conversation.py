@@ -35,7 +35,7 @@ def initialize_csv_file():
             # If the file doesn't exist, create a new CSV with headers
             with io.StringIO() as f:
                 writer = csv.writer(f)
-                writer.writerow(["User Response", "Ideal Response", "Semantic Score", "Keyword Score", "Sentiment Match", "AI Score", "Rule Score", "Result"])
+                writer.writerow(["Question","User Response", "Ideal Response", "Semantic Score", "Keyword Score", "Sentiment Match", "AI Score", "Rule Score", "Result"])
                 f.seek(0)
                 
                 # Convert the content to bytes for uploading
@@ -49,7 +49,7 @@ initialize_csv_file()
 
 
 # Log grading results to Firebase Storage (CSV)
-def log_to_csv(user_response, ideal_response, semantic_score, keyword_score, sentiment_match, ai_score, rule_score, result):
+def log_to_csv(question, user_response, ideal_response, semantic_score, keyword_score, sentiment_match, ai_score, rule_score, result):
     """Logs all grading results to Firebase Storage (CSV)."""
     try:
         csv_blob = storage_bucket.blob(CSV_FILE_PATH)
@@ -60,9 +60,9 @@ def log_to_csv(user_response, ideal_response, semantic_score, keyword_score, sen
             reader = csv.reader(csv_data)
             rows = list(reader)
         else:
-            rows = [["User Response", "Ideal Response", "Semantic Score", "Keyword Score", "Sentiment Match", "AI Score", "Rule Score", "Result"]]
+            rows = [["Question","User Response", "Ideal Response", "Semantic Score", "Keyword Score", "Sentiment Match", "AI Score", "Rule Score", "Result"]]
 
-        rows.append([user_response, ideal_response, semantic_score, keyword_score, sentiment_match, ai_score, rule_score, result])
+        rows.append([question,user_response, ideal_response, semantic_score, keyword_score, sentiment_match, ai_score, rule_score, result])
 
         csv_data = io.StringIO()
         writer = csv.writer(csv_data)
@@ -92,14 +92,19 @@ def log_bias(case):
 
         current_bias.append(case)
 
-        bias_data = io.StringIO(json.dumps(current_bias, indent=4))
-        bias_data.seek(0)
+        # Convert the updated bias data into a JSON string
+        json_data = json.dumps(current_bias, indent=4)
+        
+        # Convert the JSON string to bytes
+        byte_data = io.BytesIO(json_data.encode('utf-8'))
+        byte_data.seek(0)
 
-        # Upload updated JSON data back to Firebase Storage
-        bias_blob.upload_from_file(bias_data, content_type="application/json")
+        # Upload the byte data to Firebase Storage
+        bias_blob.upload_from_file(byte_data, content_type="application/json")
         print(f"Logged bias case to Firebase Storage: {BIAS_LOG_FILE_PATH}")
     except Exception as e:
         print(f"Error logging bias to Firebase Storage: {e}")
+
 
 
 def keyword_match_score(user_response, ideal_response):
@@ -140,9 +145,8 @@ def validate_ai_score(ai_score, rule_based_score):
     Flags cases where the AI score deviates significantly.
     """
     try:
-        # Ensure both scores are numbers (either int or float)
-        ai_score = float(ai_score)  # Convert to float
-        rule_based_score = float(rule_based_score)  # Convert to float
+        ai_score = float(ai_score)  
+        rule_based_score = float(rule_based_score)  
 
         return abs(ai_score - rule_based_score) >= 2  # Flag if the scores differ by 2 or more
     except (ValueError, TypeError) as e:
@@ -208,7 +212,7 @@ def grade_conversation(user_id, graded_conversation, dataset, doc_id, firebase_s
                         sentiment_match_display = "Match" if sentiment_match_result else "Mismatch"
 
                         # Log into Firebase Storage
-                        log_to_csv(question,user_response, ideal_response, semantic_score, keyword_score, sentiment_match_display, ai_grade, rule_based_score, result)
+                        log_to_csv(question, user_response, ideal_response, semantic_score, keyword_score, sentiment_match_display, ai_grade, rule_based_score, result)
 
                     except Exception as e:
                         print(f"Error grading message {i}: {e}")
