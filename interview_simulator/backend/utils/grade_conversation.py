@@ -26,16 +26,21 @@ BIAS_LOG_FILE_PATH = "logs/bias_log.json"
 
 # Ensure CSV file exists in Firebase Storage and has a header
 def initialize_csv_file():
-    # Fetch the CSV file from Firebase Storage or create it
+    """Ensure the CSV file exists in Firebase Storage with headers."""
     try:
         csv_blob = storage_bucket.blob(CSV_FILE_PATH)
+        
+        # Check if the CSV file exists
         if not csv_blob.exists():
             # If the file doesn't exist, create a new CSV with headers
             with io.StringIO() as f:
                 writer = csv.writer(f)
                 writer.writerow(["User Response", "Ideal Response", "Semantic Score", "Keyword Score", "Sentiment Match", "AI Score", "Rule Score", "Result"])
                 f.seek(0)
-                csv_blob.upload_from_file(f, content_type="text/csv")
+                
+                # Convert the content to bytes for uploading
+                byte_data = io.BytesIO(f.getvalue().encode('utf-8'))
+                csv_blob.upload_from_file(byte_data, content_type="text/csv")
             print(f"CSV file initialized: {CSV_FILE_PATH}")
     except Exception as e:
         print(f"Error initializing CSV file: {e}")
@@ -203,7 +208,7 @@ def grade_conversation(user_id, graded_conversation, dataset, doc_id, firebase_s
                         sentiment_match_display = "Match" if sentiment_match_result else "Mismatch"
 
                         # Log into Firebase Storage
-                        log_to_csv(user_response, ideal_response, semantic_score, keyword_score, sentiment_match_display, ai_grade, rule_based_score, result)
+                        log_to_csv(question,user_response, ideal_response, semantic_score, keyword_score, sentiment_match_display, ai_grade, rule_based_score, result)
 
                     except Exception as e:
                         print(f"Error grading message {i}: {e}")
