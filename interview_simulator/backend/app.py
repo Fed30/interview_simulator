@@ -4,6 +4,7 @@ from flask_cors import CORS
 from app_config import configure_app
 from routes import register_routes
 import spacy
+import subprocess
 
 # Initialize the Flask app
 app = Flask(__name__)
@@ -31,12 +32,13 @@ register_routes(app)
 
 # Download and link the spaCy model
 try:
-    # Check if model is installed, download it if not
+    # Try to load the model to ensure it is installed
     try:
         spacy.load("en_core_web_sm")
     except OSError:
         # Model not found, so we download it
-        spacy.cli.download("en_core_web_sm")
+        print("Model not found, downloading...")
+        subprocess.run(["python", "-m", "spacy", "download", "en_core_web_sm"], check=True)
         # After downloading, we load the model
         nlp = spacy.load("en_core_web_sm")
         print("spaCy model loaded successfully.")
