@@ -87,7 +87,7 @@ def grade_conversation(user_id, graded_conversation, dataset, doc_id, firebase_s
 
             # AI feedback consistency check
             feedback_sentiment = TextBlob(ai_feedback).sentiment.polarity
-            grade_sentiment = 1 if ai_grade > 3 else -1  # Assume 4-5 is positive, 1-3 is negative
+            grade_sentiment = 1 if int(ai_grade) > 3 else -1  # Assume 4-5 is positive, 1-3 is negative
             feedback_inconsistent = (feedback_sentiment > 0 and ai_grade < 3) or (feedback_sentiment < 0 and ai_grade > 3)
 
             if flagged or feedback_inconsistent:
