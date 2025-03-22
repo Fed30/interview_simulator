@@ -1,4 +1,4 @@
-from firebase_config import firestore_db, firebase_db
+from firebase_config import firestore_db, firebase_db, storage_bucket
 from utils.openai_get_feedback import get_feedback_summary_from_openai
 from utils.openai_get_grade import get_grade_from_openai
 import os
@@ -9,13 +9,7 @@ import subprocess
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
 from textblob import TextBlob
-
-# Get the base directory of the project (i.e., "interview_simulator\backend")
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-
-# Construct the full paths to the JSON and CSV files
-BIAS_LOG_FILE = os.path.join(BASE_DIR, "bias_log.json")
-CSV_FILE = os.path.join(BASE_DIR, "grading_result.csv")
+import io
 
 # Load NLP model
 try:
@@ -24,40 +18,83 @@ except OSError:
     print("Model 'en_core_web_sm' not found, attempting to download...")
     subprocess.run(["python", "-m", "spacy", "download", "en_core_web_sm"], check=True)
     nlp = spacy.load("en_core_web_sm")
-    
 
-# Ensure CSV file exists and has a header
-if not os.path.exists(CSV_FILE):
-    with open(CSV_FILE, "w", newline="") as f:
-        writer = csv.writer(f)
-        writer.writerow(["User Response", "Ideal Response", "Semantic Score", "Keyword Score", "Sentiment Match", "AI Score", "Rule Score", "Result"])
 
+# Firebase Storage paths for files
+CSV_FILE_PATH = "logs/grading_result.csv"
+BIAS_LOG_FILE_PATH = "logs/bias_log.json"
+
+# Ensure CSV file exists in Firebase Storage and has a header
+def initialize_csv_file():
+    # Fetch the CSV file from Firebase Storage or create it
+    try:
+        csv_blob = storage_bucket.blob(CSV_FILE_PATH)
+        if not csv_blob.exists():
+            # If the file doesn't exist, create a new CSV with headers
+            with io.StringIO() as f:
+                writer = csv.writer(f)
+                writer.writerow(["User Response", "Ideal Response", "Semantic Score", "Keyword Score", "Sentiment Match", "AI Score", "Rule Score", "Result"])
+                f.seek(0)
+                csv_blob.upload_from_file(f, content_type="text/csv")
+            print(f"CSV file initialized: {CSV_FILE_PATH}")
+    except Exception as e:
+        print(f"Error initializing CSV file: {e}")
+
+initialize_csv_file()
+
+
+# Log grading results to Firebase Storage (CSV)
 def log_to_csv(user_response, ideal_response, semantic_score, keyword_score, sentiment_match, ai_score, rule_score, result):
-    """Logs all grading results to a CSV file."""
+    """Logs all grading results to Firebase Storage (CSV)."""
     try:
-        with open(CSV_FILE, "a", newline="") as f:
-            writer = csv.writer(f)
-            writer.writerow([user_response, ideal_response, semantic_score, keyword_score, sentiment_match, ai_score, rule_score, result])
-        print(f"Logged to CSV: {CSV_FILE}")
-        
-        # Debug: Read the file to see if data was written
-        with open(CSV_FILE, "r") as f:
-            print(f.read())
-    except Exception as e:
-        print(f"Error logging to CSV: {e}")
+        csv_blob = storage_bucket.blob(CSV_FILE_PATH)
+        csv_data = io.StringIO()
+        if csv_blob.exists():
+            csv_blob.download_to_file(csv_data)
+            csv_data.seek(0)
+            reader = csv.reader(csv_data)
+            rows = list(reader)
+        else:
+            rows = [["User Response", "Ideal Response", "Semantic Score", "Keyword Score", "Sentiment Match", "AI Score", "Rule Score", "Result"]]
 
-def log_bias(case):
-    """Logs cases where AI feedback or scores seem inconsistent."""
-    try:
-        with open(BIAS_LOG_FILE, "a") as f:
-            f.write(json.dumps(case) + "\n")
-        print(f"Logged bias case to {BIAS_LOG_FILE}")
-        
-        # Debug: Read the file to see if data was written
-        with open(BIAS_LOG_FILE, "r") as f:
-            print(f.read())
+        rows.append([user_response, ideal_response, semantic_score, keyword_score, sentiment_match, ai_score, rule_score, result])
+
+        csv_data = io.StringIO()
+        writer = csv.writer(csv_data)
+        writer.writerows(rows)
+        csv_data.seek(0)
+
+        # Upload updated CSV back to Firebase Storage
+        csv_blob.upload_from_file(csv_data, content_type="text/csv")
+        print(f"Logged to CSV in Firebase Storage: {CSV_FILE_PATH}")
     except Exception as e:
-        print(f"Error logging bias: {e}")
+        print(f"Error logging to Firebase Storage CSV: {e}")
+
+
+# Log bias cases to Firebase Storage (JSON)
+def log_bias(case):
+    """Logs cases where AI feedback or scores seem inconsistent to Firebase Storage (JSON)."""
+    try:
+        bias_blob = storage_bucket.blob(BIAS_LOG_FILE_PATH)
+        bias_data = io.StringIO()
+
+        if bias_blob.exists():
+            bias_blob.download_to_file(bias_data)
+            bias_data.seek(0)
+            current_bias = json.load(bias_data)
+        else:
+            current_bias = []
+
+        current_bias.append(case)
+
+        bias_data = io.StringIO(json.dumps(current_bias, indent=4))
+        bias_data.seek(0)
+
+        # Upload updated JSON data back to Firebase Storage
+        bias_blob.upload_from_file(bias_data, content_type="application/json")
+        print(f"Logged bias case to Firebase Storage: {BIAS_LOG_FILE_PATH}")
+    except Exception as e:
+        print(f"Error logging bias to Firebase Storage: {e}")
 
 
 def keyword_match_score(user_response, ideal_response):
@@ -72,6 +109,7 @@ def keyword_match_score(user_response, ideal_response):
 
     return len(user_keywords.intersection(ideal_keywords)) / len(ideal_keywords)
 
+
 def semantic_similarity(user_response, ideal_response):
     """
     Computes the semantic similarity between user and ideal responses using TF-IDF and cosine similarity.
@@ -79,6 +117,7 @@ def semantic_similarity(user_response, ideal_response):
     vectorizer = TfidfVectorizer().fit_transform([user_response, ideal_response])
     vectors = vectorizer.toarray()
     return cosine_similarity([vectors[0]], [vectors[1]])[0][0]
+
 
 def sentiment_match(user_response, ideal_response):
     """
@@ -88,6 +127,7 @@ def sentiment_match(user_response, ideal_response):
     ideal_sentiment = TextBlob(ideal_response).sentiment.polarity
 
     return abs(user_sentiment - ideal_sentiment) < 0.2  # Allow some variation
+
 
 def validate_ai_score(ai_score, rule_based_score):
     """
@@ -103,6 +143,7 @@ def validate_ai_score(ai_score, rule_based_score):
     except (ValueError, TypeError) as e:
         print(f"Error validating AI score: {e}")
         return False  # If there was an error in conversion, do not flag it
+
 
 def grade_conversation(user_id, graded_conversation, dataset, doc_id, firebase_session_id):
     for i, msg in enumerate(graded_conversation):
@@ -161,9 +202,8 @@ def grade_conversation(user_id, graded_conversation, dataset, doc_id, firebase_s
                         # Convert sentiment match to readable format
                         sentiment_match_display = "Match" if sentiment_match_result else "Mismatch"
 
-                        # Log into CSV
+                        # Log into Firebase Storage
                         log_to_csv(user_response, ideal_response, semantic_score, keyword_score, sentiment_match_display, ai_grade, rule_based_score, result)
-
 
                     except Exception as e:
                         print(f"Error grading message {i}: {e}")

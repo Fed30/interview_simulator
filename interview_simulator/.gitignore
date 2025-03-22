@@ -43,6 +43,4 @@ next-env.d.ts
 # env files (can opt-in for committing if needed)
 .env*
 
-# Keep these files tracked
-!/backend/bias_log.json
-!/backend/grading_result.csv
+
