@@ -128,7 +128,7 @@ def grade_conversation(user_id, graded_conversation, dataset, doc_id, firebase_s
                                 "keyword_score": keyword_score,
                                 "sentiment_match": sentiment_match_result
                             })
-                            msg['grade'] = f"FLAGGED: {ai_grade}"  # Mark as flagged for review
+                            msg['flag'] = f"FLAGGED: {ai_grade}"  # Mark as flagged for review
                         else:
                             msg['grade'] = ai_grade
 
