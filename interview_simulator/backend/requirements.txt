@@ -7,8 +7,8 @@ gunicorn==23.0.0
 openai
 ntplib
 fpdf
-spacy==3.8.4  
-en-core-web-sm==3.8.0  
+spacy
+en-core-web-sm=
 scikit-learn
 textblob
 pyrebase4
