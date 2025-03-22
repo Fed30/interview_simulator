@@ -7,3 +7,8 @@ gunicorn==23.0.0
 openai
 ntplib
 fpdf
+spacy
+en-core-web-sm
+scikit-learn
+textblob
+pyrebase4

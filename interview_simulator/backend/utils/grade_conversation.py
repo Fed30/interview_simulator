@@ -2,11 +2,61 @@ from firebase_config import firestore_db, firebase_db
 from utils.openai_get_feedback import get_feedback_summary_from_openai
 from utils.openai_get_grade import get_grade_from_openai
 import os
+import json
+import spacy
+from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.metrics.pairwise import cosine_similarity
+from textblob import TextBlob
+
+BIAS_LOG_FILE = "bias_log.json"
+
+# Load NLP model
+nlp = spacy.load("en_core_web_sm")
+
+def log_bias(case):
+    """Logs cases where AI feedback or scores seem inconsistent."""
+    with open(BIAS_LOG_FILE, "a") as f:
+        f.write(json.dumps(case) + "\n")
+
+def keyword_match_score(user_response, ideal_response):
+    """
+    Computes keyword match score based on the number of shared words.
+    """
+    user_keywords = set(nlp(user_response.lower()).ents)  # Extract named entities
+    ideal_keywords = set(nlp(ideal_response.lower()).ents)
+
+    if not ideal_keywords:
+        return 1 if user_keywords else 0  # If no keywords exist in the ideal response, return neutral score
+
+    return len(user_keywords.intersection(ideal_keywords)) / len(ideal_keywords)
+
+def semantic_similarity(user_response, ideal_response):
+    """
+    Computes the semantic similarity between user and ideal responses using TF-IDF and cosine similarity.
+    """
+    vectorizer = TfidfVectorizer().fit_transform([user_response, ideal_response])
+    vectors = vectorizer.toarray()
+    return cosine_similarity([vectors[0]], [vectors[1]])[0][0]
+
+def sentiment_match(user_response, ideal_response):
+    """
+    Ensures that the sentiment of the user’s response is similar to the ideal response.
+    """
+    user_sentiment = TextBlob(user_response).sentiment.polarity
+    ideal_sentiment = TextBlob(ideal_response).sentiment.polarity
+
+    return abs(user_sentiment - ideal_sentiment) < 0.2  # Allow some variation
+
+def validate_ai_score(ai_score, rule_based_score):
+    """
+    Validates AI-generated score against rule-based score.
+    Flags cases where the AI score deviates significantly.
+    """
+    return abs(ai_score - rule_based_score) >= 2  # Flag if the scores differ by 2 or more
 
 def grade_conversation(user_id, graded_conversation, dataset, doc_id, firebase_session_id):
-    # Iterate through the conversation to grade the user's responses
     for i, msg in enumerate(graded_conversation):
-        if msg.get('role') == 'user':  # Only grade user responses
+        if msg.get('role') == 'user':  # Grade only user responses
             user_response = msg.get('content')
             if user_response:
                 question = (
@@ -15,43 +65,64 @@ def grade_conversation(user_id, graded_conversation, dataset, doc_id, firebase_s
                     else "No question provided"
                 )
 
-                # Find the ideal response from the dataset
+                # Get the ideal response from the dataset
                 ideal_response = next(
                     (item['user_answer'] for item in dataset if item['prompt'] == question), None
                 )
 
-                # Skip grading if no ideal response exists
                 if ideal_response:
                     try:
-                        # Grade the response and get feedback
-                        msg['grade'] = get_grade_from_openai(user_response, ideal_response, question)
-                        msg['feedback'] = get_feedback_summary_from_openai(user_response, ideal_response, question)
+                        # Fetch AI-generated grade and feedback
+                        ai_grade = get_grade_from_openai(user_response, ideal_response, question)
+                        ai_feedback = get_feedback_summary_from_openai(user_response, ideal_response, question)
+
+                        # NLP-based rule-based grading
+                        keyword_score = keyword_match_score(user_response, ideal_response)
+                        semantic_score = semantic_similarity(user_response, ideal_response)
+                        sentiment_match_result = sentiment_match(user_response, ideal_response)
+
+                        rule_based_score = 5 if semantic_score > 0.7 and keyword_score > 0.5 and sentiment_match_result else 2
+
+                        # Validate AI grading
+                        if validate_ai_score(ai_grade, rule_based_score):
+                            log_bias({
+                                "question": question,
+                                "user_response": user_response,
+                                "ideal_response": ideal_response,
+                                "ai_score": ai_grade,
+                                "rule_based_score": rule_based_score,
+                                "semantic_score": semantic_score,
+                                "keyword_score": keyword_score,
+                                "sentiment_match": sentiment_match_result
+                            })
+                            msg['grade'] = f"FLAGGED: {ai_grade}"  # Mark as flagged for review
+                        else:
+                            msg['grade'] = ai_grade
+
+                        msg['feedback'] = ai_feedback
+
                     except Exception as e:
-                        print(f"Error grading or generating feedback for message {i}: {e}")
-                        # Optionally, handle error with a default value or skip grading
+                        print(f"Error grading message {i}: {e}")
                         msg['grade'] = 'Error'
                         msg['feedback'] = 'Error in grading/feedback'
 
-    # Update Firestore after grading is complete
+    # Update Firestore with graded conversation
     try:
         doc_ref = firestore_db.collection("Sessions").document(doc_id)
         doc_ref.update({"history": graded_conversation})
         doc_ref_id = doc_ref.id
     except Exception as e:
         print(f"Error updating Firestore: {e}")
-        return None  # Return None or handle the failure case as needed
+        return None
 
-    # Prepare session data for Firebase Realtime Database
+    # Update Firebase Realtime Database
     project_id = os.getenv('FIREBASE_PROJECT_ID', 'default_project_id')
-    session_data = {
-        'session_link': f'https://firestore.googleapis.com/v1/projects/{project_id}/databases/(default)/documents/Sessions/{doc_ref_id}'
-    }
+    session_data = {'session_link': f'https://firestore.googleapis.com/v1/projects/{project_id}/databases/(default)/documents/Sessions/{doc_ref_id}'}
 
-    # Update Firebase Realtime Database with session data
     try:
         firebase_db.child(f'Users/{user_id}/Sessions/{firebase_session_id}').update(session_data)
     except Exception as e:
         print(f"Error updating Firebase Realtime Database: {e}")
-        return None  # Return None or handle the failure case as needed
+        return None
 
     return graded_conversation
