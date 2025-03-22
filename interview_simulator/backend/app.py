@@ -3,6 +3,7 @@ from flask_session import Session
 from flask_cors import CORS
 from app_config import configure_app
 from routes import register_routes
+import spacy
 
 # Initialize the Flask app
 app = Flask(__name__)
@@ -27,6 +28,17 @@ Session(app)
 
 # Register routes
 register_routes(app)
+
+# Download and link the spaCy model
+try:
+    # Attempt to download the spaCy model
+    spacy.cli.download("en_core_web_sm")
+    # Load the model to ensure it's available
+    nlp = spacy.load("en_core_web_sm")
+    print("spaCy model loaded successfully.")
+except Exception as e:
+    # Handle any errors that might occur during model loading
+    print(f"Error loading spaCy model: {e}")
 
 @app.route("/", methods=["GET"])
 def home():
