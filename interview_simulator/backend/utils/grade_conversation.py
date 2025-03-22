@@ -54,6 +54,8 @@ def log_to_csv(question, user_response, ideal_response, semantic_score, keyword_
     try:
         csv_blob = storage_bucket.blob(CSV_FILE_PATH)
         csv_data = io.StringIO()
+        
+        # If the CSV already exists, download its current data
         if csv_blob.exists():
             csv_blob.download_to_file(csv_data)
             csv_data.seek(0)
@@ -62,18 +64,21 @@ def log_to_csv(question, user_response, ideal_response, semantic_score, keyword_
         else:
             rows = [["Question","User Response", "Ideal Response", "Semantic Score", "Keyword Score", "Sentiment Match", "AI Score", "Rule Score", "Result"]]
 
-        rows.append([question,user_response, ideal_response, semantic_score, keyword_score, sentiment_match, ai_score, rule_score, result])
+        # Add the new row with the data to be logged
+        rows.append([question, user_response, ideal_response, semantic_score, keyword_score, sentiment_match, ai_score, rule_score, result])
 
+        # Write all rows back to the CSV
         csv_data = io.StringIO()
         writer = csv.writer(csv_data)
         writer.writerows(rows)
         csv_data.seek(0)
 
-        # Upload updated CSV back to Firebase Storage
+        # Upload the string contents of CSV to Firebase Storage
         csv_blob.upload_from_string(csv_data.getvalue(), content_type="text/csv")
         print(f"Logged to CSV in Firebase Storage: {CSV_FILE_PATH}")
     except Exception as e:
         print(f"Error logging to Firebase Storage CSV: {e}")
+
 
 
 # Log bias cases to Firebase Storage (JSON)
@@ -83,6 +88,7 @@ def log_bias(case):
         bias_blob = storage_bucket.blob(BIAS_LOG_FILE_PATH)
         bias_data = io.StringIO()
 
+        # If the bias log file exists, load its data
         if bias_blob.exists():
             bias_blob.download_to_file(bias_data)
             bias_data.seek(0)
@@ -90,20 +96,17 @@ def log_bias(case):
         else:
             current_bias = []
 
+        # Append the new case
         current_bias.append(case)
 
         # Convert the updated bias data into a JSON string
         json_data = json.dumps(current_bias, indent=4)
-        
-        # Convert the JSON string to a StringIO object
-        json_data_io = io.StringIO(json_data)
 
-        # Upload the StringIO object to Firebase Storage as a string
-        bias_blob.upload_from_file(json_data_io, content_type="application/json")
+        # Upload the string data directly to Firebase Storage
+        bias_blob.upload_from_string(json_data, content_type="application/json")
         print(f"Logged bias case to Firebase Storage: {BIAS_LOG_FILE_PATH}")
     except Exception as e:
         print(f"Error logging bias to Firebase Storage: {e}")
-
 
 
 
