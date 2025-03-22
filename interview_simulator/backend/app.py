@@ -31,11 +31,15 @@ register_routes(app)
 
 # Download and link the spaCy model
 try:
-    # Attempt to download the spaCy model
-    spacy.cli.download("en_core_web_sm")
-    # Load the model to ensure it's available
-    nlp = spacy.load("en_core_web_sm")
-    print("spaCy model loaded successfully.")
+    # Check if model is installed, download it if not
+    try:
+        spacy.load("en_core_web_sm")
+    except OSError:
+        # Model not found, so we download it
+        spacy.cli.download("en_core_web_sm")
+        # After downloading, we load the model
+        nlp = spacy.load("en_core_web_sm")
+        print("spaCy model loaded successfully.")
 except Exception as e:
     # Handle any errors that might occur during model loading
     print(f"Error loading spaCy model: {e}")
