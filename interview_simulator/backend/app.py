@@ -1,5 +1,3 @@
-import spacy
-import subprocess
 from flask import Flask
 from flask_session import Session
 from flask_cors import CORS
@@ -30,21 +28,7 @@ Session(app)
 # Register routes
 register_routes(app)
 
-def download_spacy_model():
-    try:
-        # Check if the model is already installed
-        try:
-            spacy.load("en_core_web_sm")
-        except OSError:
-            print("spaCy model not found, downloading...")
-            subprocess.run(["python", "-m", "spacy", "download", "en_core_web_sm"], check=True)
-            print("spaCy model downloaded successfully.")
-    except Exception as e:
-        print(f"Error downloading spaCy model: {e}")
-        raise e  # Re-raise the exception to stop further execution if download fails
 
-# Call the function to ensure model is downloaded before starting the app
-download_spacy_model()
 
 @app.route("/", methods=["GET"])
 def home():
