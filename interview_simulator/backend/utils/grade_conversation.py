@@ -105,9 +105,11 @@ def grade_conversation(user_id, graded_conversation, dataset, doc_id, firebase_s
                     "grade_sentiment": grade_sentiment,
                     "issue": "AI feedback contradicts AI grade" if feedback_inconsistent else "Score discrepancy"
                 })
-                msg['flag'] = "FLAGGED_FEEDBACK" if feedback_inconsistent else "FLAGGED"
+                msg['flag'] = "FLAGGED_FEEDBACK" if feedback_inconsistent else "FLAGGED_GRADE"
 
-            msg.update({"grade": ai_grade, "feedback": ai_feedback})
+            #msg.update({"grade": ai_grade, "feedback": ai_feedback})
+            msg['grade'] = ai_grade
+            msg['feedback'] = ai_feedback
             log_to_csv(question, msg['content'], ideal_response, semantic_score, keyword_score, "Match" if sentiment_match else "Mismatch", ai_grade, rule_based_score, "Pass" if not flagged and not feedback_inconsistent else "FLAGGED")
     
     try:
