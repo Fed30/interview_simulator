@@ -31,14 +31,22 @@ if not os.path.exists(CSV_FILE):
 
 def log_to_csv(user_response, ideal_response, semantic_score, keyword_score, sentiment_match, ai_score, rule_score, result):
     """Logs all grading results to a CSV file."""
-    with open(CSV_FILE, "a", newline="") as f:
-        writer = csv.writer(f)
-        writer.writerow([user_response, ideal_response, semantic_score, keyword_score, sentiment_match, ai_score, rule_score, result])
+    try:
+        with open(CSV_FILE, "a", newline="") as f:
+            writer = csv.writer(f)
+            writer.writerow([user_response, ideal_response, semantic_score, keyword_score, sentiment_match, ai_score, rule_score, result])
+        print(f"Logged to CSV: {CSV_FILE}")
+    except Exception as e:
+        print(f"Error logging to CSV: {e}")
 
 def log_bias(case):
     """Logs cases where AI feedback or scores seem inconsistent."""
-    with open(BIAS_LOG_FILE, "a") as f:
-        f.write(json.dumps(case) + "\n")
+    try:
+        with open(BIAS_LOG_FILE, "a") as f:
+            f.write(json.dumps(case) + "\n")
+        print(f"Logged bias case to {BIAS_LOG_FILE}")
+    except Exception as e:
+        print(f"Error logging bias: {e}")
 
 def keyword_match_score(user_response, ideal_response):
     """
