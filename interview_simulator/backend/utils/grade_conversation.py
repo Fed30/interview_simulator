@@ -10,9 +10,12 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
 from textblob import TextBlob
 
-BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+# Get the base directory of the project (i.e., "interview_simulator\backend")
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+
+# Construct the full paths to the JSON and CSV files
 BIAS_LOG_FILE = os.path.join(BASE_DIR, "bias_log.json")
-CSV_FILE = os.path.join(BASE_DIR, "grading_results.csv")
+CSV_FILE = os.path.join(BASE_DIR, "grading_result.csv")
 
 # Load NLP model
 try:
