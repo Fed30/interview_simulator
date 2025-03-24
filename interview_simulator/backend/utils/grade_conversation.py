@@ -78,7 +78,7 @@ def validate_scores(ai_score, rule_score):
 def grade_conversation(user_id, graded_conversation, dataset, doc_id, firebase_session_id):
     for i, msg in enumerate(graded_conversation):
         if msg.get('role') == 'user' and msg.get('content'):
-            question = graded_conversation[i - 2].get('content') if i > 0 and graded_conversation[i - 2].get('role') == 'assistant' else "No question provided"
+            question = graded_conversation[i - 1].get('content') if i > 0 and graded_conversation[i - 1].get('role') == 'assistant' else "No question provided"
             ideal_response = next((item['user_answer'] for item in dataset if item['prompt'] == question), None)
             if not ideal_response:
                 continue
