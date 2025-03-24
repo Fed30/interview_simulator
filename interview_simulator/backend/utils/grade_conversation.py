@@ -46,23 +46,24 @@ def log_to_csv(*row_data):
         blob = storage_bucket.blob(CSV_FILE_PATH)
         existing_data = blob.download_as_text() if blob.exists() else ""
         
-        # Ensure all data is converted to string and replace None with "N/A"
+        # Convert None values to "N/A" and ensure all data is string
         row_data = [str(item) if item is not None else "N/A" for item in row_data]
 
-        with io.StringIO() as f:
-            writer = csv.writer(f)
+        # Convert existing data into a list of rows
+        existing_rows = existing_data.strip().split("\n") if existing_data else []
 
-            # Write existing data first, if available
-            if existing_data:
-                f.write(existing_data)
-            
-            # Append new row
-            writer.writerow(row_data)
+        # Append new row to the list
+        updated_rows = existing_rows + [",".join(row_data)]
 
-            # Upload updated content to Firebase
-            upload_to_firebase(CSV_FILE_PATH, f.getvalue(), "text/csv")
+        # Join the list into a properly formatted CSV string
+        updated_csv_content = "\n".join(updated_rows)
+
+        # Upload the updated CSV to Firebase
+        upload_to_firebase(CSV_FILE_PATH, updated_csv_content, "text/csv")
+
     except Exception as e:
         print(f"Error logging to CSV: {e}")
+
 
 
 
@@ -102,15 +103,22 @@ def grade_conversation(user_id, graded_conversation, dataset, doc_id, firebase_s
             ai_grade = get_grade_from_openai(msg['content'], ideal_response, question)
             ai_feedback = get_feedback_summary_from_openai(msg['content'], ideal_response, question)
             semantic_score, keyword_score, sentiment_match = compute_scores(msg['content'], ideal_response)
-            rule_based_score = 5 if semantic_score > 0.7 and keyword_score > 0.5 and sentiment_match else 2
+            rule_based_score = (
+                5 if semantic_score > 0.8 
+                else 4 if semantic_score > 0.6 
+                else 3 if semantic_score > 0.4 
+                else 2
+            )
             flagged = validate_scores(ai_grade, rule_based_score)
 
             # AI feedback consistency check
             feedback_sentiment = round(TextBlob(ai_feedback).sentiment.polarity, 1) if len(ai_feedback.split()) > 3 else 0.0
             grade_sentiment = 1 if int(ai_grade) > 3 else -1  # Assume 4-5 is positive, 1-3 is negative
             feedback_inconsistent = (feedback_sentiment > 0 and int(ai_grade) < 3) or (feedback_sentiment < 0 and int(ai_grade) > 3)
+            if abs(feedback_sentiment) < 0.2:
+                feedback_inconsistent = False  # Ignore neutral feedback
 
-            if flagged or feedback_inconsistent:
+            if flagged and feedback_inconsistent:
                 log_bias({
                     "question": question,
                     "user_response": msg['content'],
