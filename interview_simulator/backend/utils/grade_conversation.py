@@ -45,21 +45,36 @@ def log_to_csv(*row_data):
     try:
         blob = storage_bucket.blob(CSV_FILE_PATH)
         existing_data = blob.download_as_text() if blob.exists() else ""
-        with io.StringIO(existing_data) as f:
+        
+        # Ensure all data is converted to string and replace None with "N/A"
+        row_data = [str(item) if item is not None else "N/A" for item in row_data]
+
+        with io.StringIO() as f:
             writer = csv.writer(f)
+
+            # Write existing data first, if available
+            if existing_data:
+                f.write(existing_data)
+            
+            # Append new row
             writer.writerow(row_data)
+
+            # Upload updated content to Firebase
             upload_to_firebase(CSV_FILE_PATH, f.getvalue(), "text/csv")
     except Exception as e:
         print(f"Error logging to CSV: {e}")
 
+
+
 def log_bias(case):
     try:
         blob = storage_bucket.blob(BIAS_LOG_FILE_PATH)
-        existing_data = json.loads(blob.download_as_text()) if blob.exists() else []
+        existing_data = json.loads(blob.download_as_text() or "[]")  # Default to empty list
         existing_data.append(case)
         upload_to_firebase(BIAS_LOG_FILE_PATH, json.dumps(existing_data, indent=4))
     except Exception as e:
         print(f"Error logging bias: {e}")
+
 
 def compute_scores(user_response, ideal_response):
     vectorizer = TfidfVectorizer().fit_transform([user_response, ideal_response])
@@ -71,15 +86,16 @@ def compute_scores(user_response, ideal_response):
 
 def validate_scores(ai_score, rule_score):
     try:
-        return abs(float(ai_score) - float(rule_score)) >= 2
+        return abs(float(ai_score or 0) - float(rule_score or 0)) >= 2
     except ValueError:
         return False
 
 def grade_conversation(user_id, graded_conversation, dataset, doc_id, firebase_session_id):
     for i, msg in enumerate(graded_conversation):
         if msg.get('role') == 'user' and msg.get('content'):
-            question = graded_conversation[i - 1].get('content') if i > 0 and graded_conversation[i - 1].get('role') == 'assistant' else "No question provided"
-            ideal_response = next((item['user_answer'] for item in dataset if item['prompt'] == question), None)
+            question = graded_conversation[i - 1].get('content', "No question provided") if i > 0 and graded_conversation[i - 1].get('role') == 'assistant' else "No question provided"
+            ideal_response = next((item['user_answer'] for item in dataset if item.get('prompt') == question), "N/A")
+
             if not ideal_response:
                 continue
 
@@ -90,7 +106,7 @@ def grade_conversation(user_id, graded_conversation, dataset, doc_id, firebase_s
             flagged = validate_scores(ai_grade, rule_based_score)
 
             # AI feedback consistency check
-            feedback_sentiment = TextBlob(ai_feedback).sentiment.polarity
+            feedback_sentiment = TextBlob(ai_feedback).sentiment.polarity if len(ai_feedback.split()) > 3 else 0
             grade_sentiment = 1 if int(ai_grade) > 3 else -1  # Assume 4-5 is positive, 1-3 is negative
             feedback_inconsistent = (feedback_sentiment > 0 and int(ai_grade) < 3) or (feedback_sentiment < 0 and int(ai_grade) > 3)
 
