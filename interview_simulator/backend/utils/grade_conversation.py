@@ -26,8 +26,12 @@ def initialize_csv():
     blob = storage_bucket.blob(CSV_FILE_PATH)
     if not blob.exists():
         with io.StringIO() as f:
-            csv.writer(f).writerow(["Question", "User Response", "Ideal Response", "Semantic Score", "Keyword Score", "Sentiment Match", "AI Score", "Rule Score", "Result"])
+            csv.writer(f).writerow(["question", "user_response", "ideal_response", "ai_score", "rule_based_score",
+                "semantic_score", "keyword_score", "sentiment_match", "ai_feedback",
+                "feedback_sentiment", "grade_sentiment", "issue"])
             blob.upload_from_string(f.getvalue(), content_type="text/csv")
+            
+            
 
 initialize_csv()
 
@@ -74,7 +78,7 @@ def validate_scores(ai_score, rule_score):
 def grade_conversation(user_id, graded_conversation, dataset, doc_id, firebase_session_id):
     for i, msg in enumerate(graded_conversation):
         if msg.get('role') == 'user' and msg.get('content'):
-            question = graded_conversation[i - 1].get('content') if i > 0 and graded_conversation[i - 1].get('role') == 'assistant' else "No question provided"
+            question = graded_conversation[i - 2].get('content') if i > 0 and graded_conversation[i - 2].get('role') == 'assistant' else "No question provided"
             ideal_response = next((item['user_answer'] for item in dataset if item['prompt'] == question), None)
             if not ideal_response:
                 continue
@@ -110,8 +114,8 @@ def grade_conversation(user_id, graded_conversation, dataset, doc_id, firebase_s
             #msg.update({"grade": ai_grade, "feedback": ai_feedback})
             msg['grade'] = ai_grade
             msg['feedback'] = ai_feedback
-            log_to_csv(question, msg['content'], ideal_response, semantic_score, keyword_score, "Match" if sentiment_match else "Mismatch", ai_grade, rule_based_score, "Pass" if not flagged and not feedback_inconsistent else "FLAGGED")
-    
+            log_to_csv(question, msg['content'], ideal_response, ai_grade, rule_based_score, semantic_score, keyword_score, sentiment_match, ai_feedback, feedback_sentiment, grade_sentiment, "AI feedback contradicts AI grade" if feedback_inconsistent else "Score discrepancy")
+
     try:
         firestore_db.collection("Sessions").document(doc_id).update({"history": graded_conversation})
         firebase_db.child(f'Users/{user_id}/Sessions/{firebase_session_id}').update({
