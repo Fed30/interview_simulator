@@ -106,7 +106,7 @@ def grade_conversation(user_id, graded_conversation, dataset, doc_id, firebase_s
             flagged = validate_scores(ai_grade, rule_based_score)
 
             # AI feedback consistency check
-            feedback_sentiment = TextBlob(ai_feedback).sentiment.polarity if len(ai_feedback.split()) > 3 else 0
+            feedback_sentiment = round(TextBlob(ai_feedback).sentiment.polarity, 1) if len(ai_feedback.split()) > 3 else 0.0
             grade_sentiment = 1 if int(ai_grade) > 3 else -1  # Assume 4-5 is positive, 1-3 is negative
             feedback_inconsistent = (feedback_sentiment > 0 and int(ai_grade) < 3) or (feedback_sentiment < 0 and int(ai_grade) > 3)
 
@@ -127,9 +127,15 @@ def grade_conversation(user_id, graded_conversation, dataset, doc_id, firebase_s
                 })
                 msg['flag'] = "FLAGGED_FEEDBACK" if feedback_inconsistent else "FLAGGED_GRADE"
 
-            #msg.update({"grade": ai_grade, "feedback": ai_feedback})
             msg['grade'] = ai_grade
             msg['feedback'] = ai_feedback
+            
+            # Update Firestore inside the loop
+            try:
+                firestore_db.collection("Sessions").document(doc_id).update({"history": graded_conversation})
+            except Exception as e:
+                print(f"Error updating Firestore for message {i}: {e}")
+            
             log_to_csv(question, msg['content'], ideal_response, ai_grade, rule_based_score, semantic_score, keyword_score, sentiment_match, ai_feedback, feedback_sentiment, grade_sentiment, "AI feedback contradicts AI grade" if feedback_inconsistent else "Score discrepancy")
 
     try:
