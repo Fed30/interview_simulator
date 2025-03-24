@@ -75,28 +75,37 @@ def log_bias(case):
         print(f"Error logging bias: {e}")
 
 
-def log_to_csv(*row_data):
+def log_to_csv(rows):
     try:
+        # Get the current CSV blob from Firebase Storage
         blob = storage_bucket.blob(CSV_FILE_PATH)
         existing_data = blob.download_as_text() if blob.exists() else ""
         
+        # Debugging output for checking existing data
+        print(f"Existing data: {existing_data}")
+        
         # Convert None values to "N/A" and ensure all data is string
-        row_data = [str(item) if item is not None else "N/A" for item in row_data]
-
+        rows = [
+            [str(item) if item is not None else "N/A" for item in row] for row in rows
+        ]
+        
         # Convert existing data into a list of rows
         existing_rows = existing_data.strip().split("\n") if existing_data else []
-
-        # Append new row to the list
-        updated_rows = existing_rows + [",".join(row_data)]
-
+        
+        # Extend the list of existing rows with the new data
+        updated_rows = existing_rows + [",".join(row) for row in rows]
+        
         # Join the list into a properly formatted CSV string
         updated_csv_content = "\n".join(updated_rows)
-
-        # Upload the updated CSV to Firebase
+        
+        # Upload the updated CSV content to Firebase
         upload_to_firebase(CSV_FILE_PATH, updated_csv_content, "text/csv")
-
+        print("CSV updated successfully.")
+        
     except Exception as e:
         print(f"Error logging to CSV: {e}")
+
+
 
 def grade_conversation(user_id, graded_conversation, dataset, doc_id, firebase_session_id):
     updates = []  # Store updates for Firestore
