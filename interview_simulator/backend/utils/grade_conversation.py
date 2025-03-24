@@ -22,6 +22,19 @@ nlp = load_nlp_model()
 CSV_FILE_PATH = "logs/grading_result.csv"
 BIAS_LOG_FILE_PATH = "logs/bias_log.json"
 
+def initialize_csv():
+    blob = storage_bucket.blob(CSV_FILE_PATH)
+    if not blob.exists():
+        with io.StringIO() as f:
+            csv.writer(f).writerow(["question", "user_response", "ideal_response", "ai_score", "rule_based_score",
+                "semantic_score", "keyword_score", "sentiment_match", "ai_feedback",
+                "feedback_sentiment", "grade_sentiment", "issue"])
+            blob.upload_from_string(f.getvalue(), content_type="text/csv")
+            
+            
+
+initialize_csv()
+
 def upload_to_firebase(blob_path, data, content_type="application/json"):
     try:
         storage_bucket.blob(blob_path).upload_from_string(data, content_type=content_type)
@@ -50,11 +63,17 @@ def validate_scores(ai_score, rule_score):
 def log_bias(case):
     try:
         blob = storage_bucket.blob(BIAS_LOG_FILE_PATH)
-        existing_data = json.loads(blob.download_as_text() or "[]")
+        if not blob.exists():
+            # If file doesn't exist, create it and initialize it with an empty list
+            upload_to_firebase(BIAS_LOG_FILE_PATH, json.dumps([], indent=4))
+        
+        # Now, read and append the case data
+        existing_data = json.loads(blob.download_as_text())
         existing_data.append(case)
         upload_to_firebase(BIAS_LOG_FILE_PATH, json.dumps(existing_data, indent=4))
     except Exception as e:
         print(f"Error logging bias: {e}")
+
 
 def log_to_csv(rows):
     try:
