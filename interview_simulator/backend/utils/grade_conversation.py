@@ -95,8 +95,24 @@ def log_to_csv(rows):
         # Extend the list of existing rows with the new data
         updated_rows = existing_rows + [",".join(row) for row in rows]
         
-        # Join the list into a properly formatted CSV string
-        updated_csv_content = "\n".join(updated_rows)
+        # Create an in-memory string buffer for CSV
+        output = io.StringIO()
+        
+        # Use csv.writer with QUOTE_ALL to ensure all fields are quoted
+        csv_writer = csv.writer(output, quoting=csv.QUOTE_ALL)
+        
+        # Write the header if the file is empty (only once)
+        if not existing_data:
+            csv_writer.writerow(["question", "user_response", "ideal_response", "ai_score", "rule_based_score",
+                "semantic_score", "keyword_score", "sentiment_match", "ai_feedback",
+                "feedback_sentiment", "grade_sentiment", "issue"])
+        
+        # Write the new rows to the CSV
+        for row in rows:
+            csv_writer.writerow(row)
+        
+        # Get the updated CSV content as a string
+        updated_csv_content = output.getvalue()
         
         # Upload the updated CSV content to Firebase
         upload_to_firebase(CSV_FILE_PATH, updated_csv_content, "text/csv")
