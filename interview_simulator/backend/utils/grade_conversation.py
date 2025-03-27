@@ -11,6 +11,9 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
 from textblob import TextBlob
 
+CSV_FILE_PATH = "logs/grading_result.csv"
+BIAS_LOG_FILE_PATH = "logs/bias_log.json"
+
 def load_nlp_model():
     try:
         return spacy.load("en_core_web_sm")
@@ -19,19 +22,16 @@ def load_nlp_model():
         return spacy.load("en_core_web_sm")
 
 nlp = load_nlp_model()
-CSV_FILE_PATH = "logs/grading_result.csv"
-BIAS_LOG_FILE_PATH = "logs/bias_log.json"
 
 def initialize_csv():
     blob = storage_bucket.blob(CSV_FILE_PATH)
     if not blob.exists():
         with io.StringIO() as f:
-            csv.writer(f).writerow(["question", "user_response", "ideal_response", "ai_score", "rule_based_score",
-                "semantic_score", "keyword_score", "sentiment_match", "ai_feedback",
-                "feedback_sentiment", "grade_sentiment", "issue"])
+            writer = csv.writer(f)
+            writer.writerow(["question", "user_response", "ideal_response", "ai_score", "rule_based_score",
+                             "semantic_score", "keyword_score", "sentiment_match", "ai_feedback",
+                             "feedback_sentiment", "grade_sentiment", "issue"])
             blob.upload_from_string(f.getvalue(), content_type="text/csv")
-            
-            
 
 initialize_csv()
 
@@ -63,69 +63,46 @@ def validate_scores(ai_score, rule_score):
 def log_bias(case):
     try:
         blob = storage_bucket.blob(BIAS_LOG_FILE_PATH)
-        if not blob.exists():
-            # If file doesn't exist, create it and initialize it with an empty list
-            upload_to_firebase(BIAS_LOG_FILE_PATH, json.dumps([], indent=4))
-        
-        # Now, read and append the case data
-        existing_data = json.loads(blob.download_as_text())
+        existing_data = json.loads(blob.download_as_text()) if blob.exists() else []
         existing_data.append(case)
         upload_to_firebase(BIAS_LOG_FILE_PATH, json.dumps(existing_data, indent=4))
     except Exception as e:
         print(f"Error logging bias: {e}")
 
-
 def log_to_csv(rows):
     try:
-        # Get the current CSV blob from Firebase Storage
         blob = storage_bucket.blob(CSV_FILE_PATH)
         existing_data = blob.download_as_text() if blob.exists() else ""
-        
-        # Debugging output for checking existing data
-        print(f"Existing data: {existing_data}")
-        
-        # Convert None values to "N/A" and ensure all data is string
+        existing_rows = existing_data.strip().split("\n") if existing_data else []
+
         rows = [
             [str(item) if item is not None else "N/A" for item in row] for row in rows
         ]
         
-        # Convert existing data into a list of rows
-        existing_rows = existing_data.strip().split("\n") if existing_data else []
-        
-        # Extend the list of existing rows with the new data
         updated_rows = existing_rows + [",".join(row) for row in rows]
         
-        # Create an in-memory string buffer for CSV
         output = io.StringIO()
-        
-        # Use csv.writer with QUOTE_ALL to ensure all fields are quoted
         csv_writer = csv.writer(output, quoting=csv.QUOTE_ALL)
-        
-        # Write the header if the file is empty (only once)
+
         if not existing_data:
             csv_writer.writerow(["question", "user_response", "ideal_response", "ai_score", "rule_based_score",
-                "semantic_score", "keyword_score", "sentiment_match", "ai_feedback",
-                "feedback_sentiment", "grade_sentiment", "issue"])
+                                 "semantic_score", "keyword_score", "sentiment_match", "ai_feedback",
+                                 "feedback_sentiment", "grade_sentiment", "issue"])
         
-        # Write the new rows to the CSV
         for row in rows:
             csv_writer.writerow(row)
-        
-        # Get the updated CSV content as a string
+
         updated_csv_content = output.getvalue()
-        
-        # Upload the updated CSV content to Firebase
         upload_to_firebase(CSV_FILE_PATH, updated_csv_content, "text/csv")
         print("CSV updated successfully.")
-        
     except Exception as e:
         print(f"Error logging to CSV: {e}")
-
-
 
 def grade_conversation(user_id, graded_conversation, dataset, doc_id, firebase_session_id):
     updates = []  # Store updates for Firestore
     csv_rows = []  # Store data for CSV logging
+
+    ideal_responses = {item['prompt']: item['user_answer'] for item in dataset}  # Map prompts to ideal responses
 
     for i, msg in enumerate(graded_conversation):
         if msg.get('role') != 'user' or not msg.get('content'):
@@ -133,8 +110,8 @@ def grade_conversation(user_id, graded_conversation, dataset, doc_id, firebase_s
         
         question = (graded_conversation[i - 1].get('content', "No question provided") 
                     if i > 0 and graded_conversation[i - 1].get('role') == 'assistant' else "No question provided")
-        ideal_response = next((item['user_answer'] for item in dataset if item.get('prompt') == question), "N/A")
-
+        
+        ideal_response = ideal_responses.get(question, "N/A")
         if not ideal_response:
             continue
 
@@ -181,11 +158,9 @@ def grade_conversation(user_id, graded_conversation, dataset, doc_id, firebase_s
         msg['feedback'] = ai_feedback
         updates.append(msg)
 
-        csv_rows.append([
-            question, user_content, ideal_response, ai_grade, rule_based_score,
-            semantic_score, keyword_score, sentiment_match, ai_feedback,
-            feedback_sentiment, grade_sentiment, issue or "N/A"
-        ])
+        csv_rows.append([question, user_content, ideal_response, ai_grade, rule_based_score,
+                         semantic_score, keyword_score, sentiment_match, ai_feedback,
+                         feedback_sentiment, grade_sentiment, issue or "N/A"])
 
     try:
         # Batch update Firestore
