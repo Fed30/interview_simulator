@@ -9,8 +9,15 @@ import threading
 from utils.generate_pdf_report import generate_pdf_report
 from utils.grade_conversation import grade_conversation
 
+
 save_conversation = Blueprint('save_conversation', __name__)
 
+
+def grading_complete_callback(user_id, graded_conversation, timestamp, status, doc_id, firebase_session_id):
+    """Callback function to generate the PDF after grading is completed."""
+    thread = threading.Thread(target=generate_pdf_report, args=(user_id, graded_conversation, timestamp, status, doc_id, firebase_session_id))
+    thread.daemon = True
+    thread.start()
 
 @save_conversation.route('/save_conversation', methods=['POST'])
 def save_conversation_route():
@@ -42,9 +49,7 @@ def save_conversation_route():
         graded_conversation = conversation_history.copy()
 
         # Load dataset for grading
-        dataset = load_dataset()  # Load dataset once
-
-        
+        dataset = load_dataset()
 
         # Save to Firestore
         try:
@@ -59,7 +64,6 @@ def save_conversation_route():
             return jsonify({"error": "Failed to save conversation to Firestore: " + str(e)}), 500
 
         # Save session metadata to Firebase Realtime Database
-        load_dotenv() 
         doc_id = doc_ref.id
         project_id = os.getenv('FIREBASE_PROJECT_ID', 'default_project_id')
 
@@ -72,17 +76,16 @@ def save_conversation_route():
         try:
             response = firebase_db.child(f'Users/{user_id}/Sessions').push(session_data)
             firebase_session_id = response.key  
-            
-            # Generate the PDF report only after grading is completed
-            if status == "Complete":
-                # Start grading the conversation in a separate thread
-                grading_thread = threading.Thread(target=grade_conversation, args=(user_id,graded_conversation, dataset,doc_id, firebase_session_id))
-                grading_thread.start()
 
-                # Wait for grading thread to finish before proceeding to report generation
-                grading_thread.join()
-                thread = threading.Thread(target=generate_pdf_report, args=(user_id, graded_conversation, timestamp, status, doc_id, firebase_session_id))
-                thread.start()
+            # Only process grading and report generation if the session is complete
+            if status == "Complete":
+                grading_thread = threading.Thread(
+                    target=grade_conversation, 
+                    args=(user_id, graded_conversation, dataset, doc_id, firebase_session_id),
+                    kwargs={'callback': grading_complete_callback}  # Pass the callback
+                )
+                grading_thread.daemon = True
+                grading_thread.start()
         except Exception as e:
             print("Error saving to Firebase Realtime Database:", e)
             return jsonify({"error": "Failed to save session to Firebase Realtime Database: " + str(e)}), 500

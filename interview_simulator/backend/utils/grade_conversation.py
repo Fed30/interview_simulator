@@ -98,7 +98,8 @@ def log_to_csv(rows):
     except Exception as e:
         print(f"Error logging to CSV: {e}")
 
-def grade_conversation(user_id, graded_conversation, dataset, doc_id, firebase_session_id):
+def grade_conversation(user_id, graded_conversation, dataset, doc_id, firebase_session_id, callback= None):
+    
     updates = []  # Store updates for Firestore
     csv_rows = []  # Store data for CSV logging
 
@@ -175,6 +176,9 @@ def grade_conversation(user_id, graded_conversation, dataset, doc_id, firebase_s
         if csv_rows:
             log_to_csv(csv_rows)
 
+        # Call the callback function if provided
+        if callback:
+            callback(updates)
     except Exception as e:
         print(f"Error updating Firestore or Firebase DB: {e}")
 
