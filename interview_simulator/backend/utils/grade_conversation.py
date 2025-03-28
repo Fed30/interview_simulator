@@ -179,9 +179,10 @@ def grade_conversation(user_id, graded_conversation, dataset, doc_id, firebase_s
 
         # Simulate status or results
         status = "Completed"
+        timestamp = datetime.datetime.now().strftime("%d-%m-%Y %H:%M:%S")
         # Call the callback function if provided
         if callback:
-            callback(user_id, graded_conversation, datetime.now().strftime("%d-%m-%Y %H:%M:%S"), status, doc_id, firebase_session_id)
+            callback(user_id, graded_conversation, timestamp, status, doc_id, firebase_session_id)
     except Exception as e:
         print(f"Error updating Firestore or Firebase DB: {e}")
 
