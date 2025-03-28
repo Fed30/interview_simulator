@@ -1,3 +1,4 @@
+import datetime
 from firebase_config import firestore_db, firebase_db, storage_bucket
 from utils.openai_get_feedback import get_feedback_summary_from_openai
 from utils.openai_get_grade import get_grade_from_openai
@@ -176,9 +177,11 @@ def grade_conversation(user_id, graded_conversation, dataset, doc_id, firebase_s
         if csv_rows:
             log_to_csv(csv_rows)
 
+        # Simulate status or results
+        status = "Completed"
         # Call the callback function if provided
         if callback:
-            callback(updates)
+            callback(user_id, graded_conversation, datetime.now().strftime("%d-%m-%Y %H:%M:%S"), status, doc_id, firebase_session_id)
     except Exception as e:
         print(f"Error updating Firestore or Firebase DB: {e}")
 
