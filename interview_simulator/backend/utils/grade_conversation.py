@@ -146,7 +146,14 @@ def grade_conversation(user_id, graded_conversation, dataset, doc_id, firebase_s
         updates.append(msg)
         csv_rows.append([question, user_content, ideal_response, ai_grade, rule_based_score,
                          semantic_score, keyword_score, sentiment_match, ai_feedback,
-                         feedback_sentiment, grade_sentiment, issue or "N/A"])
+                         feedback_sentiment, grade_sentiment, issue or "Pass"])
+        
+        # Debugging statement to track progress
+        print(f"Processed message {i+1}/{len(graded_conversation)}")
+        
+    # Ensure CSV rows are being logged
+    if csv_rows:
+        print(f"Rows being logged: {csv_rows}")
     
     try:
         firestore_db.collection("Sessions").document(doc_id).update({"history": updates})
