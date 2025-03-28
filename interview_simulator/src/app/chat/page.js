@@ -559,9 +559,9 @@ export default function Chat() {
                       e.target.style.height = `${e.target.scrollHeight}px`;
                     }}
                     onKeyDown={handleKeyDown}
-                    onCopy={(e) => e.preventDefault()}
-                    onCut={(e) => e.preventDefault()}
-                    onPaste={(e) => e.preventDefault()}
+                    //onCopy={(e) => e.preventDefault()}
+                    //onCut={(e) => e.preventDefault()}
+                    //onPaste={(e) => e.preventDefault()}
                   />
 
                   <button
