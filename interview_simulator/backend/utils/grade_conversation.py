@@ -76,19 +76,26 @@ def log_to_csv(rows):
         blob = storage_bucket.blob(CSV_FILE_PATH)
         existing_data = blob.download_as_text() if blob.exists() else ""
         existing_rows = existing_data.strip().split("\n") if existing_data else []
-        
-        # If the file is empty or there is no existing data, add the header
-        if not existing_data:
-            existing_rows.append("question, user_response, ideal_response, ai_score, rule_based_score, semantic_score, keyword_score, sentiment_match, ai_feedback, feedback_sentiment, grade_sentiment, issue")
-        
-        # Append the new rows to the existing rows
-        updated_rows = existing_rows + [" ,".join(map(str, row)) for row in rows]
-        
-        # Join the rows into a string to upload to Firebase
-        output = "\n".join(updated_rows)
 
-        # Upload the entire updated CSV content to Firebase
-        upload_to_firebase(CSV_FILE_PATH, output, "text/csv")
+        # Combine existing rows with new rows
+        updated_rows = existing_rows + [" ,".join(map(str, row)) for row in rows]
+
+        # Write all rows (existing + new) to the CSV
+        output = io.StringIO()
+        csv_writer = csv.writer(output, quoting=csv.QUOTE_ALL)
+
+        # If there was no existing data, write the header
+        if not existing_data:
+            csv_writer.writerow(["question", "user_response", "ideal_response", "ai_score", "rule_based_score",
+                                 "semantic_score", "keyword_score", "sentiment_match", "ai_feedback",
+                                 "feedback_sentiment", "grade_sentiment", "issue"])
+
+        # Write all rows, including the new ones
+        for row in updated_rows:
+            csv_writer.writerow(row.split(","))
+        
+        # Upload the updated CSV to Firebase
+        upload_to_firebase(CSV_FILE_PATH, output.getvalue(), "text/csv")
         print("CSV updated successfully.")
     except Exception as e:
         print(f"Error logging to CSV: {e}")
@@ -146,14 +153,7 @@ def grade_conversation(user_id, graded_conversation, dataset, doc_id, firebase_s
         updates.append(msg)
         csv_rows.append([question, user_content, ideal_response, ai_grade, rule_based_score,
                          semantic_score, keyword_score, sentiment_match, ai_feedback,
-                         feedback_sentiment, grade_sentiment, issue or "Pass"])
-        
-        # Debugging statement to track progress
-        print(f"Processed message {i+1}/{len(graded_conversation)}")
-        
-    # Ensure CSV rows are being logged
-    if csv_rows:
-        print(f"Rows being logged: {csv_rows}")
+                         feedback_sentiment, grade_sentiment, issue or "N/A"])
     
     try:
         firestore_db.collection("Sessions").document(doc_id).update({"history": updates})
