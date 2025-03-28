@@ -76,21 +76,23 @@ def log_to_csv(rows):
         blob = storage_bucket.blob(CSV_FILE_PATH)
         existing_data = blob.download_as_text() if blob.exists() else ""
         existing_rows = existing_data.strip().split("\n") if existing_data else []
-        updated_rows = existing_rows + [" ,".join(map(str, row)) for row in rows]
-
-        output = io.StringIO()
-        csv_writer = csv.writer(output, quoting=csv.QUOTE_ALL)
-        if not existing_data:
-            csv_writer.writerow(["question", "user_response", "ideal_response", "ai_score", "rule_based_score",
-                                 "semantic_score", "keyword_score", "sentiment_match", "ai_feedback",
-                                 "feedback_sentiment", "grade_sentiment", "issue"])
-        for row in rows:
-            csv_writer.writerow(row)
         
-        upload_to_firebase(CSV_FILE_PATH, output.getvalue(), "text/csv")
+        # If the file is empty or there is no existing data, add the header
+        if not existing_data:
+            existing_rows.append("question, user_response, ideal_response, ai_score, rule_based_score, semantic_score, keyword_score, sentiment_match, ai_feedback, feedback_sentiment, grade_sentiment, issue")
+        
+        # Append the new rows to the existing rows
+        updated_rows = existing_rows + [" ,".join(map(str, row)) for row in rows]
+        
+        # Join the rows into a string to upload to Firebase
+        output = "\n".join(updated_rows)
+
+        # Upload the entire updated CSV content to Firebase
+        upload_to_firebase(CSV_FILE_PATH, output, "text/csv")
         print("CSV updated successfully.")
     except Exception as e:
         print(f"Error logging to CSV: {e}")
+
 
 def grade_conversation(user_id, graded_conversation, dataset, doc_id, firebase_session_id, callback=None):
     updates = []
