@@ -53,18 +53,36 @@ def upload_to_firebase(blob_path, data, content_type="application/vnd.openxmlfor
     except Exception as e:
         print(f"Error uploading to Firebase: {e}")
 
-def compute_scores(user_response, ideal_response):
-    vectorizer = TfidfVectorizer().fit_transform([user_response, ideal_response])
+def compute_scores(user_response, ideal_response, context=None):
+    # Fine-tune semantic score with adjusted vectorizer
+    vectorizer = TfidfVectorizer(sublinear_tf=True, max_features=1000).fit_transform([user_response, ideal_response])
     semantic_score = cosine_similarity(vectorizer)[0][1]
-    
+
+    # Synonym-based keyword matching (You can add a dictionary or use WordNet for synonyms)
     user_keywords = set(nlp(user_response.lower()).ents)
     ideal_keywords = set(nlp(ideal_response.lower()).ents)
+    
+    # Contextualized matching (optional): Enhance matching with additional context or domain-specific rules
+    if context:
+        user_keywords = user_keywords.union(set(nlp(context).ents))
+        ideal_keywords = ideal_keywords.union(set(nlp(context).ents))
+
+    # Use set intersection to compare relevant keywords
     keyword_score = len(user_keywords & ideal_keywords) / len(ideal_keywords) if ideal_keywords else 1
-    
+
+    # Improved sentiment matching by incorporating sentiment polarity and subjectivity
     sentiment_diff = abs(TextBlob(user_response).sentiment.polarity - TextBlob(ideal_response).sentiment.polarity)
-    sentiment_match = sentiment_diff < 0.3
-    
+    sentiment_subjectivity_diff = abs(TextBlob(user_response).sentiment.subjectivity - TextBlob(ideal_response).sentiment.subjectivity)
+
+    # Make sentiment threshold dynamic based on response context (e.g., more tolerance for complex statements)
+    sentiment_match = sentiment_diff < 0.3 and sentiment_subjectivity_diff < 0.2
+
+    # Penalty for responses that are too short or lack depth (can be adjusted based on your needs)
+    if len(user_response.split()) < 5:
+        semantic_score *= 0.8  # Apply penalty for short responses
+
     return semantic_score, keyword_score, sentiment_match
+
 
 def validate_scores(ai_score, rule_score):
     try:
@@ -162,7 +180,7 @@ def grade_conversation(user_id, graded_conversation, dataset, doc_id, firebase_s
         ai_grade = get_grade_from_openai(user_content, ideal_response, question)
         ai_feedback = get_feedback_summary_from_openai(user_content, ideal_response, question)
 
-        semantic_score, keyword_score, sentiment_match = compute_scores(user_content, ideal_response)
+        semantic_score, keyword_score, sentiment_match = compute_scores(user_content, ideal_response, graded_conversation)
         rule_based_score = compute_rule_based_score(semantic_score, keyword_score, sentiment_match)
         flagged = validate_scores(ai_grade, rule_based_score)
 
