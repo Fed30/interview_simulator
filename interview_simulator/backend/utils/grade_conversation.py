@@ -71,28 +71,31 @@ def log_bias(case):
     except Exception as e:
         print(f"Error logging bias: {e}")
 
+
 def log_to_csv(rows):
     try:
+        # Reference to the existing blob in Firebase Storage
         blob = storage_bucket.blob(CSV_FILE_PATH)
         existing_data = blob.download_as_text() if blob.exists() else ""
         existing_rows = existing_data.strip().split("\n") if existing_data else []
 
-        # Combine existing rows with new rows
-        updated_rows = existing_rows + [" ,".join(map(str, row)) for row in rows]
-
-        # Write all rows (existing + new) to the CSV
+        # Write all rows to CSV, including new rows
         output = io.StringIO()
         csv_writer = csv.writer(output, quoting=csv.QUOTE_ALL)
 
-        # If there was no existing data, write the header
+        # If no existing data, write header first
         if not existing_data:
             csv_writer.writerow(["question", "user_response", "ideal_response", "ai_score", "rule_based_score",
                                  "semantic_score", "keyword_score", "sentiment_match", "ai_feedback",
                                  "feedback_sentiment", "grade_sentiment", "issue"])
 
-        # Write all rows, including the new ones
-        for row in updated_rows:
-            csv_writer.writerow(row.split(","))
+        # Write all existing rows (skip headers in existing data) and new rows
+        for row in existing_rows[1:]:  # Skip header from existing rows
+            csv_writer.writerow(row.split(","))  # Ensure rows are split correctly from the CSV
+
+        # Add the new rows to the CSV output
+        for row in rows:
+            csv_writer.writerow(row)  # Write each row as a list, not a string
         
         # Upload the updated CSV to Firebase
         upload_to_firebase(CSV_FILE_PATH, output.getvalue(), "text/csv")
@@ -101,13 +104,14 @@ def log_to_csv(rows):
         print(f"Error logging to CSV: {e}")
 
 
+
 def grade_conversation(user_id, graded_conversation, dataset, doc_id, firebase_session_id, callback=None):
     updates = []
     csv_rows = []
     ideal_responses = {item['prompt']: item['user_answer'] for item in dataset}
 
     for i, msg in enumerate(graded_conversation):
-        if msg.get('role') == 'assistant':  # Preserve assistant messages
+        if msg.get('role') == 'assistant':  
             updates.append(msg)
             continue
         
@@ -153,7 +157,7 @@ def grade_conversation(user_id, graded_conversation, dataset, doc_id, firebase_s
         updates.append(msg)
         csv_rows.append([question, user_content, ideal_response, ai_grade, rule_based_score,
                          semantic_score, keyword_score, sentiment_match, ai_feedback,
-                         feedback_sentiment, grade_sentiment, issue or "N/A"])
+                         feedback_sentiment, grade_sentiment, issue or "Pass"])
     
     try:
         firestore_db.collection("Sessions").document(doc_id).update({"history": updates})
