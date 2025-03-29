@@ -80,19 +80,32 @@ def log_to_excel(rows):
         blob = storage_bucket.blob(EXCEL_FILE_PATH)
         existing_data = blob.download_as_bytes() if blob.exists() else b""
         
+        # Load the existing Excel file from the blob data
         with io.BytesIO(existing_data) as f:
-            # Load the Excel file into pandas
-            writer = pd.ExcelWriter(f, engine="openpyxl")
-            df = pd.read_excel(f, sheet_name='Grading Results')
-            
+            if existing_data:  # Check if there's existing data in the file
+                # Load the Excel file into pandas
+                df = pd.read_excel(f, sheet_name='Grading Results')
+            else:
+                # If no existing data, create a new DataFrame with columns
+                df = pd.DataFrame(columns=["question", "user_response", "ideal_response", "ai_score", 
+                                           "rule_based_score", "semantic_score", "keyword_score", 
+                                           "sentiment_match", "ai_feedback", "feedback_sentiment", 
+                                           "grade_sentiment", "issue"])
+
             # Append the new rows to the existing dataframe
             new_rows_df = pd.DataFrame(rows, columns=df.columns)
             df = pd.concat([df, new_rows_df], ignore_index=True)
             
-            # Write the updated dataframe back to the Excel file
-            df.to_excel(writer, index=False, sheet_name='Grading Results')
-            writer.save()
-            blob.upload_from_string(f.getvalue(), content_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
+            # Create an in-memory BytesIO buffer to save the updated Excel file
+            with io.BytesIO() as output:
+                # Write the updated dataframe to the buffer
+                with pd.ExcelWriter(output, engine='openpyxl') as writer:
+                    df.to_excel(writer, index=False, sheet_name='Grading Results')
+                output.seek(0)  # Rewind the buffer before uploading
+                
+                # Upload the updated Excel file back to Firebase Storage
+                blob.upload_from_file(output, content_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
+                
         print("Excel updated successfully.")
     except Exception as e:
         print(f"Error logging to Excel: {e}")
