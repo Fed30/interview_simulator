@@ -1,8 +1,9 @@
+import pandas as pd
+import openpyxl 
 import datetime
 import json
 import os
 import io
-import csv
 import subprocess
 import spacy
 from textblob import TextBlob
@@ -13,7 +14,7 @@ from utils.openai_get_feedback import get_feedback_summary_from_openai
 from utils.openai_get_grade import get_grade_from_openai
 
 # Constants
-CSV_FILE_PATH = "logs/grading_result.csv"
+EXCEL_FILE_PATH = "logs/grading_result.xlsx"
 BIAS_LOG_FILE_PATH = "logs/bias_log.json"
 
 def load_nlp_model():
@@ -25,19 +26,21 @@ def load_nlp_model():
 
 nlp = load_nlp_model()
 
-def initialize_csv():
-    blob = storage_bucket.blob(CSV_FILE_PATH)
+def initialize_excel():
+    blob = storage_bucket.blob(EXCEL_FILE_PATH)
     if not blob.exists():
-        with io.StringIO() as f:
-            writer = csv.writer(f)
-            writer.writerow(["question", "user_response", "ideal_response", "ai_score", "rule_based_score",
-                             "semantic_score", "keyword_score", "sentiment_match", "ai_feedback",
-                             "feedback_sentiment", "grade_sentiment", "issue"])
-            blob.upload_from_string(f.getvalue(), content_type="text/csv")
+        with io.BytesIO() as f:
+            writer = pd.ExcelWriter(f, engine="openpyxl")
+            df = pd.DataFrame(columns=["question", "user_response", "ideal_response", "ai_score", "rule_based_score",
+                                       "semantic_score", "keyword_score", "sentiment_match", "ai_feedback",
+                                       "feedback_sentiment", "grade_sentiment", "issue"])
+            df.to_excel(writer, index=False, sheet_name='Grading Results')
+            writer.save()
+            blob.upload_from_string(f.getvalue(), content_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
 
-initialize_csv()
+initialize_excel()
 
-def upload_to_firebase(blob_path, data, content_type="application/json"):
+def upload_to_firebase(blob_path, data, content_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"):
     try:
         storage_bucket.blob(blob_path).upload_from_string(data, content_type=content_type)
     except Exception as e:
@@ -71,43 +74,32 @@ def log_bias(case):
     except Exception as e:
         print(f"Error logging bias: {e}")
 
-
-def log_to_csv(rows):
+def log_to_excel(rows):
     try:
-        # Reference to the existing blob in Firebase Storage
-        blob = storage_bucket.blob(CSV_FILE_PATH)
-        existing_data = blob.download_as_text() if blob.exists() else ""
-        existing_rows = existing_data.strip().split("\n") if existing_data else []
-
-        # Write all rows to CSV, including new rows
-        output = io.StringIO()
-        csv_writer = csv.writer(output, quoting=csv.QUOTE_ALL)
-
-        # If no existing data, write header first
-        if not existing_data:
-            csv_writer.writerow(["question", "user_response", "ideal_response", "ai_score", "rule_based_score",
-                                 "semantic_score", "keyword_score", "sentiment_match", "ai_feedback",
-                                 "feedback_sentiment", "grade_sentiment", "issue"])
-
-        # Write all existing rows (skip headers in existing data) and new rows
-        for row in existing_rows[1:]:  # Skip header from existing rows
-            csv_writer.writerow(row.split(","))  # Ensure rows are split correctly from the CSV
-
-        # Add the new rows to the CSV output
-        for row in rows:
-            csv_writer.writerow(row)  # Write each row as a list, not a string
+        # Reference to the existing Excel file in Firebase Storage
+        blob = storage_bucket.blob(EXCEL_FILE_PATH)
+        existing_data = blob.download_as_bytes() if blob.exists() else b""
         
-        # Upload the updated CSV to Firebase
-        upload_to_firebase(CSV_FILE_PATH, output.getvalue(), "text/csv")
-        print("CSV updated successfully.")
+        with io.BytesIO(existing_data) as f:
+            # Load the Excel file into pandas
+            writer = pd.ExcelWriter(f, engine="openpyxl")
+            df = pd.read_excel(f, sheet_name='Grading Results')
+            
+            # Append the new rows to the existing dataframe
+            new_rows_df = pd.DataFrame(rows, columns=df.columns)
+            df = pd.concat([df, new_rows_df], ignore_index=True)
+            
+            # Write the updated dataframe back to the Excel file
+            df.to_excel(writer, index=False, sheet_name='Grading Results')
+            writer.save()
+            blob.upload_from_string(f.getvalue(), content_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
+        print("Excel updated successfully.")
     except Exception as e:
-        print(f"Error logging to CSV: {e}")
-
-
+        print(f"Error logging to Excel: {e}")
 
 def grade_conversation(user_id, graded_conversation, dataset, doc_id, firebase_session_id, callback=None):
     updates = []
-    csv_rows = []
+    excel_rows = []
     ideal_responses = {item['prompt']: item['user_answer'] for item in dataset}
 
     for i, msg in enumerate(graded_conversation):
@@ -155,15 +147,15 @@ def grade_conversation(user_id, graded_conversation, dataset, doc_id, firebase_s
         msg['grade'] = ai_grade
         msg['feedback'] = ai_feedback
         updates.append(msg)
-        csv_rows.append([question, user_content, ideal_response, ai_grade, rule_based_score,
+        excel_rows.append([question, user_content, ideal_response, ai_grade, rule_based_score,
                          semantic_score, keyword_score, sentiment_match, ai_feedback,
                          feedback_sentiment, grade_sentiment, issue or "Pass"])
     
     try:
         firestore_db.collection("Sessions").document(doc_id).update({"history": updates})
         firebase_db.child(f'Users/{user_id}/Sessions/{firebase_session_id}').update({'session_link': f'https://firestore.googleapis.com/v1/projects/{os.getenv("FIREBASE_PROJECT_ID", "default_project_id")}/databases/(default)/documents/Sessions/{doc_id}'})
-        if csv_rows:
-            log_to_csv(csv_rows)
+        if excel_rows:
+            log_to_excel(excel_rows)
         if callback:
             callback(user_id, graded_conversation, datetime.datetime.now().strftime("%d-%m-%Y %H:%M:%S"), "Completed", doc_id, firebase_session_id)
     except Exception as e:

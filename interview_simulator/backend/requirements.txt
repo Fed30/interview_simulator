@@ -11,3 +11,5 @@ spacy==3.8.4
 scikit-learn
 textblob
 pyrebase4
+pandas
+openpyxl
