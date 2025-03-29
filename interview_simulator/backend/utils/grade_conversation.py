@@ -53,7 +53,7 @@ def upload_to_firebase(blob_path, data, content_type="application/vnd.openxmlfor
     except Exception as e:
         print(f"Error uploading to Firebase: {e}")
 
-def compute_scores(user_response, ideal_response, context=None):
+def compute_scores(user_response, ideal_response, context):
     # Fine-tune semantic score with adjusted vectorizer
     vectorizer = TfidfVectorizer(sublinear_tf=True, max_features=1000).fit_transform([user_response, ideal_response])
     semantic_score = cosine_similarity(vectorizer)[0][1]
@@ -179,8 +179,8 @@ def grade_conversation(user_id, graded_conversation, dataset, doc_id, firebase_s
         user_content = msg['content']
         ai_grade = get_grade_from_openai(user_content, ideal_response, question)
         ai_feedback = get_feedback_summary_from_openai(user_content, ideal_response, question)
-
-        semantic_score, keyword_score, sentiment_match = compute_scores(user_content, ideal_response, graded_conversation)
+        context= "Computer Science Interview"
+        semantic_score, keyword_score, sentiment_match = compute_scores(user_content, ideal_response, context)
         rule_based_score = compute_rule_based_score(semantic_score, keyword_score, sentiment_match)
         flagged = validate_scores(ai_grade, rule_based_score)
 
