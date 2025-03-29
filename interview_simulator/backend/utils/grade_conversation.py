@@ -30,14 +30,21 @@ def initialize_excel():
     blob = storage_bucket.blob(EXCEL_FILE_PATH)
     if not blob.exists():
         with io.BytesIO() as f:
-            writer = pd.ExcelWriter(f, engine="openpyxl")
+            # Create a new dataframe with the required columns
             df = pd.DataFrame(columns=["question", "user_response", "ideal_response", "ai_score", "rule_based_score",
                                        "semantic_score", "keyword_score", "sentiment_match", "ai_feedback",
                                        "feedback_sentiment", "grade_sentiment", "issue"])
-            df.to_excel(writer, index=False, sheet_name='Grading Results')
-            writer.save()
+            
+            # Write the dataframe to an in-memory BytesIO buffer
+            with pd.ExcelWriter(f, engine="openpyxl") as writer:
+                df.to_excel(writer, index=False, sheet_name='Grading Results')
+                
+            # Upload the created Excel file to Firebase Storage
+            f.seek(0)  # Rewind the buffer before uploading
             blob.upload_from_string(f.getvalue(), content_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
-
+        
+        print("Excel file initialized successfully.")
+        
 initialize_excel()
 
 def upload_to_firebase(blob_path, data, content_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"):
