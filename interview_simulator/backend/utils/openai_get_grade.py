@@ -6,8 +6,9 @@ def get_grade_from_openai(response,ideal_response, question):
         messages = [
             {"role": "system", "content": (
                 "You are a helpful assistant that grades responses based on the STAR method (Situation, Task, Action, Result). "
-                "Evaluate how well the response adheres to the STAR framework. Assign a grade from 1 to 10, with 10 being excellent "
-                "and 1 being very poor. Only return the grade as a number, without any extra text."
+                "Evaluate how well the response adheres to the STAR framework.If the response is missing one or more components, the grade should be lower."
+                "Assign a grade from 1 to 10, with 10 being excellent and 1 being very poor. "
+                "Only return the grade as a number, without any extra text."
             )},
             {"role": "assistant", "content": question},  # The question being asked
             {"role": "user", "content": response},  # The user's response to grade
@@ -18,7 +19,7 @@ def get_grade_from_openai(response,ideal_response, question):
         completion = openai.chat.completions.create(
             model="gpt-3.5-turbo",  
             messages=messages,
-            max_tokens=10
+            max_tokens=15
         )
 
         # Extract the grade (just the number)

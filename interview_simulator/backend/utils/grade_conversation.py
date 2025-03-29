@@ -62,13 +62,13 @@ def compute_scores(user_response, ideal_response):
     keyword_score = len(user_keywords & ideal_keywords) / len(ideal_keywords) if ideal_keywords else 1
     
     sentiment_diff = abs(TextBlob(user_response).sentiment.polarity - TextBlob(ideal_response).sentiment.polarity)
-    sentiment_match = sentiment_diff < 0.2
+    sentiment_match = sentiment_diff < 0.3
     
     return semantic_score, keyword_score, sentiment_match
 
 def validate_scores(ai_score, rule_score):
     try:
-        return abs(float(ai_score or 0) - float(rule_score or 0)) >= 2
+        return abs(float(ai_score or 0) - float(rule_score or 0)) >= 3
     except ValueError:
         return False
 
@@ -80,6 +80,28 @@ def log_bias(case):
         upload_to_firebase(BIAS_LOG_FILE_PATH, json.dumps(existing_data, indent=4))
     except Exception as e:
         print(f"Error logging bias: {e}")
+
+def compute_rule_based_score(semantic_score):
+    if semantic_score > 0.9:
+        return 10
+    elif semantic_score > 0.85:
+        return 9
+    elif semantic_score > 0.8:
+        return 8
+    elif semantic_score > 0.75:
+        return 7
+    elif semantic_score > 0.7:
+        return 6
+    elif semantic_score > 0.65:
+        return 5
+    elif semantic_score > 0.6:
+        return 4
+    elif semantic_score > 0.55:
+        return 3
+    elif semantic_score > 0.5:
+        return 2
+    else:
+        return 1
 
 def log_to_excel(rows):
     try:
@@ -142,7 +164,7 @@ def grade_conversation(user_id, graded_conversation, dataset, doc_id, firebase_s
         ai_feedback = get_feedback_summary_from_openai(user_content, ideal_response, question)
 
         semantic_score, keyword_score, sentiment_match = compute_scores(user_content, ideal_response)
-        rule_based_score = 5 if semantic_score > 0.8 else 4 if semantic_score > 0.6 else 3 if semantic_score > 0.4 else 2
+        rule_based_score = compute_rule_based_score(semantic_score)
         flagged = validate_scores(ai_grade, rule_based_score)
 
         feedback_sentiment = round(TextBlob(ai_feedback).sentiment.polarity, 1) if len(ai_feedback.split()) > 3 else 0.0
