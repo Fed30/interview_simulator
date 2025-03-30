@@ -100,24 +100,39 @@ def log_bias(case):
         print(f"Error logging bias: {e}")
 
 def compute_rule_based_score(semantic_score, keyword_score, sentiment_match):
-    if semantic_score > 0.8 and keyword_score >= 0.8 and sentiment_match:
+    # Weighted scoring system
+    weight_semantic = 0.5
+    weight_keyword = 0.4
+    weight_sentiment = 0.1  # Sentiment has less weight but still affects the final score
+
+    base_score = (
+        (semantic_score * weight_semantic) +
+        (keyword_score * weight_keyword) +
+        (1 if sentiment_match else 0) * weight_sentiment
+    ) * 10  # Scale up to a 10-point system
+
+    # Fine-tuned granularity for rule-based scoring
+    if base_score >= 9.5:
         return 10
-    elif semantic_score > 0.7 and keyword_score >= 0.6:
+    elif base_score >= 8.5:
         return 9
-    elif semantic_score > 0.6:
+    elif base_score >= 7.5:
         return 8
-    elif semantic_score > 0.5:
+    elif base_score >= 6.5:
         return 7
-    elif semantic_score > 0.4:
+    elif base_score >= 5.5:
         return 6
-    elif semantic_score > 0.3:
+    elif base_score >= 4.5:
         return 5
-    elif semantic_score > 0.2:
+    elif base_score >= 3.5:
         return 4
-    elif semantic_score > 0.1:
+    elif base_score >= 2.5:
         return 3
-    else:
+    elif base_score >= 1.5:
         return 2
+    else:
+        return 1  # Minimum score for very poor responses
+
 
 
 def log_to_excel(rows):
