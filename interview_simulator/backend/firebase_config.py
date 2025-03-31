@@ -1,8 +1,9 @@
 import firebase_admin
 from firebase_admin import credentials, firestore, db, auth,  storage
+import os
 
 # Initialize Firebase Admin SDK with your service account
-cred = credentials.Certificate("firebase_admin_sdk.json")
+cred = credentials.Certificate(os.getenv("FIREBASE_CREDENTIALS"))
 firebase_admin.initialize_app(cred, {
     'databaseURL': 'https://ai-simulator-8cb2e-default-rtdb.firebaseio.com',  # Realtime Database URL
     'projectId': 'ai-simulator-8cb2e',
