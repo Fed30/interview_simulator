@@ -1,19 +1,15 @@
 import firebase_admin
-from firebase_admin import credentials, firestore, db, auth,  storage
+from firebase_admin import credentials, firestore, db, auth, storage
 import os
-import json
 
-# Initialize Firebase Admin SDK with your service account
-# Load Firebase credentials from environment variable
-firebase_credentials = os.getenv("FIREBASE_CREDENTIALS")
+# Path to the Firebase credentials file stored in Render
+firebase_credentials_path = "/etc/secrets/firebase_credentials.json"
 
-if not firebase_credentials:
-    raise ValueError("Missing FIREBASE_CREDENTIALS environment variable")
+if not os.path.exists(firebase_credentials_path):
+    raise ValueError("Firebase credentials file not found!")
 
-# Parse the JSON string into a Python dictionary
-firebase_credentials_dict = json.loads(firebase_credentials)
-
-cred = credentials.Certificate(firebase_credentials_dict)
+# Initialize Firebase Admin SDK
+cred = credentials.Certificate(firebase_credentials_path)
 
 firebase_admin.initialize_app(cred, {
     'databaseURL': 'https://ai-simulator-8cb2e-default-rtdb.firebaseio.com',  # Realtime Database URL
@@ -24,8 +20,8 @@ firebase_admin.initialize_app(cred, {
 # Firestore reference
 firestore_db = firestore.client()
 
-# Initialize Realtime Database 
+# Initialize Realtime Database
 firebase_db = db.reference("/")  # Reference to the root of the Realtime Database
 
 # Firebase Storage reference
-storage_bucket = storage.bucket(name="ai-simulator-8cb2e.firebasestorage.app") 
+storage_bucket = storage.bucket(name="ai-simulator-8cb2e.firebasestorage.app")
